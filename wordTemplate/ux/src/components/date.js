@@ -10,6 +10,13 @@ export const MyKeyboardDatePicker = React.memo(
   props => {
     const { label, handleBlur, handleChange, mutate, ...others } = props;
     const { error, touched, value, name, type } = mutate;
+    let { show } = mutate;
+    if (show === "" || show === undefined || show === null) {
+      show = true;
+    }
+    if (show === false) {
+      return null;
+    }
     const handleDateChange = e =>
       handleChange({
         target: {

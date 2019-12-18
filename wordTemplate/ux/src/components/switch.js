@@ -18,6 +18,13 @@ export const MySwitch = React.memo(
     const { label, options, handleBlur, handleChange, mutate } = props;
     const { error, touched, value, name, type } = mutate;
     let switches;
+    let { show } = mutate;
+    if (show === "" || show === undefined || show === null) {
+      show = true;
+    }
+    if (show === false) {
+      return null;
+    }
     if (Array.isArray(options)) {
       switches = options.map((currentCheckBox, index) => (
         <FormControlLabel
@@ -36,7 +43,6 @@ export const MySwitch = React.memo(
         />
       ));
     }
-    const refCount = React.useRef(0);
     return (
       <>
         <FormLabel error={!!error} component="legend">
@@ -44,7 +50,6 @@ export const MySwitch = React.memo(
         </FormLabel>
         <FormGroup row={true}>{switches}</FormGroup>
         <FormHelperText error={touched && !!error}>{error}</FormHelperText>
-        <div>RenderCount:{refCount.current++}</div>
       </>
     );
   },

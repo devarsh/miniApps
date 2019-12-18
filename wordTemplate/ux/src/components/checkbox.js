@@ -18,6 +18,13 @@ export const MyCheckbox = React.memo(
     const { label, options, handleBlur, handleChange, mutate } = props;
     const { error, touched, value, name, type } = mutate;
     let checkboxes;
+    let { show } = mutate;
+    if (show === "" || show === undefined || show === null) {
+      show = true;
+    }
+    if (show === false) {
+      return null;
+    }
     if (Array.isArray(options)) {
       checkboxes = options.map((currentCheckBox, index) => (
         <FormControlLabel

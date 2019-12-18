@@ -26,7 +26,7 @@ const PromiseQueue = () => {
     _internalQueue[key][ERROR] = error;
     callback(error);
   };
-  const promiseWrapper = (fn, key, value, ...others) => {
+  const functionWrapper = (fn, key, value, ...others) => {
     return new Promise(async (res, rej) => {
       try {
         _internalQueue[key] = {
@@ -35,12 +35,65 @@ const PromiseQueue = () => {
           [VALUE]: value,
           [CANCELFN]: reason => cancelFn(reason, rej, key, value, others)
         };
-        let result = await fn(key, value, ...others);
+        let result = await Promise.resolve(fn(key, value, ...others));
         _internalQueue[key][RESULT] = result;
         res(result);
       } catch (e) {
         _internalQueue[key][ERROR] = e;
         rej(e);
+      } finally {
+        _internalQueue[key][DONE] = true;
+        _internalQueue[key][ENDTIME] = Date.now();
+      }
+    });
+  };
+
+  const fetchWrapper = (key, options) => {
+    const { timeout, value } = options;
+    return new Promise(async (res, rej) => {
+      try {
+        const controller = new AbortController();
+        const signal = controller.signal;
+        const abort = controller.abort.bind(controller);
+        _internalQueue[key] = {
+          [DONE]: false,
+          [STARTTIME]: Date.now(),
+          [VALUE]: value,
+          [CANCELFN]: () => abort()
+        };
+
+        let response = await fetch(
+          `http://localhost:8081/error?sleep=${timeout}&name=${value}`,
+          { mode: "cors", signal }
+        );
+        let json = await response.json();
+        const result = {
+          path: key,
+          value: value,
+          others: [timeout],
+          result: json
+        };
+        _internalQueue[key][RESULT] = result;
+        res(result);
+      } catch (e) {
+        const error = {};
+        if (e.name === "AbortError") {
+          error = {
+            path: key,
+            value: value,
+            others: [timeout],
+            error: new Error("Stale Promise")
+          };
+        } else {
+          error = {
+            path: key,
+            value: value,
+            others: [timeout],
+            error: e
+          };
+        }
+        _internalQueue[key][ERROR] = error;
+        rej(error);
       } finally {
         _internalQueue[key][DONE] = true;
         _internalQueue[key][ENDTIME] = Date.now();
@@ -66,7 +119,7 @@ const PromiseQueue = () => {
         }
       }
     }
-    let p = promiseWrapper(fn, key, value, ...others);
+    let p = functionWrapper(fn, key, value, ...others);
     _internalQueue[key][PROMISE] = p;
     return p;
   };

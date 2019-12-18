@@ -11,23 +11,32 @@ export const MyRadio = React.memo(
     const { label, options, handleBlur, handleChange, mutate } = props;
     const { error, touched, value, name, type } = mutate;
     let radios;
+    let { show } = mutate;
+    if (show === "" || show === undefined || show === null) {
+      show = true;
+    }
+    if (show === false) {
+      return null;
+    }
     if (Array.isArray(options)) {
-      radios = options.map((currentCheckBox, index) => (
-        <FormControlLabel
-          key={`${index}-${currentCheckBox.value}`}
-          control={
-            <Radio
-              type={type}
-              name={name}
-              value={currentCheckBox.value || ""}
-              checked={value === currentCheckBox.value}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-          }
-          label={currentCheckBox.label}
-        />
-      ));
+      radios = options.map((currentCheckBox, index) => {
+        return (
+          <FormControlLabel
+            key={`${index}-${currentCheckBox.value}`}
+            control={
+              <Radio
+                type={type}
+                name={name}
+                value={currentCheckBox.value || ""}
+                checked={value == currentCheckBox.value}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+            }
+            label={currentCheckBox.label}
+          />
+        );
+      });
     }
     return (
       <>

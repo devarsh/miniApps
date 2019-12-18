@@ -16,7 +16,7 @@ const renderMenuItems = options => {
   }
   return undefined;
 };
-const SelectRender = (
+const SelectRender = ({
   error,
   label,
   type,
@@ -26,7 +26,7 @@ const SelectRender = (
   handleBlur,
   touched,
   menuItems
-) => (
+}) => (
   <>
     <FormLabel error={!!error} component="legend">
       {label}
@@ -44,62 +44,96 @@ const SelectRender = (
   </>
 );
 
-export const MySelectDependent = React.memo(props => {
-  const { label, handleBlur, handleChange, mutate, callback } = props;
-  const { error, touched, value, name, type, watch } = mutate;
-  const [menuItems, setMenuItems] = React.useState(undefined);
-  const _mounted = React.useRef(true);
-  useEffect(() => {
-    if (typeof callback === "function") {
-      /* eslint-disable react-hooks/exhaustive-deps*/
-      let result = callback(watch);
-      result
-        .then(data => {
-          if (_mounted.current) {
-            let menuItemsList = renderMenuItems(data);
-            setMenuItems(menuItemsList);
-          }
-        })
-        .catch(err => {
-          if (_mounted.current) {
-            let menuItemList = renderMenuItems([{ value: "", label: "None" }]);
-            setMenuItems(menuItemList);
-          }
-        });
-    }
-  }, [watch]);
-  useEffect(() => {
-    _mounted.current = true;
-    return () => {
-      _mounted.current = false;
-    };
-  });
-  return (
-    <SelectRender
-      error={error}
-      label={label}
-      type={type}
-      value={value}
-      name={name}
-      handleChange={handleChange}
-      handleBlur={handleBlur}
-      touched={touched}
-      menuItems={menuItems}
-    />
-  );
-});
-
 export const MySelectStatic = React.memo(
   props => {
     const { label, options, handleBlur, handleChange, mutate } = props;
     const { error, touched, value, name, type } = mutate;
     let menuItems = renderMenuItems(options);
+    let { show } = mutate;
+    if (show === "" || show === undefined || show === null) {
+      show = true;
+    }
+    if (show === false) {
+      return null;
+    }
     return (
       <SelectRender
         error={error}
         label={label}
         type={type}
-        value={value}
+        value={value || ""}
+        name={name}
+        handleChange={handleChange}
+        handleBlur={handleBlur}
+        touched={touched}
+        menuItems={menuItems}
+      />
+    );
+  },
+  (prevProps, nextProps) => {
+    if (
+      !shallowEqual(prevProps.mutate, nextProps.mutate) ||
+      prevProps.label !== nextProps.label
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+);
+
+export const MySelectDependent = React.memo(
+  props => {
+    const { label, handleBlur, handleChange, mutate, callback } = props;
+    const { error, touched, value, name, type, watch } = mutate;
+    const [menuItems, setMenuItems] = React.useState(undefined);
+    const _mounted = React.useRef(true);
+    let { show } = mutate;
+    if (show === "" || show === undefined || show === null) {
+      show = true;
+    }
+    if (show === false) {
+      return null;
+    }
+    useEffect(() => {
+      if (typeof callback === "function" && !!watch) {
+        //remove any existing value, since parent checkbox changed and we're dynamic
+        handleChange({
+          target: {
+            value: "",
+            name: name
+          },
+          type: "click"
+        });
+        callback(watch)
+          .then(data => {
+            if (_mounted.current) {
+              let menuItemsList = renderMenuItems(data);
+              setMenuItems(menuItemsList);
+            }
+          })
+          .catch(err => {
+            if (_mounted.current) {
+              let menuItemList = renderMenuItems([
+                { value: "", label: "None" }
+              ]);
+              setMenuItems(menuItemList);
+            }
+          });
+      }
+    }, [watch]);
+    useEffect(() => {
+      _mounted.current = true;
+      return () => {
+        _mounted.current = false;
+      };
+    });
+    return (
+      <SelectRender
+        error={error}
+        label={label}
+        type={type}
+        value={value || ""}
         name={name}
         handleChange={handleChange}
         handleBlur={handleBlur}

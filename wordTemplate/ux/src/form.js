@@ -15,7 +15,7 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import * as Yup from "yup";
 import invariant from "tiny-warning";
 
-const FieldBag = (formikBag, type, name, watch) => {
+const FieldBag = (formikBag, type, name, others = {}) => {
   invariant(typeof formikBag === "object", "Invalid object passed");
   invariant(!!name, "name is required");
   invariant(!!type, "type is required");
@@ -30,8 +30,15 @@ const FieldBag = (formikBag, type, name, watch) => {
     handleBlur: formikBag.handleBlur,
     handleChange: formikBag.handleChange
   };
+  const { watch, show } = others;
   if (!!watch) {
     fieldBag.mutate.watch = getIn(formikBag.values, watch);
+  }
+  if (Array.isArray(show) && show.length === 2) {
+    const [callback, watcher] = show;
+    const value = getIn(formikBag.values, watcher);
+    const result = callback(value);
+    fieldBag.mutate.show = result;
   }
   return fieldBag;
 };
@@ -50,7 +57,6 @@ export const Form = () => {
         .max(5000, "Too Long!")
     })
   });
-  const [asyncError, setAsyncError] = React.useState({});
 
   return (
     <>
@@ -90,16 +96,16 @@ export const Form = () => {
             label="Lights"
             {...FieldBag(formikBag, "checkbox", "lights")}
           />
-          <MyKeyboardDatePicker
-            label="Date of Birth"
-            {...FieldBag(formikBag, "datetime", "dob")}
-          />
           <MySlider
             label="Marks"
             {...FieldBag(formikBag, "slider", "marks")}
             min={0}
             max={100}
             step={10}
+          />
+          <MyKeyboardDatePicker
+            label="Date of Birth"
+            {...FieldBag(formikBag, "datetime", "dob")}
           />
           <MyRadio
             options={[
@@ -118,24 +124,43 @@ export const Form = () => {
           <MySelectStatic
             options={[
               {
-                value: "devarsh",
-                label: "devarsh"
+                value: "gujarat",
+                label: "gujarat"
               },
               {
-                value: "harsh",
-                label: "harsh"
+                value: "maharashtra",
+                label: "maharashtra"
               },
               {
-                value: "dvija",
-                label: "dvija"
+                value: "rajasthan",
+                label: "rajasthan"
               },
               {
-                value: "nirali",
-                label: "nirali"
+                value: "other",
+                label: "other"
               }
             ]}
-            label="Cousin"
-            {...FieldBag(formikBag, "select", "cousin")}
+            defaultValue="gujarat"
+            label="State"
+            {...FieldBag(formikBag, "select", "state")}
+          />
+          <MySelectDependent
+            label="City"
+            {...FieldBag(formikBag, "select", "city", { watch: "state" })}
+            callback={value => {
+              return new Promise(async (res, rej) => {
+                try {
+                  let response = await fetch(
+                    `http://localhost:8081/values?name=${value}`
+                  );
+                  let json = await response.json();
+                  let data = Object.values(json.result);
+                  res(data);
+                } catch (e) {
+                  rej(e);
+                }
+              });
+            }}
           />
           <FieldArray
             name="address"

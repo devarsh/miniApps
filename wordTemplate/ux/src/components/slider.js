@@ -8,7 +8,13 @@ export const MySlider = React.memo(
   props => {
     const { label, handleBlur, handleChange, mutate, ...others } = props;
     const { error, touched, value, name } = mutate;
-    const refCount = React.useRef(0);
+    let { show } = mutate;
+    if (show === "" || show === undefined || show === null) {
+      show = true;
+    }
+    if (show === false) {
+      return null;
+    }
     const handleSliderChange = (_, v) => {
       handleChange({
         target: {
@@ -24,6 +30,7 @@ export const MySlider = React.memo(
         }
       });
     };
+
     return (
       <>
         <FormLabel error={!!error} component="legend">
@@ -38,7 +45,6 @@ export const MySlider = React.memo(
           {...others}
         />
         <FormHelperText error={touched && !!error}>{error}</FormHelperText>
-        <div>RenderCount:{refCount.current++}</div>
       </>
     );
   },
