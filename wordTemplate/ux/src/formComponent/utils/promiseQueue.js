@@ -181,54 +181,47 @@ const PromiseQueue = () => {
     activeCount,
     resetQueue,
     startCleanUp,
-    stopCleanUp
+    stopCleanUp,
+    fetchWrapper
   };
 };
 
-const sleep = seconds => {
-  return new Promise(res => {
-    setTimeout(() => res(true), seconds * 1000);
-  });
-};
+export default PromiseQueue;
 
+/*
 const fetchResult = async (key, value, timeout) => {
-  if (value === "deva") {
-    await sleep(timeout);
-    return Promise.reject({ err: "fucked eup" });
-  } else {
-    try {
-      const res = await fetch(
-        `http://localhost:8081/error?sleep=${timeout}&name=${value}`,
-        { mode: "cors" }
-      );
-      let data = await res.json();
-      return Promise.resolve({
-        path: key,
-        value: value,
-        others: [timeout],
-        result: data
-      });
-    } catch (e) {
-      return Promise.reject({
-        path: key,
-        value: value,
-        others: [timeout],
-        error: e
-      });
-    }
+  try {
+    const res = await fetch(
+      `http://localhost:8081/error?sleep=${timeout}&name=${value}`,
+      { mode: "cors" }
+    );
+    let data = await res.json();
+    return Promise.resolve({
+      path: key,
+      value: value,
+      others: [timeout],
+      result: data
+    });
+  } catch (e) {
+    return Promise.reject({
+      path: key,
+      value: value,
+      others: [timeout],
+      error: e
+    });
   }
 };
 
 (function abc() {
   const names = [
-    { path: "name", value: "devarsh", timeout: 5 },
-    { path: "address", value: "Amit", timeout: 5 },
-    { path: "age", value: "aayush", timeout: 7 },
-    { path: "address.street1", value: "dvija", timeout: 9 },
-    { path: "address.street2", value: "urja", timeout: 7 },
-    { path: "phone", value: "chirag", timeout: 12 },
-    { path: "email", value: "deva", timeout: 40 },
-    { path: "company", value: "Hafiz Mohammad Saeed", timeout: 20 }
+    { path: "name", value: "name1", timeout: 5 },
+    { path: "address", value: "name2", timeout: 5 },
+    { path: "age", value: "name3", timeout: 7 },
+    { path: "address.street1", value: "name4", timeout: 9 },
+    { path: "address.street2", value: "name5", timeout: 7 },
+    { path: "phone", value: "name5", timeout: 12 },
+    { path: "email", value: "name6", timeout: 40 },
+    { path: "company", value: "name7", timeout: 20 }
   ];
   const newQueue = PromiseQueue();
   names.forEach(one => {
@@ -240,14 +233,14 @@ const fetchResult = async (key, value, timeout) => {
   });
   setTimeout(() => {
     const myNames = [
-      { path: "name", value: "devar", timeout: 5 },
-      { path: "address", value: "amit", timeout: 5 },
-      { path: "age", value: "aayush", timeout: 7 },
-      { path: "address.street1", value: "dvija", timeout: 9 },
-      { path: "address.street2", value: "urja", timeout: 7 },
-      { path: "phone", value: "chirag", timeout: 12 },
-      { path: "email", value: "deva", timeout: 3 },
-      { path: "company", value: "Hafiz Mohammad Saeed", timeout: 20 }
+      { path: "name", value: "name1", timeout: 5 },
+      { path: "address", value: "name2", timeout: 5 },
+      { path: "age", value: "name3", timeout: 7 },
+      { path: "address.street1", value: "name4", timeout: 9 },
+      { path: "address.street2", value: "name5", timeout: 7 },
+      { path: "phone", value: "name6", timeout: 12 },
+      { path: "email", value: "name7", timeout: 3 },
+      { path: "company", value: "name8", timeout: 20 }
     ];
     myNames.forEach(one => {
       const { path, value, timeout } = one;
@@ -258,3 +251,4 @@ const fetchResult = async (key, value, timeout) => {
     });
   }, 15000);
 })();
+*/

@@ -15,7 +15,19 @@ const formData = [
   {
     name: "firstName",
     label: "First Name",
-    type: "text"
+    type: "text",
+    validationType: "string",
+    validations: [
+      { type: "required", params: ["First Name is a required field"] },
+      {
+        type: "min",
+        params: [5, "First Name should be minimum 5 characters long"]
+      },
+      {
+        type: "max",
+        params: [30, "First Name should not be more than 30 characters long"]
+      }
+    ]
   },
   {
     name: "lastName",
@@ -28,12 +40,28 @@ const formData = [
     type: "text"
   },
   {
+    name: "contactNumber",
+    label: "Contact Number",
+    type: "text",
+    validationType: "number",
+    validations: [{ type: "min", params: [50, "Number should be 50 or more"] }]
+  },
+  {
     name: "gender",
     label: "Gender",
     type: "radio",
     options: [
       { value: 1, label: "Male" },
       { value: 2, label: "Female" }
+    ]
+  },
+  {
+    name: "gender2",
+    label: "Gender 2",
+    type: "radio",
+    options: [
+      { value: 1, label: "Boy" },
+      { value: 2, label: "Girl" }
     ]
   },
   {
@@ -89,11 +117,24 @@ const formData = [
   {
     name: "address",
     type: "array",
+    validationType: "array",
     template: [
       {
         name: "street1",
         label: "Street-1",
-        type: "text"
+        type: "text",
+        validationType: "string",
+        validations: [
+          { type: "required", params: ["Street1 is a required field"] },
+          {
+            type: "min",
+            params: [5, "Street1 should be minimum 5 characters long"]
+          },
+          {
+            type: "max",
+            params: [30, "Street1 should not be more than 30 characters long"]
+          }
+        ]
       },
       {
         name: "street2",
