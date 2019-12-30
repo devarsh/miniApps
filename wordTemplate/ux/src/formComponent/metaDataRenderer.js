@@ -1,7 +1,7 @@
 import React from "react";
-import renderField from "./fieldRenderer.js";
 import { FieldArray } from "formik";
 import Button from "@material-ui/core/Button";
+import renderField from "./fieldRenderer.js";
 
 const metaDataRendered = (formMetaData, formikBag) => {
   if (Array.isArray(formMetaData)) {
@@ -17,10 +17,11 @@ const metaDataRendered = (formMetaData, formikBag) => {
                 formikBag.values[field.name].length > 0 ? (
                   <>
                     <Button
-                      onClick={() => push(generateDummyRow(field.template))}
+                      onClick={() => push(generateTempelateRow(field.template))}
                     >
                       Add Field
                     </Button>
+
                     {formikBag.values[field.name].map((_, index) => (
                       <div key={index}>
                         {renderTemplate(
@@ -35,7 +36,7 @@ const metaDataRendered = (formMetaData, formikBag) => {
                   </>
                 ) : (
                   <Button
-                    onClick={() => push(generateDummyRow(field.template))}
+                    onClick={() => push(generateTempelateRow(field.template))}
                   >
                     Add Field
                   </Button>
@@ -59,12 +60,12 @@ const renderTemplate = (templateMetaData, formikBag, parent, index) => {
     return templateMetaData.map(field => {
       const { name } = field;
       const fieldCopy = { ...field, name: `${parent}[${index}].${name}` };
-      return renderField(formikBag, index, fieldCopy);
+      return renderField(formikBag, undefined, fieldCopy);
     });
   }
 };
 
-const generateDummyRow = templateMetaData => {
+const generateTempelateRow = templateMetaData => {
   let obj = {};
   if (Array.isArray(templateMetaData)) {
     for (let i = 0; i < templateMetaData.length; i++) {

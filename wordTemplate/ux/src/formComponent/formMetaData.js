@@ -30,6 +30,16 @@ const formData = [
     ]
   },
   {
+    name: "surname",
+    label: "My Surname",
+    type: "text",
+    validationType: "string",
+    validations: [
+      { type: "required", params: ["Surname is required. by mahendra"] },
+      { type: "email", params: ["it should be a valid email"] }
+    ]
+  },
+  {
     name: "lastName",
     label: "Last Name",
     type: "text"
@@ -140,6 +150,16 @@ const formData = [
         name: "street2",
         label: "Street-2",
         type: "text"
+      },
+      {
+        name: "state",
+        label: "State",
+        type: "selectStatic",
+        options: [
+          { value: "gujarat", label: "Gujarat" },
+          { value: "rajasthan", label: "Rajasthan" },
+          { value: "maharashtra", label: "Maharashtra" }
+        ]
       }
     ]
   }

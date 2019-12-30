@@ -19,7 +19,6 @@ const createYupSchema = (schema, config) => {
     const { template = [] } = config;
     const nestedschema = makeSchemaFromTemplate(template);
     const array = yup[validationType]()["of"](nestedschema);
-    console.log(array);
     schema[name] = array;
     return schema;
   } else {
