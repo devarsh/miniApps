@@ -30,6 +30,23 @@ const formData = [
     ]
   },
   {
+    name: "girlfriend",
+    label: "Girl Friend",
+    type: "text",
+    validationType: "string",
+    validations: [
+      { type: "required", params: ["First Name is a required field"] },
+      {
+        type: "min",
+        params: [5, "First Name should be minimum 5 characters long"]
+      },
+      {
+        type: "max",
+        params: [30, "First Name should not be more than 30 characters long"]
+      }
+    ]
+  },
+  {
     name: "surname",
     label: "My Surname",
     type: "text",

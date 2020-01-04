@@ -1,86 +1,65 @@
-import PromiseQueue from "./formComponent/utils/promiseQueue";
-import { setIn } from "formik";
+import AsyncProvider, { AsyncContext } from "./formComponent/asyncContext";
 import React from "react";
 
-const AsyncRunner = React.createContext(null);
-
-const AsyncContext = ({ children }) => {
-  const [errors, setErrors] = React.useState("");
-  const queueRef = React.useRef(null);
-  function getInstance() {
-    let instance = queueRef.current;
-    if (instance !== null) {
-      return instance;
-    }
-    let newInstance = PromiseQueue();
-    queueRef.current = newInstance;
-    return newInstance;
-  }
-  const queue = getInstance();
-
-  const runner = forced => async (fn, key, value, ...others) => {
+const DemoComponent = () => {
+  const { runner, errors, count } = React.useContext(AsyncContext);
+  const [loading, setLoading] = React.useState(false);
+  const [loading2, setLoading2] = React.useState(false);
+  const [text, setText] = React.useState("");
+  const [text2, setText2] = React.useState("");
+  const [counter, setCounter] = React.useState(0);
+  const makeRequest = async (isCancelled, key, value, timeout, loadingFn) => {
     try {
-      let data;
-      if (forced) {
-        data = await queue.addTaskForced(fn, key, value, ...others);
-      } else {
-        data = await queue.addTask(fn, key, value, ...others);
-      }
+      loadingFn(true);
+      const res = await fetch(
+        `http://localhost:8081/error?sleep=${timeout}&name=${value}`,
+        { mode: "cors" }
+      );
+      let data = await res.json();
       if (data && data.error) {
-        const { error } = data;
-        if (typeof error === "string") {
-          setErrors(setIn(errors, key, error));
-        } else if (typeof error === "object") {
-          if (error && error.reason && error.errorMsg) {
-            const { reason, errorMsg } = error;
-            if (["stale", "timeout", "rest"].indexOf(reason) >= 0) {
-              console.log(key, value, errorMsg);
-            }
-          }
-        }
+        return Promise.resolve(data.error);
       } else {
-        setErrors(setIn(errors, key, undefined));
+        return Promise.resolve("");
       }
     } catch (e) {
-      handler(e);
+      return Promise.reject(e);
+    } finally {
+      if (!isCancelled()) {
+        loadingFn(false);
+      }
     }
   };
   return (
-    <AsyncRunner.Provider
-      value={{
-        run: runner(false),
-        runForced: runner(true),
-        error,
-        count: queue.activeCount,
-        reset: queue.resetQueue,
-        completed: completed
-      }}
-    >
-      {children}
-    </AsyncRunner.Provider>
-  );
-};
-
-const DemoContext = () => {
-  const value = React.useContext(AsyncRunner);
-
-  return (
     <div>
-      <input type="text" ref={myRef} />
-      <h1>{!!value ? `${value}!` : ""} </h1>
-      <button
-        onClick={() => {
-          setValue(myRef.current.value);
-        }}
-      >
-        Update
-      </button>
+      <div>
+        <input
+          name="name"
+          type="text"
+          value={text}
+          onChange={e => setText(e.target.value)}
+          onBlur={() => runner(makeRequest, "name", text, 5, setLoading)}
+        />
+        {loading && `🌀`}
+      </div>
+      <div>
+        <input
+          name="name2"
+          type="text"
+          value={text2}
+          onChange={e => setText2(e.target.value)}
+          onBlur={() => runner(makeRequest, "name2", text2, 3, setLoading2)}
+        />
+        {loading2 && `🌀`}
+      </div>
+      <button onClick={() => setCounter(count())}>GetCount</button>
+      <div>Count:{counter}</div>
+      <pre>{JSON.stringify(errors, null, 2)}</pre>
     </div>
   );
 };
 
 export default () => (
-  <DummyValueProvider>
-    <DemoContext />
-  </DummyValueProvider>
+  <AsyncProvider>
+    <DemoComponent />
+  </AsyncProvider>
 );

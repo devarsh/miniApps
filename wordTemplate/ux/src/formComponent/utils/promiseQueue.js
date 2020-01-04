@@ -13,104 +13,100 @@ const DONE = Symbol("done");
 const PROMISE = Symbol("promise");
 const VALUE = Symbol("value");
 const RESULT = Symbol("result");
-const ERROR = Symbol("error");
 const STARTTIME = Symbol("startTime");
 const ENDTIME = Symbol("endTime");
 const CANCELFN = Symbol("cancelFn");
 
+export class QueueError extends Error {
+  constructor(obj) {
+    const { message = "", type = "" } = obj;
+    super(message);
+    this.message = message;
+    this.type = type;
+  }
+}
+
 export const ErrorConst = {
-  _STALE_: {
-    reason: "Stale",
-    errorMsg: "promised cancelled becuase promise is stale"
-  },
-  _RESET_: {
-    reason: "Reset",
-    errorMsg:
-      "cancelling the running promise as queue is about to been reinitialized"
-  },
-  _TIMEOUT_: {
-    reason: "Timeout",
-    errorMsg: "promise cancelled becuase it timeout"
-  },
-  _OTHER_: errorMsg => ({
-    reason: "Others",
-    errorMsg: errorMsg
-  })
+  _STALE_: new QueueError({
+    message: "promised cancelled becuase promise is stale",
+    type: "Stale"
+  }),
+  _RESET_: new QueueError({
+    message:
+      "cancelling the running promise as queue is about to been reinitialized",
+    type: "Reset"
+  }),
+  _TIMEOUT_: new QueueError({
+    message: "promise cancelled becuase it timeout",
+    type: "Timeout"
+  }),
+  _OTHER_: errorMsg =>
+    new QueueError({
+      message: errorMsg,
+      type: "Other"
+    })
 };
 
 const defaultConfig = {
   cacheInvalidateTimeInSeconds: 30,
-  timeoutInSeconds: 30,
-  cleanupIntervalInSeconds: 1
+  timeoutInSeconds: 15,
+  cleanupIntervalInSeconds: 1,
+  enableLogging: false
 };
 
 const PromiseQueue = (userConfig = {}) => {
   let _internalQueue = {};
   let interval = null;
-  const config = { ...userConfig, ...defaultConfig };
-  let cacheInvalidateTimeInSeconds = config.cacheInvalidateTimeInSeconds;
-  let timeoutInSeconds = config.timeoutInSeconds;
-  let cleanupIntervalInSeconds = config.cleanupIntervalInSeconds;
-  const errorObjectMaker = (key, value, others, reason) => ({
-    path: key,
-    value: value,
-    others: others,
-    error: reason
-  });
-  const cancelFn = (reason, callback, key, value, others) => {
-    const error = errorObjectMaker(key, value, others, reason);
+  const config = { ...defaultConfig, ...userConfig };
+  const {
+    cacheInvalidateTimeInSeconds,
+    timeoutInSeconds,
+    cleanupIntervalInSeconds,
+    enableLogging
+  } = config;
+
+  const cancelFn = (reason, callback, key) => {
     _internalQueue[key][DONE] = true;
     _internalQueue[key][ENDTIME] = Date.now();
-    _internalQueue[key][ERROR] = error;
-    callback(error);
+    callback(reason);
+    enableLogging && console.log(`Promise Ended:[${key}]:`, _internalQueue);
   };
+
   const functionWrapper = (fn, key, value, ...others) => {
     return new Promise(async (res, rej) => {
       let cancelled = false;
+      const isCancelled = () => cancelled;
       try {
         _internalQueue[key] = {
           [DONE]: false,
           [STARTTIME]: Date.now(),
           [VALUE]: value,
           [CANCELFN]: reason => {
-            cancelFn(reason, rej, key, value, others);
             cancelled = true;
+            cancelFn(reason, rej, key);
           }
         };
-        let result = await Promise.resolve(fn(key, value, ...others));
+        enableLogging &&
+          console.log(`Promise Started:[${key}]:`, _internalQueue);
+        let result = await Promise.resolve(
+          fn(isCancelled, key, value, ...others)
+        );
+
         if (!cancelled) {
           _internalQueue[key][RESULT] = result;
           res(result);
         }
       } catch (e) {
         if (!cancelled) {
-          let error;
-          if (e && e.path && e.key && e.error) {
-            error = e;
-          } else {
-            if (e instanceof Error) {
-              error = errorObjectMaker(
-                key,
-                value,
-                others,
-                ErrorConst._OTHER_(e.message)
-              );
-            } else {
-              error = errorObjectMaker(
-                key,
-                value,
-                others,
-                ErrorConst._OTHER_(e)
-              );
-            }
-          }
-          _internalQueue[key][ERROR] = error;
-          rej(error);
+          _internalQueue[key][RESULT] = null;
+          rej(e);
         }
       } finally {
         if (!cancelled) {
           _internalQueue[key][DONE] = true;
           _internalQueue[key][ENDTIME] = Date.now();
+          enableLogging &&
+            console.log(`Promise Ended:[${key}]:`, _internalQueue);
         }
       }
     });
@@ -118,29 +114,21 @@ const PromiseQueue = (userConfig = {}) => {
 
   const addTask = forced => (fn, key, value, ...others) => {
     startCleanUp();
-    if (!forced) {
-      const currentPromise = _internalQueue[key];
-      if (typeof currentPromise === "object") {
-        if (currentPromise[VALUE] === value) {
-          if (!currentPromise[DONE]) {
-            return currentPromise[PROMISE];
-          } else if (currentPromise[DONE]) {
-            if (currentPromise[RESULT]) {
-              return Promise.resolve(currentPromise[RESULT]);
+    const currentValue = _internalQueue[key];
+    if (typeof currentValue === "object") {
+      if (forced && !currentValue[DONE]) {
+        currentValue[CANCELFN](ErrorConst._STALE_);
+      } else {
+        if (currentValue[VALUE] === value) {
+          if (!currentValue[DONE]) {
+            return currentValue[PROMISE];
+          } else {
+            if (currentValue[RESULT] && currentValue[RESULT] !== null) {
+              return Promise.resolve(currentValue[RESULT]);
             }
           }
         } else {
-          currentPromise[CANCELFN](ErrorConst._STALE_);
-        }
-      }
-    }
-    if (forced) {
-      const currentPromise = _internalQueue[key];
-      if (typeof currentPromise === "object") {
-        if (currentPromise[VALUE] === value) {
-          if (!currentPromise[DONE]) {
-            currentPromise[CANCELFN](ErrorConst._STALE_);
-          }
+          currentValue[CANCELFN](ErrorConst._STALE_);
         }
       }
     }
@@ -174,10 +162,9 @@ const PromiseQueue = (userConfig = {}) => {
     }
   };
   const activeCount = () => {
-    const clonedQueue = { ..._internalQueue };
     let count = 0;
-    for (let value of Object.values(clonedQueue)) {
-      if (!value.done) {
+    for (let value of Object.values(_internalQueue)) {
+      if (!value[DONE]) {
         count++;
       }
     }
@@ -272,6 +259,7 @@ export default PromiseQueue;
   };
 */
 
+/*
 const fetchResult = async (key, value, timeout) => {
   try {
     const res = await fetch(
@@ -280,9 +268,6 @@ const fetchResult = async (key, value, timeout) => {
     );
     let data = await res.json();
     return Promise.resolve({
-      path: key,
-      value: value,
-      others: [timeout],
       result: data
     });
   } catch (e) {
@@ -311,13 +296,13 @@ const fetchResult = async (key, value, timeout) => {
     const { path, value, timeout } = one;
     newQueue
       .addTask(fetchResult, path, value, timeout)
-      .then(data => console.log(data))
-      .catch(e => console.log("err", e));
+      .then(data => console.log(path, value, data))
+      .catch(e => console.log("err", path, value, e.message, e.type));
   });
   setTimeout(() => {
     const myNames = [
-      { path: "name", value: "name1", timeout: 5 },
-      { path: "address", value: "name2", timeout: 5 },
+      { path: "name", value: "namechanged", timeout: 2 },
+      { path: "address", value: "Amit", timeout: 5 },
       { path: "age", value: "name3", timeout: 7 },
       { path: "address.street1", value: "name4", timeout: 9 },
       { path: "address.street2", value: "name5", timeout: 7 },
@@ -329,8 +314,9 @@ const fetchResult = async (key, value, timeout) => {
       const { path, value, timeout } = one;
       newQueue
         .addTask(fetchResult, path, value, timeout)
-        .then(data => console.log(data))
-        .catch(e => console.log("err", e));
+        .then(data => console.log(path, value, data))
+        .catch(e => console.log("err", path, value, e));
     });
   }, 5000);
 })();
+//*/
