@@ -1,5 +1,6 @@
 import React from "react";
-import { FieldArray } from "formik";
+import { FieldArray, setIn, getIn } from "formik";
+import { remove as removeAsyncFn } from "./utils/formikArrayUtils";
 import Button from "@material-ui/core/Button";
 import renderField from "./fieldRenderer.js";
 
@@ -31,7 +32,20 @@ const metaDataRendered = (formMetaData, formikBag, asyncBag) => {
                           field.name,
                           index
                         )}
-                        <Button onClick={() => remove(index)}>Remove</Button>
+                        <Button
+                          onClick={() => {
+                            asyncBag.setErrors(errors =>
+                              setIn(
+                                errors,
+                                field.name,
+                                removeAsyncFn(getIn(errors, field.name), index)
+                              )
+                            );
+                            remove(index);
+                          }}
+                        >
+                          Remove
+                        </Button>
                       </div>
                     ))}
                   </>

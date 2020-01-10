@@ -24,17 +24,24 @@ export const MyTextField = React.memo(
       return null;
     }
     //handle user input with debounce in place to ease the constant rerendering of the form.
+    const [textValue, setTextValue] = React.useState();
+    React.useEffect(() => {
+      setTextValue(value);
+    }, [value]);
     const delayTime = 200;
-    const inputRef = React.useRef(null);
-    const [handleChangeDebounce] = useDebouncedCallback(e => {
+    const [handleChangeDebounce] = useDebouncedCallback(value => {
       const newE = {
         target: {
-          value: inputRef.current.value,
+          value: value,
           name: name
         }
       };
       handleChange(newE);
     }, delayTime);
+    const MyHandleChange = e => {
+      setTextValue(e.target.value);
+      handleChangeDebounce(e.target.value);
+    };
     //handle async validation.
     const [loading, setLoading] = React.useState(false);
     const syncError = React.useRef(error);
@@ -90,11 +97,11 @@ export const MyTextField = React.memo(
           label={label}
           error={!!syncAsyncErrorMsg}
           helperText={syncAsyncErrorMsg}
-          onChange={handleChangeDebounce}
+          onChange={MyHandleChange}
           onBlur={handleBlurNew}
           type={type}
           name={name}
-          inputRef={inputRef}
+          value={textValue || ""}
           {...others}
         />
         {loading && `🌀`}

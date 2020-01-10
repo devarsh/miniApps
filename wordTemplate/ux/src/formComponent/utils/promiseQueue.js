@@ -120,6 +120,7 @@ const PromiseQueue = (userConfig = {}) => {
   const addTask = forced => (fn, key, value, ...others) => {
     startCleanUp();
     const currentValue = _internalQueue[key];
+    console.log(currentValue, key, value);
     if (typeof currentValue === "object") {
       if (forced && !currentValue[DONE]) {
         currentValue[CANCELFN](ErrorConst._STALE_);
@@ -128,15 +129,17 @@ const PromiseQueue = (userConfig = {}) => {
           if (!currentValue[DONE]) {
             return currentValue[PROMISE];
           } else {
-            if (currentValue[RESULT] && currentValue[RESULT] !== null) {
+            /*if (currentValue[RESULT] && currentValue[RESULT] !== null) {
               return Promise.resolve(currentValue[RESULT]);
-            }
+            }*/
+            return Promise.resolve(currentValue[RESULT]);
           }
         } else {
           currentValue[CANCELFN](ErrorConst._STALE_);
         }
       }
     }
+    console.log("fuck i am here");
     let p = functionWrapper(fn, key, value, ...others);
     _internalQueue[key][PROMISE] = p;
     return p;

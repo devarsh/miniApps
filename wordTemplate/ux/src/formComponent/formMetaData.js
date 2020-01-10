@@ -184,7 +184,8 @@ const formData = [
       {
         name: "street2",
         label: "Street-2",
-        type: "text"
+        type: "text",
+        asyncValidationFn: asyncValidationHandler
       },
       {
         name: "state",
