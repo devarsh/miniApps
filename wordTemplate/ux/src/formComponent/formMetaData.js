@@ -1,4 +1,4 @@
-const MakeAsyncRequest = value => {
+const makeAsyncRequest = value => {
   return new Promise(async (res, rej) => {
     try {
       let response = await fetch(`http://localhost:8081/values?name=${value}`);
@@ -9,6 +9,23 @@ const MakeAsyncRequest = value => {
       rej(e);
     }
   });
+};
+
+const asyncValidationHandler = async (key, value, timeout) => {
+  try {
+    const res = await fetch(
+      `http://localhost:8081/error?sleep=${timeout}&name=${value}`,
+      { mode: "cors" }
+    );
+    let data = await res.json();
+    if (data && data.error) {
+      return Promise.resolve(data.error);
+    } else {
+      return Promise.resolve("");
+    }
+  } catch (e) {
+    return Promise.reject(e);
+  }
 };
 
 const formData = [
@@ -27,7 +44,8 @@ const formData = [
         type: "max",
         params: [30, "First Name should not be more than 30 characters long"]
       }
-    ]
+    ],
+    asyncValidationFn: asyncValidationHandler
   },
   {
     name: "girlfriend",
@@ -129,7 +147,7 @@ const formData = [
     label: "City",
     type: "selectDependent",
     watch: "state",
-    callback: MakeAsyncRequest
+    callback: makeAsyncRequest
   },
   {
     name: "notification",

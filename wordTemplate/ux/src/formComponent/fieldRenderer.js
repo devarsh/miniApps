@@ -8,21 +8,23 @@ import {
   MyKeyboardDatePicker,
   MySlider,
   MySwitch
-} from "../components/index";
+} from "./components/index";
 
 import fieldBag from "./fieldBag";
 
-const renderField = (formikBag, index, field) => {
+const renderField = (formikBag, asyncBag, index, field) => {
   const { type, name, label } = field;
   const key = `${name}-${index}`;
   switch (type) {
     case "text":
+      const { asyncValidationFn } = field;
       return (
         <MyTextField
           variant="outlined"
           label={label}
-          {...fieldBag(formikBag, "text", name)}
+          {...fieldBag(formikBag, asyncBag, "text", name)}
           key={key}
+          asyncValidationFn={asyncValidationFn}
         />
       );
     case "slider": {
@@ -30,7 +32,7 @@ const renderField = (formikBag, index, field) => {
       return (
         <MySlider
           label={label}
-          {...fieldBag(formikBag, "slider", name)}
+          {...fieldBag(formikBag, asyncBag, "slider", name)}
           min={min}
           max={max}
           step={step}
@@ -44,7 +46,7 @@ const renderField = (formikBag, index, field) => {
         <MyRadio
           options={options}
           label={label}
-          {...fieldBag(formikBag, "radio", name)}
+          {...fieldBag(formikBag, asyncBag, "radio", name)}
           key={key}
         />
       );
@@ -55,7 +57,7 @@ const renderField = (formikBag, index, field) => {
         <MySwitch
           options={options}
           label={label}
-          {...fieldBag(formikBag, "checkbox", name)}
+          {...fieldBag(formikBag, asyncBag, "checkbox", name)}
           key={key}
         />
       );
@@ -66,7 +68,7 @@ const renderField = (formikBag, index, field) => {
         <MyCheckbox
           options={options}
           label={label}
-          {...fieldBag(formikBag, "checkbox", name)}
+          {...fieldBag(formikBag, asyncBag, "checkbox", name)}
           key={key}
         />
       );
@@ -78,7 +80,7 @@ const renderField = (formikBag, index, field) => {
           options={options}
           defaultValue={defaultValue}
           label={label}
-          {...fieldBag(formikBag, "select", name)}
+          {...fieldBag(formikBag, asyncBag, "select", name)}
           key={key}
         />
       );
@@ -89,7 +91,7 @@ const renderField = (formikBag, index, field) => {
         <MySelectDependent
           label={label}
           callback={callback}
-          {...fieldBag(formikBag, "select", "city", { watch })}
+          {...fieldBag(formikBag, asyncBag, "select", "city", { watch })}
           key={key}
         />
       );
@@ -100,7 +102,7 @@ const renderField = (formikBag, index, field) => {
       return (
         <MyKeyboardDatePicker
           label={label}
-          {...fieldBag(formikBag, "datetime", name)}
+          {...fieldBag(formikBag, asyncBag, "datetime", name)}
           key={key}
         />
       );

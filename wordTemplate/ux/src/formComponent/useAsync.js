@@ -1,10 +1,8 @@
-import PromiseQueue, { QueueError } from "./utils/promiseQueue";
+import PromiseQueue from "./utils/promiseQueue";
 import { setIn } from "formik";
 import React from "react";
 
-export const AsyncContext = React.createContext(null);
-
-const AsyncProvider = ({ children }) => {
+const useAsync = () => {
   const [errors, setErrors] = React.useState({});
   const queueRef = React.useRef(null);
   function getInstance() {
@@ -34,18 +32,13 @@ const AsyncProvider = ({ children }) => {
       console.log(e);
     }
   };
-  return (
-    <AsyncContext.Provider
-      value={{
-        runner: _runner,
-        errors,
-        count: queue.activeCount,
-        reset: queue.resetQueue
-      }}
-    >
-      {children}
-    </AsyncContext.Provider>
-  );
+  return {
+    errors,
+    setErrors,
+    runner: _runner,
+    count: queue.activeCount,
+    rest: queue.reset
+  };
 };
 
-export default AsyncProvider;
+export default useAsync;

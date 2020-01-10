@@ -1,7 +1,7 @@
 import invariant from "tiny-warning";
 import { getIn } from "formik";
 
-const fieldBag = (formikBag, type, name, others = {}) => {
+const fieldBag = (formikBag, asyncBag, type, name, others = {}) => {
   invariant(typeof formikBag === "object", "Invalid object passed");
   invariant(!!name, "name is required");
   invariant(!!type, "type is required");
@@ -10,11 +10,13 @@ const fieldBag = (formikBag, type, name, others = {}) => {
       value: getIn(formikBag.values, name),
       error: getIn(formikBag.errors, name),
       touched: getIn(formikBag.touched, name),
+      asyncError: getIn(asyncBag.errors, name),
       name: name,
       type: type
     },
     handleBlur: formikBag.handleBlur,
-    handleChange: formikBag.handleChange
+    handleChange: formikBag.handleChange,
+    runAsyncFn: asyncBag.runner
   };
   const { watch, show } = others;
   if (!!watch) {

@@ -4,8 +4,9 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useFormik, FormikProvider } from "formik";
 import metaDataRenderer from "./metaDataRenderer";
 import makeSchemaFromTemplate from "./yupSchemaBuilder";
-
+import useAsync from "./useAsync";
 const FormikForm = ({ formMetaData }) => {
+  const asyncBag = useAsync();
   const [validationSchema] = React.useState(() =>
     makeSchemaFromTemplate(formMetaData)
   );
@@ -13,7 +14,7 @@ const FormikForm = ({ formMetaData }) => {
     initialValues: {},
     validationSchema
   });
-  const fields = metaDataRenderer(formMetaData, formikBag);
+  const fields = metaDataRenderer(formMetaData, formikBag, asyncBag);
   return (
     <>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>

@@ -75,7 +75,11 @@ const PromiseQueue = (userConfig = {}) => {
   const functionWrapper = (fn, key, value, ...others) => {
     return new Promise(async (res, rej) => {
       let cancelled = false;
-      const isCancelled = () => cancelled;
+      let cancelReason = "";
+      const isCancelled = () => ({
+        cancelled,
+        cancelReason
+      });
       try {
         _internalQueue[key] = {
           [DONE]: false,
@@ -83,6 +87,7 @@ const PromiseQueue = (userConfig = {}) => {
           [VALUE]: value,
           [CANCELFN]: reason => {
             cancelled = true;
+            cancelReason = reason;
             cancelFn(reason, rej, key);
           }
         };

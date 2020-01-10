@@ -20,6 +20,8 @@ export const MyRadio = React.memo(
     }
     if (Array.isArray(options)) {
       radios = options.map((currentCheckBox, index) => {
+        /* eslint-disable eqeqeq*/
+        const ischecked = value == currentCheckBox.value;
         return (
           <FormControlLabel
             key={`${index}-${currentCheckBox.value}`}
@@ -28,7 +30,7 @@ export const MyRadio = React.memo(
                 type={type}
                 name={name}
                 value={currentCheckBox.value || ""}
-                checked={value == currentCheckBox.value}
+                checked={ischecked}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
