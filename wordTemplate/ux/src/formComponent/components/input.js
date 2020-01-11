@@ -53,7 +53,7 @@ export const MyTextField = React.memo(
                 runAsyncFn(
                   asyncValidationWrapper,
                   name,
-                  value,
+                  inputValue,
                   asyncValidationFn,
                   setAsyncLoader
                 );

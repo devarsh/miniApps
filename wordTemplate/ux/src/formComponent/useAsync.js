@@ -21,6 +21,7 @@ const useAsync = () => {
       const error = await queue.addTask(fn, key, value, ...others);
       if (typeof error === "string") {
         if (error !== "") {
+          console.log(error);
           setErrors(oldError => setIn(oldError, key, error));
         } else {
           setErrors(oldError => setIn(oldError, key, undefined));
