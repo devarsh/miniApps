@@ -7,13 +7,13 @@ const fieldBag = (formikBag, asyncBag, type, name, others = {}) => {
   invariant(!!type, "type is required");
   const fieldBag = {
     mutate: {
+      name: name,
       value: getIn(formikBag.values, name),
       error: getIn(formikBag.errors, name),
       touched: getIn(formikBag.touched, name),
-      asyncError: getIn(asyncBag.errors, name),
-      name: name,
-      type: type
+      asyncError: getIn(asyncBag.errors, name)
     },
+    type: type,
     handleBlur: formikBag.handleBlur,
     handleChange: formikBag.handleChange,
     runAsyncFn: asyncBag.runner

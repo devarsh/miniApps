@@ -5,19 +5,16 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import { showComponent } from "./utils";
 
 export const MyRadio = React.memo(
-  props => {
-    const { label, options, handleBlur, handleChange, mutate } = props;
-    const { error, touched, value, name, type } = mutate;
+  ({ label, options, handleBlur, handleChange, type, mutate }) => {
+    if (showComponent(mutate["show"]) === false) {
+      return;
+    }
+    const { error, touched, value, name } = mutate;
     let radios;
-    let { show } = mutate;
-    if (show === "" || show === undefined || show === null) {
-      show = true;
-    }
-    if (show === false) {
-      return null;
-    }
+
     if (Array.isArray(options)) {
       radios = options.map((currentCheckBox, index) => {
         /* eslint-disable eqeqeq*/

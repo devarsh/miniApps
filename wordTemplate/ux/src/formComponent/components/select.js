@@ -4,6 +4,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import { showComponent } from "./utils";
 
 const renderMenuItems = options => {
   if (Array.isArray(options)) {
@@ -45,17 +46,12 @@ const SelectRender = ({
 );
 
 export const MySelectStatic = React.memo(
-  props => {
-    const { label, options, handleBlur, handleChange, mutate } = props;
-    const { error, touched, value, name, type } = mutate;
+  ({ label, options, handleBlur, handleChange, type, mutate }) => {
+    if (showComponent(mutate["show"]) === false) {
+      return;
+    }
+    const { error, touched, value, name } = mutate;
     let menuItems = renderMenuItems(options);
-    let { show } = mutate;
-    if (show === "" || show === undefined || show === null) {
-      show = true;
-    }
-    if (show === false) {
-      return null;
-    }
     return (
       <SelectRender
         error={error}
@@ -83,18 +79,13 @@ export const MySelectStatic = React.memo(
 );
 
 export const MySelectDependent = React.memo(
-  props => {
-    const { label, handleBlur, handleChange, mutate, callback } = props;
-    const { error, touched, value, name, type, watch } = mutate;
+  ({ label, handleBlur, handleChange, type, mutate, callback }) => {
+    if (showComponent(mutate["show"]) === false) {
+      return;
+    }
+    const { error, touched, value, name, watch } = mutate;
     const [menuItems, setMenuItems] = React.useState(undefined);
     const _mounted = React.useRef(true);
-    let { show } = mutate;
-    if (show === "" || show === undefined || show === null) {
-      show = true;
-    }
-    if (show === false) {
-      return null;
-    }
     useEffect(() => {
       if (typeof callback === "function" && !!watch) {
         //remove any existing value, since parent checkbox changed and we're dynamic

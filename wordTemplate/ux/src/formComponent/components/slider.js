@@ -3,18 +3,14 @@ import shallowEqual from "../utils/shallowEqual";
 import Slider from "@material-ui/core/Slider";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import { showComponent } from "./utils";
 
 export const MySlider = React.memo(
-  props => {
-    const { label, handleBlur, handleChange, mutate, ...others } = props;
+  ({ label, handleBlur, handleChange, mutate, ...others }) => {
+    if (showComponent(mutate["show"]) === false) {
+      return;
+    }
     const { error, touched, value, name } = mutate;
-    let { show } = mutate;
-    if (show === "" || show === undefined || show === null) {
-      show = true;
-    }
-    if (show === false) {
-      return null;
-    }
     const handleSliderChange = (_, v) => {
       handleChange({
         target: {

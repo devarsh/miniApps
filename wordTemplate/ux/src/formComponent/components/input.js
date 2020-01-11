@@ -2,77 +2,48 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import shallowEqual from "../utils/shallowEqual";
 import { useDebouncedCallback } from "use-debounce";
-import { QueueError } from "../utils/promiseQueue";
+import { showComponent, asyncValidationWrapper } from "./utils";
 export const MyTextField = React.memo(
-  props => {
-    const {
-      label,
-      handleBlur,
-      handleChange,
-      mutate,
-      runAsyncFn,
-      asyncValidationFn = false,
-      ...others
-    } = props;
-    const { value, error, touched, asyncError, name, type } = mutate;
-    //logic to determine if to show or hide the field
-    let { show } = mutate;
-    if (show === "" || show === undefined || show === null) {
-      show = true;
+  ({
+    label,
+    type,
+    handleBlur,
+    handleChange,
+    mutate,
+    runAsyncFn,
+    asyncValidationFn = false,
+    ...others
+  }) => {
+    if (showComponent(mutate["show"]) === false) {
+      return;
     }
-    if (show === false) {
-      return null;
-    }
-    //handle user input with debounce in place to ease the constant rerendering of the form.
-    const [textValue, setTextValue] = React.useState();
+    const { name, value, touched, error, asyncError } = mutate;
+    const debounceDelay = 200;
+    const blurDelay = 500;
+    const [inputValue, setInputValue] = React.useState(value);
+    const [asyncLoader, setAsyncLoader] = React.useState(false);
+    //need reference to sync error between renders to determine when async validation should be dispatched
+    //if font-end error exist dont call async validation.
+    const syncError = React.useRef(error);
+    syncError.current = error;
     React.useEffect(() => {
-      setTextValue(value);
+      setInputValue(value);
     }, [value]);
-    const delayTime = 200;
     const [handleChangeDebounce] = useDebouncedCallback(value => {
-      const newE = {
+      const e = {
         target: {
           value: value,
           name: name
         }
       };
-      handleChange(newE);
-    }, delayTime);
-    const MyHandleChange = e => {
-      setTextValue(e.target.value);
+      handleChange(e);
+    }, debounceDelay);
+    const handleChangeWrapper = e => {
+      setInputValue(e.target.value);
       handleChangeDebounce(e.target.value);
     };
-    //handle async validation.
-    const [loading, setLoading] = React.useState(false);
-    const syncError = React.useRef(error);
-    syncError.current = error;
-    const validationWrapper = async (
-      isCancelled,
-      key,
-      value,
-      validationFn,
-      loadingFn,
-      timeout = 2
-    ) => {
-      try {
-        loadingFn(true);
-        const res = await validationFn(key, value, timeout);
-        return Promise.resolve(res);
-      } catch (e) {
-        return Promise.reject(e);
-      } finally {
-        const { cancelled, cancelReason } = isCancelled();
-        if (
-          cancelled &&
-          cancelReason instanceof QueueError &&
-          cancelReason["type"] !== "Stale"
-        ) {
-          return;
-        }
-        loadingFn(false);
-      }
-    };
-    const handleBlurNew =
+
+    const handleBlurWrapper =
       asyncValidationFn === false
         ? handleBlur
         : e => {
@@ -80,31 +51,31 @@ export const MyTextField = React.memo(
             setTimeout(() => {
               if (!!syncError.current === false) {
                 runAsyncFn(
-                  validationWrapper,
+                  asyncValidationWrapper,
                   name,
                   value,
                   asyncValidationFn,
-                  setLoading
+                  setAsyncLoader
                 );
               }
-            }, 500);
+            }, blurDelay);
           };
-    const syncAsyncErrorMsg =
+    const userErrorMsg =
       touched && !!error ? error : touched && !!asyncError ? asyncError : null;
     return (
       <>
         <TextField
           label={label}
-          error={!!syncAsyncErrorMsg}
-          helperText={syncAsyncErrorMsg}
-          onChange={MyHandleChange}
-          onBlur={handleBlurNew}
+          error={!!userErrorMsg}
+          helperText={userErrorMsg}
+          onChange={handleChangeWrapper}
+          onBlur={handleBlurWrapper}
           type={type}
           name={name}
-          value={textValue || ""}
+          value={inputValue || ""}
           {...others}
         />
-        {loading && `🌀`}
+        {asyncLoader && `🌀`}
       </>
     );
   },

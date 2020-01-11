@@ -5,6 +5,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import { showComponent } from "./utils";
 
 const isChecked = (currentValues, value) => {
   if (Array.isArray(currentValues)) {
@@ -14,9 +15,11 @@ const isChecked = (currentValues, value) => {
 };
 
 export const MySwitch = React.memo(
-  props => {
-    const { label, options, handleBlur, handleChange, mutate } = props;
-    const { error, touched, value, name, type } = mutate;
+  ({ label, options, handleBlur, handleChange, type, mutate }) => {
+    if (showComponent(mutate["show"]) === false) {
+      return;
+    }
+    const { error, touched, value, name } = mutate;
     let switches;
     let { show } = mutate;
     if (show === "" || show === undefined || show === null) {

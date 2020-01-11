@@ -5,6 +5,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import { showComponent } from "./utils";
 
 const isChecked = (currentValues, value) => {
   if (Array.isArray(currentValues)) {
@@ -14,17 +15,12 @@ const isChecked = (currentValues, value) => {
 };
 
 export const MyCheckbox = React.memo(
-  props => {
-    const { label, options, handleBlur, handleChange, mutate } = props;
-    const { error, touched, value, name, type } = mutate;
+  ({ label, options, handleBlur, handleChange, mutate, type }) => {
+    if (showComponent(mutate["show"]) === false) {
+      return;
+    }
+    const { error, touched, value, name } = mutate;
     let checkboxes;
-    let { show } = mutate;
-    if (show === "" || show === undefined || show === null) {
-      show = true;
-    }
-    if (show === false) {
-      return null;
-    }
     if (Array.isArray(options)) {
       checkboxes = options.map((currentCheckBox, index) => (
         <FormControlLabel

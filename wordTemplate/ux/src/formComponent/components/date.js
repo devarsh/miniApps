@@ -5,18 +5,14 @@ import {
   KeyboardTimePicker,
   KeyboardDateTimePicker
 } from "@material-ui/pickers";
+import { showComponent } from "./utils";
 
 export const MyKeyboardDatePicker = React.memo(
-  props => {
-    const { label, handleBlur, handleChange, mutate, ...others } = props;
-    const { error, touched, value, name, type } = mutate;
-    let { show } = mutate;
-    if (show === "" || show === undefined || show === null) {
-      show = true;
+  ({ label, handleBlur, handleChange, mutate, type, ...others }) => {
+    if (showComponent(mutate["show"]) === false) {
+      return;
     }
-    if (show === false) {
-      return null;
-    }
+    const { error, touched, value, name } = mutate;
     const handleDateChange = e =>
       handleChange({
         target: {
