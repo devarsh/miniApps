@@ -91,7 +91,7 @@ const renderField = (formikBag, asyncBag, index, field) => {
         <MySelectDependent
           label={label}
           callback={callback}
-          {...fieldBag(formikBag, asyncBag, "select", "city", { watch })}
+          {...fieldBag(formikBag, asyncBag, "select", name, { watch })}
           key={key}
         />
       );

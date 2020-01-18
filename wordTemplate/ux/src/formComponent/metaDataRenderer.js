@@ -97,3 +97,32 @@ const generateTempelateRow = templateMetaData => {
   }
   return obj;
 };
+
+export const generateFieldGroupDepedency = fields => {
+  const groupFieldDepedency = {};
+  const groupWiseFields = {};
+  if (Array.isArray(fields)) {
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i];
+      const { group, name, watch } = field;
+      if (groupFieldDepedency[group] instanceof Set) {
+        groupFieldDepedency[group].add(name);
+      } else {
+        groupFieldDepedency[group] = new Set([name]);
+      }
+      if (!!watch) {
+        groupFieldDepedency[group].add(watch);
+      }
+      if (Array.isArray(groupWiseFields[group])) {
+        groupWiseFields[group].push(field);
+      } else {
+        groupWiseFields[group] = [field];
+      }
+    }
+  }
+  const keys = Object.keys(groupFieldDepedency);
+  for (let i = 0; i < keys.length; i++) {
+    groupFieldDepedency[keys[i]] = Array.from(groupFieldDepedency[keys[i]]);
+  }
+  return { groupFieldDepedency, groupWiseFields };
+};

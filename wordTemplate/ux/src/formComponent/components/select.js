@@ -7,15 +7,20 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import { showComponent } from "./utils";
 
 const renderMenuItems = options => {
-  if (Array.isArray(options)) {
-    let menuItems = options.map((item, index) => (
-      <MenuItem key={`${index}-${item.value}`} value={item.value}>
-        {item.label}
-      </MenuItem>
-    ));
-    return menuItems;
+  if (!Array.isArray(options)) {
+    options = [];
   }
-  return undefined;
+  let menuItems = options.map((item, index) => (
+    <MenuItem key={`${index}-${item.value}`} value={item.value}>
+      {item.label}
+    </MenuItem>
+  ));
+  const dummyMenuItem = (
+    <MenuItem key="zeroValue" value="" style={{ display: "none" }}>
+      {""}
+    </MenuItem>
+  );
+  return [dummyMenuItem, ...menuItems];
 };
 const SelectRender = ({
   error,
@@ -51,7 +56,7 @@ export const MySelectStatic = React.memo(
       return;
     }
     const { error, touched, value, name } = mutate;
-    let menuItems = renderMenuItems(options);
+    const [menuItems] = React.useState(renderMenuItems(options));
     return (
       <SelectRender
         error={error}
@@ -84,8 +89,9 @@ export const MySelectDependent = React.memo(
       return;
     }
     const { error, touched, value, name, watch } = mutate;
-    const [menuItems, setMenuItems] = React.useState(undefined);
+    const [menuItems, setMenuItems] = React.useState(renderMenuItems(null));
     const _mounted = React.useRef(true);
+    /* eslint-disable react-hooks/exhaustive-deps*/
     useEffect(() => {
       if (typeof callback === "function" && !!watch) {
         //remove any existing value, since parent checkbox changed and we're dynamic
@@ -105,9 +111,7 @@ export const MySelectDependent = React.memo(
           })
           .catch(err => {
             if (_mounted.current) {
-              let menuItemList = renderMenuItems([
-                { value: "", label: "None" }
-              ]);
+              let menuItemList = renderMenuItems(null);
               setMenuItems(menuItemList);
             }
           });

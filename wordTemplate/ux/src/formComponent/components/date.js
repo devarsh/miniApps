@@ -8,7 +8,15 @@ import {
 import { showComponent } from "./utils";
 
 export const MyKeyboardDatePicker = React.memo(
-  ({ label, handleBlur, handleChange, mutate, type, ...others }) => {
+  ({
+    label,
+    handleBlur,
+    handleChange,
+    mutate,
+    type,
+    runAsyncFn,
+    ...others
+  }) => {
     if (showComponent(mutate["show"]) === false) {
       return;
     }

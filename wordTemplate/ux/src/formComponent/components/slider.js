@@ -6,7 +6,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import { showComponent } from "./utils";
 
 export const MySlider = React.memo(
-  ({ label, handleBlur, handleChange, mutate, ...others }) => {
+  ({ label, handleBlur, handleChange, mutate, runAsyncFn, ...others }) => {
     if (showComponent(mutate["show"]) === false) {
       return;
     }
