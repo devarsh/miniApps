@@ -6,7 +6,7 @@ import useAsync from "./useAsync";
 import { useFormik, FormikProvider } from "formik";
 import makeSchemaFromTemplate from "./yupSchemaBuilder";
 
-import FormRenderer from "./formRenderer";
+import FormRenderer, { FormGroupRenderer } from "./formRenderer";
 const FormikForm = ({ formMetaData }) => {
   const validationSchemaRef = React.useRef(null);
   function getInstance() {
@@ -28,13 +28,15 @@ const FormikForm = ({ formMetaData }) => {
     <>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <FormikProvider value={formikBag}>
-          <FormRenderer
+          <FormGroupRenderer
             formMetaData={formMetaData}
             asyncBag={asyncBag}
             formikBag={formikBag}
           />
         </FormikProvider>
       </MuiPickersUtilsProvider>
+      <pre>{JSON.stringify(asyncBag, null, 2)}</pre>
+      <pre>{JSON.stringify(formikBag, null, 2)}</pre>
     </>
   );
 };
