@@ -89,11 +89,7 @@ const MetaDataRendered = ({ fieldMetaData, formikBag, asyncBag }) => {
   } else {
     renderMap = null;
   }
-  return (
-    <Grid container {...renderConfig.gridConfig.container}>
-      {renderMap}
-    </Grid>
-  );
+  return renderMap;
 };
 
 export default MetaDataRendered;

@@ -5,9 +5,12 @@ import equal from "fast-deep-equal";
 import useAsync from "./useAsync";
 import { useFormik, FormikProvider } from "formik";
 import makeSchemaFromTemplate from "./yupSchemaBuilder";
-import { RenderProvider } from "./renderProvider";
+import { RenderProvider, RenderContext } from "./renderProvider";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Grid from "@material-ui/core/Grid";
 
 const constructValues = (dependency, formikBag, asyncBag) => {
   if (!Array.isArray(dependency)) {
@@ -58,7 +61,10 @@ export const generateFieldGroupDepedency = fields => {
 };
 
 const FormGroup = React.memo(
-  ({ groupMetaData, formikBag, asyncBag }) => {
+  ({ groupMetaData, formikBag, asyncBag, show }) => {
+    if (!show) {
+      return null;
+    }
     return (
       <MetaDataRenderer
         fieldMetaData={groupMetaData}
@@ -68,6 +74,9 @@ const FormGroup = React.memo(
     );
   },
   (prevProps, nextProps) => {
+    if (prevProps.show !== nextProps.show) {
+      return false;
+    }
     const oldValues = constructValues(
       prevProps.groupDepedency,
       prevProps.formikBag,
@@ -83,17 +92,70 @@ const FormGroup = React.memo(
   }
 );
 
-const SimpleFormRenderer = ({ formMetaData, formikBag, asyncBag }) => (
-  <MetaDataRenderer
-    fieldMetaData={formMetaData.fields}
-    formikBag={formikBag}
-    asyncBag={asyncBag}
-  />
-);
+const GroupsRenderer = ({
+  fieldGroups,
+  groupWiseFields,
+  groupFieldDepedency,
+  formikBag,
+  asyncBag
+}) => {
+  const renderConfig = React.useContext(RenderContext);
+  let result = fieldGroups.map(group => (
+    <FormGroup
+      show={true}
+      key={group}
+      groupMetaData={groupWiseFields[group]}
+      groupDepedency={groupFieldDepedency[group]}
+      formikBag={formikBag}
+      asyncBag={asyncBag}
+    />
+  ));
+  return (
+    <Grid container {...renderConfig.gridConfig.container}>
+      {result}
+    </Grid>
+  );
+};
 
-const FormGroupRenderer = ({ formMetaData, formikBag, asyncBag }) => {
+const TabsRenderer = ({
+  fieldGroups,
+  groupWiseFields,
+  groupFieldDepedency,
+  formikBag,
+  asyncBag
+}) => {
+  const [index, setIndex] = React.useState(0);
+  const renderConfig = React.useContext(RenderContext);
+  const tabs = fieldGroups.map(group => <Tab label={group} />);
+  const groups = fieldGroups.map((group, myIndex) => (
+    <FormGroup
+      show={myIndex === index}
+      key={fieldGroups[group]}
+      groupMetaData={groupWiseFields[group]}
+      groupDepedency={groupFieldDepedency[group]}
+      formikBag={formikBag}
+      asyncBag={asyncBag}
+    />
+  ));
+  const handleChange = (_, newIndex) => {
+    setIndex(newIndex);
+  };
+  return (
+    <>
+      <Tabs value={index} onChange={handleChange}>
+        {tabs}
+      </Tabs>
+      <Grid container {...renderConfig.gridConfig.container}>
+        {groups}
+      </Grid>
+    </>
+  );
+};
+
+const GroupFormRenderer = ({ formMetaData, formikBag, asyncBag }) => {
   const { form, fields } = formMetaData;
   const groupMetaDataRef = React.useRef(null);
+  const renderConfig = React.useContext(RenderContext);
   if (!Array.isArray(form.fieldGroups)) {
     console.log("No property of form.fieldGroup exists in Meta Data");
     return null;
@@ -121,20 +183,32 @@ const FormGroupRenderer = ({ formMetaData, formikBag, asyncBag }) => {
     );
     return null;
   }
-  let result = form.fieldGroups.map(group => (
-    <FormGroup
-      key={group}
-      groupName={group}
-      groupMetaData={groupWiseFields[group]}
-      groupDepedency={groupFieldDepedency[group]}
+  const Component = renderConfig.renderTabs ? TabsRenderer : GroupsRenderer;
+  return (
+    <Component
+      fieldGroups={form.fieldGroups}
+      groupWiseFields={groupWiseFields}
+      groupFieldDepedency={groupFieldDepedency}
       formikBag={formikBag}
       asyncBag={asyncBag}
     />
-  ));
-  return <>{result}</>;
+  );
 };
 
-const FormRenderer = ({ formMetaData, renderType }) => {
+const SimpleFormRenderer = ({ formMetaData, formikBag, asyncBag }) => {
+  const renderConfig = React.useContext(RenderContext);
+  return (
+    <Grid container {...renderConfig.gridConfig.container}>
+      <MetaDataRenderer
+        fieldMetaData={formMetaData.fields}
+        formikBag={formikBag}
+        asyncBag={asyncBag}
+      />
+    </Grid>
+  );
+};
+
+const FormRenderer = ({ formMetaData }) => {
   const validationSchemaRef = React.useRef(null);
   function getInstance() {
     let instance = validationSchemaRef.current;
@@ -156,8 +230,8 @@ const FormRenderer = ({ formMetaData, renderType }) => {
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <RenderProvider value={formMetaData["render"]}>
           <FormikProvider value={formikBag}>
-            {renderType === "grid" ? (
-              <FormGroupRenderer
+            {formMetaData["render"]["renderType"] === "groups" ? (
+              <GroupFormRenderer
                 formMetaData={formMetaData}
                 asyncBag={asyncBag}
                 formikBag={formikBag}

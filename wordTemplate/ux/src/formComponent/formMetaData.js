@@ -42,7 +42,9 @@ const formData = {
         direction: "row",
         spacing: 2
       }
-    }
+    },
+    renderType: "groups",
+    renderTabs: true
   },
   form: {
     name: "Orders",
