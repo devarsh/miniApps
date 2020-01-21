@@ -11,7 +11,7 @@ const makeAsyncRequest = value => {
   });
 };
 
-const asyncValidationHandler = async (key, value, timeout) => {
+const asyncValidationHandler = async (fieldName, value, timeout) => {
   try {
     const res = await fetch(
       `http://localhost:8081/error?sleep=${timeout}&name=${value}`,
@@ -29,12 +29,24 @@ const asyncValidationHandler = async (key, value, timeout) => {
 };
 
 const formData = {
+  render: {
+    gridConfig: {
+      item: {
+        size: {
+          xs: 12,
+          sm: 6,
+          md: 6
+        }
+      },
+      container: {
+        direction: "row",
+        spacing: 2
+      }
+    }
+  },
   form: {
     name: "Orders",
-    fieldGroups: ["groupA", "groupB", "groupC", "groupD"],
-    grid: {
-      cols: [4, 4, 4]
-    }
+    fieldGroups: ["groupA", "groupB", "groupC", "groupD"]
   },
   fields: [
     {
@@ -140,7 +152,7 @@ const formData = {
     },
     {
       group: "groupD",
-      name: "city",
+      name: "cityz",
       label: "City",
       type: "selectDependent",
       watch: "state",

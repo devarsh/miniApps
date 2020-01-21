@@ -6,6 +6,8 @@ import {
   KeyboardDateTimePicker
 } from "@material-ui/pickers";
 import { showComponent } from "./utils";
+import Grid from "@material-ui/core/Grid";
+import { RenderContext } from "../renderProvider";
 
 export const MyKeyboardDatePicker = React.memo(
   ({
@@ -20,6 +22,7 @@ export const MyKeyboardDatePicker = React.memo(
     if (showComponent(mutate["show"]) === false) {
       return;
     }
+    const renderConfig = React.useContext(RenderContext);
     const { error, touched, value, name } = mutate;
     const handleDateChange = e =>
       handleChange({
@@ -37,7 +40,7 @@ export const MyKeyboardDatePicker = React.memo(
         ? KeyboardDateTimePicker
         : KeyboardDatePicker;
     return (
-      <>
+      <Grid item {...renderConfig.gridConfig.item.size}>
         <ComponentType
           disableToolbar
           label={label}
@@ -49,8 +52,9 @@ export const MyKeyboardDatePicker = React.memo(
           type={"text"}
           name={name}
           {...others}
+          fullWidth={true}
         />
-      </>
+      </Grid>
     );
   },
   (prevProps, nextProps) => {

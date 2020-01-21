@@ -3,72 +3,101 @@ import { FieldArray, setIn, getIn } from "formik";
 import { remove as removeAsyncFn } from "./utils/formikArrayUtils";
 import Button from "@material-ui/core/Button";
 import renderField from "./fieldRenderer.js";
+import Grid from "@material-ui/core/Grid";
+import { RenderContext } from "./renderProvider";
 
-const metaDataRendered = (formMetaData, formikBag, asyncBag) => {
-  if (Array.isArray(formMetaData)) {
-    return formMetaData.map((field, index) => {
+const MetaDataRendered = ({ fieldMetaData, formikBag, asyncBag }) => {
+  let renderMap = [];
+  const renderConfig = React.useContext(RenderContext);
+  if (Array.isArray(fieldMetaData)) {
+    renderMap = fieldMetaData.map((field, index) => {
       if (field.type === "array") {
         return (
-          <FieldArray
+          <Grid
+            container
+            item
+            xs={12}
             key={field.name}
-            name={field.name}
-            render={({ push, remove }) => (
-              <div>
-                {formikBag.values[field.name] &&
-                formikBag.values[field.name].length > 0 ? (
-                  <>
+            {...renderConfig.gridConfig.container}
+          >
+            <FieldArray
+              key={field.name}
+              name={field.name}
+              render={({ push, remove }) => (
+                <>
+                  {formikBag.values[field.name] &&
+                  formikBag.values[field.name].length > 0 ? (
+                    <>
+                      <Button
+                        onClick={() =>
+                          push(generateTempelateRow(field.template))
+                        }
+                      >
+                        Add Field
+                      </Button>
+                      {formikBag.values[field.name].map((_, index) => (
+                        <Grid
+                          container
+                          item
+                          xs={12}
+                          key={index}
+                          {...renderConfig.gridConfig.container}
+                        >
+                          {renderTemplate(
+                            field.template,
+                            formikBag,
+                            asyncBag,
+                            field.name,
+                            index
+                          )}
+                          <Button
+                            onClick={() => {
+                              asyncBag.setErrors(errors =>
+                                setIn(
+                                  errors,
+                                  field.name,
+                                  removeAsyncFn(
+                                    getIn(errors, field.name),
+                                    index
+                                  )
+                                )
+                              );
+                              remove(index);
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </Grid>
+                      ))}
+                    </>
+                  ) : (
                     <Button
                       onClick={() => push(generateTempelateRow(field.template))}
                     >
                       Add Field
                     </Button>
-
-                    {formikBag.values[field.name].map((_, index) => (
-                      <div key={index}>
-                        {renderTemplate(
-                          field.template,
-                          formikBag,
-                          asyncBag,
-                          field.name,
-                          index
-                        )}
-                        <Button
-                          onClick={() => {
-                            asyncBag.setErrors(errors =>
-                              setIn(
-                                errors,
-                                field.name,
-                                removeAsyncFn(getIn(errors, field.name), index)
-                              )
-                            );
-                            remove(index);
-                          }}
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    ))}
-                  </>
-                ) : (
-                  <Button
-                    onClick={() => push(generateTempelateRow(field.template))}
-                  >
-                    Add Field
-                  </Button>
-                )}
-              </div>
-            )}
-          />
+                  )}
+                </>
+              )}
+            />
+          </Grid>
         );
       } else {
         return renderField(formikBag, asyncBag, index, field);
       }
     });
+  } else {
+    renderMap = null;
   }
-  return undefined;
+  console.log(renderConfig);
+  return (
+    <Grid container {...renderConfig.gridConfig.container}>
+      {renderMap}
+    </Grid>
+  );
 };
 
-export default metaDataRendered;
+export default MetaDataRendered;
 
 const renderTemplate = (
   templateMetaData,
@@ -96,33 +125,4 @@ const generateTempelateRow = templateMetaData => {
     }
   }
   return obj;
-};
-
-export const generateFieldGroupDepedency = fields => {
-  const groupFieldDepedency = {};
-  const groupWiseFields = {};
-  if (Array.isArray(fields)) {
-    for (let i = 0; i < fields.length; i++) {
-      const field = fields[i];
-      const { group, name, watch } = field;
-      if (groupFieldDepedency[group] instanceof Set) {
-        groupFieldDepedency[group].add(name);
-      } else {
-        groupFieldDepedency[group] = new Set([name]);
-      }
-      if (!!watch) {
-        groupFieldDepedency[group].add(watch);
-      }
-      if (Array.isArray(groupWiseFields[group])) {
-        groupWiseFields[group].push(field);
-      } else {
-        groupWiseFields[group] = [field];
-      }
-    }
-  }
-  const keys = Object.keys(groupFieldDepedency);
-  for (let i = 0; i < keys.length; i++) {
-    groupFieldDepedency[keys[i]] = Array.from(groupFieldDepedency[keys[i]]);
-  }
-  return { groupFieldDepedency, groupWiseFields };
 };

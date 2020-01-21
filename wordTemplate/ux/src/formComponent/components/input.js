@@ -3,6 +3,8 @@ import TextField from "@material-ui/core/TextField";
 import shallowEqual from "../utils/shallowEqual";
 import { useDebouncedCallback } from "use-debounce";
 import { showComponent, asyncValidationWrapper } from "./utils";
+import Grid from "@material-ui/core/Grid";
+import { RenderContext } from "../renderProvider";
 export const MyTextField = React.memo(
   ({
     label,
@@ -17,6 +19,7 @@ export const MyTextField = React.memo(
     if (showComponent(mutate["show"]) === false) {
       return;
     }
+    const renderConfig = React.useContext(RenderContext);
     const { name, value, touched, error, asyncError } = mutate;
     const debounceDelay = 200;
     const blurDelay = 500;
@@ -63,7 +66,7 @@ export const MyTextField = React.memo(
     const userErrorMsg =
       touched && !!error ? error : touched && !!asyncError ? asyncError : null;
     return (
-      <>
+      <Grid item {...renderConfig.gridConfig.item.size}>
         <TextField
           label={label}
           error={!!userErrorMsg}
@@ -73,10 +76,11 @@ export const MyTextField = React.memo(
           type={type}
           name={name}
           value={inputValue || ""}
+          fullWidth={true}
           {...others}
         />
         {asyncLoader && `🌀`}
-      </>
+      </Grid>
     );
   },
   (prevProps, nextProps) => {

@@ -6,7 +6,8 @@ import Switch from "@material-ui/core/Switch";
 import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import { showComponent } from "./utils";
-
+import Grid from "@material-ui/core/Grid";
+import { RenderContext } from "../renderProvider";
 const isChecked = (currentValues, value) => {
   if (Array.isArray(currentValues)) {
     return currentValues.indexOf(value) < 0 ? false : true;
@@ -15,10 +16,11 @@ const isChecked = (currentValues, value) => {
 };
 
 export const MySwitch = React.memo(
-  ({ label, options, handleBlur, handleChange, type, mutate }) => {
+  ({ label, options, handleBlur, handleChange, type, mutate, gridConfig }) => {
     if (showComponent(mutate["show"]) === false) {
       return;
     }
+    const renderConfig = React.useContext(RenderContext);
     const { error, touched, value, name } = mutate;
     let switches;
     let { show } = mutate;
@@ -47,13 +49,13 @@ export const MySwitch = React.memo(
       ));
     }
     return (
-      <>
+      <Grid item {...renderConfig.gridConfig.item.size}>
         <FormLabel error={!!error} component="legend">
           {label}
         </FormLabel>
         <FormGroup row={true}>{switches}</FormGroup>
         <FormHelperText error={touched && !!error}>{error}</FormHelperText>
-      </>
+      </Grid>
     );
   },
   (prevProps, nextProps) => {

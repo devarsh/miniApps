@@ -1,37 +1,14 @@
 import React from "react";
-import metaDataRenderer, {
-  generateFieldGroupDepedency
-} from "./metaDataRenderer";
+import MetaDataRenderer from "./metaDataRenderer";
 import { setIn, getIn } from "formik";
 import equal from "fast-deep-equal";
-
-const FormGroup = React.memo(
-  ({ groupMetaData, formikBag, asyncBag }) => {
-    const count = React.useRef(0);
-    const fields = metaDataRenderer(groupMetaData, formikBag, asyncBag);
-    return (
-      <>
-        {fields}
-        {count.current++}
-      </>
-    );
-  },
-  (prevProps, nextProps) => {
-    const oldValues = constructValues(
-      prevProps.groupDepedency,
-      prevProps.formikBag,
-      prevProps.asyncBag
-    );
-    const newValues = constructValues(
-      nextProps.groupDepedency,
-      nextProps.formikBag,
-      nextProps.asyncBag
-    );
-    const result = equal(oldValues, newValues);
-    console.log(prevProps.groupName, oldValues, newValues, result);
-    return result;
-  }
-);
+import useAsync from "./useAsync";
+import { useFormik, FormikProvider } from "formik";
+import makeSchemaFromTemplate from "./yupSchemaBuilder";
+import Grid from "@material-ui/core/Grid";
+import { RenderProvider } from "./renderProvider";
+import DateFnsUtils from "@date-io/date-fns";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 const constructValues = (dependency, formikBag, asyncBag) => {
   if (!Array.isArray(dependency)) {
@@ -52,12 +29,70 @@ const constructValues = (dependency, formikBag, asyncBag) => {
   return newObj;
 };
 
-export const FormRenderer = ({ formMetaData, formikBag, asyncBag }) => {
-  const fields = metaDataRenderer(formMetaData.fields, formikBag, asyncBag);
-  return <>{fields}</>;
+export const generateFieldGroupDepedency = fields => {
+  const groupFieldDepedency = {};
+  const groupWiseFields = {};
+  if (Array.isArray(fields)) {
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i];
+      const { group, name, watch } = field;
+      if (groupFieldDepedency[group] instanceof Set) {
+        groupFieldDepedency[group].add(name);
+      } else {
+        groupFieldDepedency[group] = new Set([name]);
+      }
+      if (!!watch) {
+        groupFieldDepedency[group].add(watch);
+      }
+      if (Array.isArray(groupWiseFields[group])) {
+        groupWiseFields[group].push(field);
+      } else {
+        groupWiseFields[group] = [field];
+      }
+    }
+  }
+  const keys = Object.keys(groupFieldDepedency);
+  for (let i = 0; i < keys.length; i++) {
+    groupFieldDepedency[keys[i]] = Array.from(groupFieldDepedency[keys[i]]);
+  }
+  return { groupFieldDepedency, groupWiseFields };
 };
 
-export const FormGroupRenderer = ({ formMetaData, formikBag, asyncBag }) => {
+const FormGroup = React.memo(
+  ({ groupMetaData, formikBag, asyncBag }) => {
+    return (
+      <MetaDataRenderer
+        fieldMetaData={groupMetaData}
+        formikBag={formikBag}
+        asyncBag={asyncBag}
+      />
+    );
+  },
+  (prevProps, nextProps) => {
+    const oldValues = constructValues(
+      prevProps.groupDepedency,
+      prevProps.formikBag,
+      prevProps.asyncBag
+    );
+    const newValues = constructValues(
+      nextProps.groupDepedency,
+      nextProps.formikBag,
+      nextProps.asyncBag
+    );
+    const result = equal(oldValues, newValues);
+    return result;
+  }
+);
+
+const SimpleFormRenderer = ({ formMetaData, formikBag, asyncBag }) => (
+  <MetaDataRenderer
+    fieldMetaData={formMetaData.fields}
+    formikBag={formikBag}
+    asyncBag={asyncBag}
+  />
+);
+
+const FormGroupRenderer = ({ formMetaData, formikBag, asyncBag }) => {
   const { form, fields } = formMetaData;
   const groupMetaDataRef = React.useRef(null);
   if (!Array.isArray(form.fieldGroups)) {
@@ -98,6 +133,50 @@ export const FormGroupRenderer = ({ formMetaData, formikBag, asyncBag }) => {
     />
   ));
   return <>{result}</>;
+};
+
+const FormRenderer = ({ formMetaData, renderType }) => {
+  const validationSchemaRef = React.useRef(null);
+  function getInstance() {
+    let instance = validationSchemaRef.current;
+    if (instance !== null) {
+      return instance;
+    }
+    let newInstance = makeSchemaFromTemplate(formMetaData.fields);
+    validationSchemaRef.current = newInstance;
+    return newInstance;
+  }
+  const validationSchema = getInstance();
+  const asyncBag = useAsync();
+  const formikBag = useFormik({
+    initialValues: {},
+    validationSchema
+  });
+  return (
+    <>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <RenderProvider value={formMetaData["render"]}>
+          <FormikProvider value={formikBag}>
+            {renderType === "grid" ? (
+              <FormGroupRenderer
+                formMetaData={formMetaData}
+                asyncBag={asyncBag}
+                formikBag={formikBag}
+              />
+            ) : (
+              <SimpleFormRenderer
+                formMetaData={formMetaData}
+                asyncBag={asyncBag}
+                formikBag={formikBag}
+              />
+            )}
+          </FormikProvider>
+        </RenderProvider>
+      </MuiPickersUtilsProvider>
+      <pre>{JSON.stringify(asyncBag, null, 2)}</pre>
+      <pre>{JSON.stringify(formikBag, null, 2)}</pre>
+    </>
+  );
 };
 
 export default FormRenderer;

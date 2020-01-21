@@ -5,6 +5,8 @@ import Select from "@material-ui/core/Select";
 import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import { showComponent } from "./utils";
+import Grid from "@material-ui/core/Grid";
+import { RenderContext } from "../renderProvider";
 
 const renderMenuItems = options => {
   if (!Array.isArray(options)) {
@@ -32,23 +34,27 @@ const SelectRender = ({
   handleBlur,
   touched,
   menuItems
-}) => (
-  <>
-    <FormLabel error={!!error} component="legend">
-      {label}
-    </FormLabel>
-    <Select
-      type={type}
-      value={value || []}
-      name={name}
-      onChange={handleChange}
-      onBlur={handleBlur}
-    >
-      {menuItems}
-    </Select>
-    <FormHelperText error={touched && !!error}>{error}</FormHelperText>
-  </>
-);
+}) => {
+  const renderConfig = React.useContext(RenderContext);
+  return (
+    <Grid item {...renderConfig.gridConfig.item.size}>
+      <FormLabel error={!!error} component="legend">
+        {label}
+      </FormLabel>
+      <Select
+        type={type}
+        value={value || []}
+        name={name}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        fullWidth={true}
+      >
+        {menuItems}
+      </Select>
+      <FormHelperText error={touched && !!error}>{error}</FormHelperText>
+    </Grid>
+  );
+};
 
 export const MySelectStatic = React.memo(
   ({ label, options, handleBlur, handleChange, type, mutate }) => {

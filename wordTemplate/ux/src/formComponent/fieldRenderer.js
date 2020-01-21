@@ -12,7 +12,7 @@ import {
 
 import fieldBag from "./fieldBag";
 
-const renderField = (formikBag, asyncBag, index, field) => {
+const renderField = (formikBag, asyncBag, index, field, gridConfig) => {
   const { type, name, label } = field;
   const key = `${name}-${index}`;
   switch (type) {
