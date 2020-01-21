@@ -5,7 +5,6 @@ import equal from "fast-deep-equal";
 import useAsync from "./useAsync";
 import { useFormik, FormikProvider } from "formik";
 import makeSchemaFromTemplate from "./yupSchemaBuilder";
-import Grid from "@material-ui/core/Grid";
 import { RenderProvider } from "./renderProvider";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";

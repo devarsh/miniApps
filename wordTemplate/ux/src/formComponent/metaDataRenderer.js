@@ -89,7 +89,6 @@ const MetaDataRendered = ({ fieldMetaData, formikBag, asyncBag }) => {
   } else {
     renderMap = null;
   }
-  console.log(renderConfig);
   return (
     <Grid container {...renderConfig.gridConfig.container}>
       {renderMap}

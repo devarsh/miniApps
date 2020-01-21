@@ -1,11 +1,11 @@
 import React from "react";
-import { merge } from "lodash";
+import merge from "lodash/merge";
 
 export const RenderContext = React.createContext(null);
 
-export const RenderProvider = ({ render, children }) => {
-  if (!typeof render === "object") {
-    render = {};
+export const RenderProvider = ({ value, children }) => {
+  if (!typeof value === "object") {
+    value = {};
   }
   const defaultConfig = {
     gridConfig: {
@@ -22,7 +22,7 @@ export const RenderProvider = ({ render, children }) => {
       }
     }
   };
-  const finalConfig = merge(render, defaultConfig);
+  const finalConfig = merge({}, defaultConfig, value);
   return (
     <RenderContext.Provider value={finalConfig}>
       {children}

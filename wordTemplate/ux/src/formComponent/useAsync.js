@@ -1,5 +1,6 @@
 import PromiseQueue from "./utils/promiseQueue";
-import { setIn } from "formik";
+import { setIn, getIn } from "formik";
+import toPath from "lodash/toPath";
 import React from "react";
 
 const useAsync = () => {
@@ -21,10 +22,23 @@ const useAsync = () => {
       const error = await queue.addTask(fn, key, value, ...others);
       if (typeof error === "string") {
         if (error !== "") {
-          console.log(error);
           setErrors(oldError => setIn(oldError, key, error));
         } else {
-          setErrors(oldError => setIn(oldError, key, undefined));
+          setErrors(oldError => {
+            oldError = setIn(oldError, key, undefined);
+            let path = toPath(key);
+            if (path.length >= 2) {
+              path = path.slice(0, path.length - 1);
+              const newKey = path.join(".");
+              const result = getIn(oldError, newKey);
+              if (typeof result === "object") {
+                if (!Object.keys(result).length > 0) {
+                  oldError = setIn(oldError, newKey, undefined);
+                }
+              }
+            }
+            return oldError;
+          });
         }
       } else {
         console.log("error is not of type string", error);

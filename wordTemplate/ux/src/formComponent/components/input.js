@@ -5,6 +5,8 @@ import { useDebouncedCallback } from "use-debounce";
 import { showComponent, asyncValidationWrapper } from "./utils";
 import Grid from "@material-ui/core/Grid";
 import { RenderContext } from "../renderProvider";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import CircularProgress from "@material-ui/core/CircularProgress";
 export const MyTextField = React.memo(
   ({
     label,
@@ -52,7 +54,7 @@ export const MyTextField = React.memo(
         : e => {
             handleBlur(e);
             setTimeout(() => {
-              if (!!syncError.current === false) {
+              if (!!syncError.current === false && inputValue !== "") {
                 runAsyncFn(
                   asyncValidationWrapper,
                   name,
@@ -68,6 +70,7 @@ export const MyTextField = React.memo(
     return (
       <Grid item {...renderConfig.gridConfig.item.size}>
         <TextField
+          size="small"
           label={label}
           error={!!userErrorMsg}
           helperText={userErrorMsg}
@@ -77,9 +80,15 @@ export const MyTextField = React.memo(
           name={name}
           value={inputValue || ""}
           fullWidth={true}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="start">
+                {asyncLoader && <CircularProgress size={24} thickness={4} />}
+              </InputAdornment>
+            )
+          }}
           {...others}
         />
-        {asyncLoader && `🌀`}
       </Grid>
     );
   },

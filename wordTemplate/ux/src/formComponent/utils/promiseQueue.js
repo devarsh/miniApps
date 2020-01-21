@@ -51,7 +51,7 @@ const defaultConfig = {
   cacheInvalidateTimeInSeconds: 30,
   timeoutInSeconds: 15,
   cleanupIntervalInSeconds: 1,
-  enableLogging: false
+  enableLogging: process.env.NODE_ENV === "development"
 };
 
 const PromiseQueue = (userConfig = {}) => {
