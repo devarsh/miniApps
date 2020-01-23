@@ -5,6 +5,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
 import { showComponent } from "./utils";
 import Grid from "@material-ui/core/Grid";
 import { RenderContext } from "../renderProvider";
@@ -42,11 +43,11 @@ export const MyRadio = React.memo(
     }
     return (
       <Grid item {...renderConfig.gridConfig.item.size}>
-        <FormLabel error={!!error} component="legend">
-          {label}
-        </FormLabel>
-        <FormGroup row={true}>{radios}</FormGroup>
-        <FormHelperText error={touched && !!error}>{error}</FormHelperText>
+        <FormControl error={touched && !!error}>
+          <FormLabel component="legend">{label}</FormLabel>
+          <FormGroup>{radios}</FormGroup>
+          {touched && !!error ? <FormHelperText>{error}</FormHelperText> : null}
+        </FormControl>
       </Grid>
     );
   },

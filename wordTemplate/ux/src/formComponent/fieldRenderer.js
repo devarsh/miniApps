@@ -20,7 +20,6 @@ const renderField = (formikBag, asyncBag, index, field, gridConfig) => {
       const { asyncValidationFn } = field;
       return (
         <MyTextField
-          variant="outlined"
           label={label}
           {...fieldBag(formikBag, asyncBag, "text", name)}
           key={key}

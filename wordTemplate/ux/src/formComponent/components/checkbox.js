@@ -2,6 +2,7 @@ import React from "react";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
 import Checkbox from "@material-ui/core/Checkbox";
 import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -44,11 +45,11 @@ export const MyCheckbox = React.memo(
     }
     return (
       <Grid item {...renderConfig.gridConfig.item.size}>
-        <FormLabel error={!!error} component="legend">
-          {label}
-        </FormLabel>
-        <FormGroup row={true}>{checkboxes}</FormGroup>
-        <FormHelperText error={touched && !!error}>{error}</FormHelperText>
+        <FormControl error={touched && !!error}>
+          <FormLabel component="legend">{label}</FormLabel>
+          <FormGroup>{checkboxes}</FormGroup>
+          {touched && !!error ? <FormHelperText>{error}</FormHelperText> : null}
+        </FormControl>
       </Grid>
     );
   },

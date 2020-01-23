@@ -1,7 +1,8 @@
 import React from "react";
 import shallowEqual from "../utils/shallowEqual";
 import Slider from "@material-ui/core/Slider";
-import FormLabel from "@material-ui/core/FormLabel";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import { showComponent } from "./utils";
 import Grid from "@material-ui/core/Grid";
@@ -31,9 +32,7 @@ export const MySlider = React.memo(
 
     return (
       <Grid item {...renderConfig.gridConfig.item.size}>
-        <FormLabel error={!!error} component="legend">
-          {label}
-        </FormLabel>
+        <InputLabel component="legend">{label}</InputLabel>
         <Slider
           onChange={handleSliderChange}
           onBlur={handleSliderBlur}
@@ -42,7 +41,7 @@ export const MySlider = React.memo(
           name={name}
           {...others}
         />
-        <FormHelperText error={touched && !!error}>{error}</FormHelperText>
+        <FormHelperText>{error}</FormHelperText>
       </Grid>
     );
   },

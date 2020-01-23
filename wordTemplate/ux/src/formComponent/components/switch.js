@@ -2,6 +2,7 @@ import React from "react";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
 import Switch from "@material-ui/core/Switch";
 import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -16,7 +17,7 @@ const isChecked = (currentValues, value) => {
 };
 
 export const MySwitch = React.memo(
-  ({ label, options, handleBlur, handleChange, type, mutate, gridConfig }) => {
+  ({ label, options, handleBlur, handleChange, type, mutate }) => {
     if (showComponent(mutate["show"]) === false) {
       return;
     }
@@ -50,11 +51,13 @@ export const MySwitch = React.memo(
     }
     return (
       <Grid item {...renderConfig.gridConfig.item.size}>
-        <FormLabel error={!!error} component="legend">
-          {label}
-        </FormLabel>
-        <FormGroup row={true}>{switches}</FormGroup>
-        <FormHelperText error={touched && !!error}>{error}</FormHelperText>
+        <FormControl>
+          <FormLabel error={!!error} component="legend">
+            {label}
+          </FormLabel>
+          <FormGroup row={true}>{switches}</FormGroup>
+          <FormHelperText error={touched && !!error}>{error}</FormHelperText>
+        </FormControl>
       </Grid>
     );
   },

@@ -80,6 +80,7 @@ export const MyTextField = React.memo(
           name={name}
           value={inputValue || ""}
           fullWidth={true}
+          variant="outlined"
           InputProps={{
             endAdornment: (
               <InputAdornment position="start">

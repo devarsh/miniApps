@@ -34,8 +34,8 @@ const formData = {
       item: {
         size: {
           xs: 12,
-          sm: 6,
-          md: 6
+          sm: 3,
+          md: 3
         }
       },
       container: {
@@ -69,6 +69,12 @@ const formData = {
         }
       ],
       asyncValidationFn: asyncValidationHandler
+    },
+    {
+      group: "groupA",
+      name: "sunil",
+      label: "Sunil",
+      type: "date"
     },
     {
       group: "groupA",
@@ -153,12 +159,13 @@ const formData = {
       ]
     },
     {
-      group: "groupD",
-      name: "cityz",
-      label: "City",
-      type: "selectDependent",
-      watch: "state",
-      callback: makeAsyncRequest
+      group: "groupC",
+      name: "SlideMe",
+      label: "Rank",
+      type: "slider",
+      min: 0,
+      max: 100,
+      step: 1
     },
     {
       group: "groupC",
@@ -170,6 +177,34 @@ const formData = {
         { value: "sms", label: "SMS" },
         { value: "mobile", label: "Mobile" }
       ]
+    },
+    {
+      group: "groupC",
+      name: "Switchers",
+      label: "Switches",
+      type: "switch",
+      options: [
+        { value: "email", label: "Email" },
+        { value: "sms", label: "SMS" },
+        { value: "mobile", label: "Mobile" }
+      ]
+    },
+    {
+      group: "switch",
+      name: "SlideMe",
+      label: "Rank",
+      type: "slider",
+      min: 0,
+      max: 100,
+      step: 1
+    },
+    {
+      group: "groupD",
+      name: "cityz",
+      label: "City",
+      type: "selectDependent",
+      watch: "state",
+      callback: makeAsyncRequest
     },
     {
       group: "groupD",

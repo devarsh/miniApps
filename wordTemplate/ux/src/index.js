@@ -1,9 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import "typeface-roboto";
 import Form from "./formComponent/index.js";
 import formData from "./formComponent/formMetaData.js";
+import FormContainer from "./formComponent/formContainer";
 
 ReactDOM.render(
-  <Form formMetaData={formData} />,
+  <FormContainer>
+    <Form formMetaData={formData} />
+  </FormContainer>,
   document.getElementById("⚛️")
 );

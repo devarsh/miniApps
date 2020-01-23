@@ -50,6 +50,8 @@ export const MyKeyboardDatePicker = React.memo(
           onBlur={handleBlur}
           value={!!value ? new Date(value) : new Date()}
           type={"text"}
+          inputVariant="outlined"
+          size="small"
           name={name}
           {...others}
           fullWidth={true}

@@ -126,7 +126,9 @@ const TabsRenderer = ({
 }) => {
   const [index, setIndex] = React.useState(0);
   const renderConfig = React.useContext(RenderContext);
-  const tabs = fieldGroups.map(group => <Tab label={group} />);
+  const tabs = fieldGroups.map((group, myIndex) => (
+    <Tab key={myIndex} label={group} />
+  ));
   const groups = fieldGroups.map((group, myIndex) => (
     <FormGroup
       show={myIndex === index}

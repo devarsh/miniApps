@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import FormLabel from "@material-ui/core/FormLabel";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import shallowEqual from "../utils/shallowEqual";
@@ -36,22 +37,40 @@ const SelectRender = ({
   menuItems
 }) => {
   const renderConfig = React.useContext(RenderContext);
+  const selectLabel = React.useRef(null);
+  const [labelWidth, setLabelWidth] = React.useState(0);
+  React.useEffect(() => {
+    setLabelWidth(selectLabel.current.offsetWidth);
+  }, []);
   return (
     <Grid item {...renderConfig.gridConfig.item.size}>
-      <FormLabel error={!!error} component="legend">
-        {label}
-      </FormLabel>
-      <Select
-        type={type}
-        value={value || []}
-        name={name}
-        onChange={handleChange}
-        onBlur={handleBlur}
+      <FormControl
         fullWidth={true}
+        variant="outlined"
+        error={touched && !!error}
+        size="small"
       >
-        {menuItems}
-      </Select>
-      <FormHelperText error={touched && !!error}>{error}</FormHelperText>
+        <InputLabel
+          ref={selectLabel}
+          id={`${label}-${name}`}
+          error={!!error}
+          component="legend"
+        >
+          {label}
+        </InputLabel>
+        <Select
+          labelId={`${label}-${name}`}
+          type={type}
+          value={value || []}
+          name={name}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          labelWidth={labelWidth}
+        >
+          {menuItems}
+        </Select>
+        {touched && !!error ? <FormHelperText>{error}</FormHelperText> : null}
+      </FormControl>
     </Grid>
   );
 };
