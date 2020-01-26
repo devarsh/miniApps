@@ -77,7 +77,7 @@ const MetaDataRendered = ({ fieldMetaData, formikBag, asyncBag }) => {
           </Grid>
         );
       } else {
-        return renderField(index, field);
+        return renderField(field, index);
       }
     });
   } else {
@@ -95,7 +95,7 @@ const renderTemplate = (templateMetaData, parent, index) => {
       //DONT try to act smart and remove this line, its required to copy this object and manipulate,
       //its there to prevent actual object manuipulation. I know what I am doing.
       const fieldCopy = { ...field, name: `${parent}[${index}].${name}` };
-      return renderField(undefined, fieldCopy);
+      return renderField(fieldCopy);
     });
   }
 };

@@ -12,7 +12,7 @@ import {
 
 import { FieldBagWrapper } from "../fieldComponent";
 
-const renderField = (index, field) => {
+const renderField = (field, index = "") => {
   const { type, name, label } = field;
   const key = `${name}-${index}`;
   switch (type) {
