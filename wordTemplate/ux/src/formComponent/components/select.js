@@ -3,11 +3,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import { showComponent } from "./utils";
 import Grid from "@material-ui/core/Grid";
-import { RenderContext } from "../renderProvider";
+import { MemoComponent } from "../fieldComponent";
 
 const renderMenuItems = options => {
   if (!Array.isArray(options)) {
@@ -34,16 +32,16 @@ const SelectRender = ({
   handleChange,
   handleBlur,
   touched,
-  menuItems
+  menuItems,
+  renderBag
 }) => {
-  const renderConfig = React.useContext(RenderContext);
   const selectLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
   React.useEffect(() => {
     setLabelWidth(selectLabel.current.offsetWidth);
   }, []);
   return (
-    <Grid item {...renderConfig.gridConfig.item.size}>
+    <Grid item {...renderBag.gridConfig.item.size}>
       <FormControl
         fullWidth={true}
         variant="outlined"
@@ -75,9 +73,9 @@ const SelectRender = ({
   );
 };
 
-export const MySelectStatic = React.memo(
-  ({ label, options, handleBlur, handleChange, type, mutate }) => {
-    if (showComponent(mutate["show"]) === false) {
+export const MySelectStatic = MemoComponent(
+  ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
+    if (mutate["show"] === false) {
       return;
     }
     const { error, touched, value, name } = mutate;
@@ -93,24 +91,15 @@ export const MySelectStatic = React.memo(
         handleBlur={handleBlur}
         touched={touched}
         menuItems={menuItems}
+        renderBag={renderBag}
       />
     );
-  },
-  (prevProps, nextProps) => {
-    if (
-      !shallowEqual(prevProps.mutate, nextProps.mutate) ||
-      prevProps.label !== nextProps.label
-    ) {
-      return false;
-    } else {
-      return true;
-    }
   }
 );
 
-export const MySelectDependent = React.memo(
-  ({ label, handleBlur, handleChange, type, mutate, callback }) => {
-    if (showComponent(mutate["show"]) === false) {
+export const MySelectDependent = MemoComponent(
+  ({ label, handleBlur, handleChange, type, mutate, renderBag, callback }) => {
+    if (mutate["show"] === false) {
       return;
     }
     const { error, touched, value, name, watch } = mutate;
@@ -159,17 +148,8 @@ export const MySelectDependent = React.memo(
         handleBlur={handleBlur}
         touched={touched}
         menuItems={menuItems}
+        renderBag={renderBag}
       />
     );
-  },
-  (prevProps, nextProps) => {
-    if (
-      !shallowEqual(prevProps.mutate, nextProps.mutate) ||
-      prevProps.label !== nextProps.label
-    ) {
-      return false;
-    } else {
-      return true;
-    }
   }
 );

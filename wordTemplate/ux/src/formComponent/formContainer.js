@@ -5,6 +5,7 @@ import ToolBar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import grey from "@material-ui/core/colors/grey";
+
 import {
   ThemeProvider,
   makeStyles,
@@ -91,7 +92,7 @@ const Wrapper = ({ children }) => {
         main: grey[900]
       },
       secondary: {
-        main: grey[100]
+        main: grey[300]
       }
     }
   });

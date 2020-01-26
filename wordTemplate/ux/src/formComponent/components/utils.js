@@ -1,12 +1,4 @@
 import { QueueError } from "../utils/promiseQueue";
-export const showComponent = value => {
-  if (value === "" || value === undefined || value === null) {
-    return true;
-  }
-  if (value === false) {
-    return false;
-  }
-};
 
 //first argument `isCancelled` will be passed by promiseQueue Manager
 export const asyncValidationWrapper = async (

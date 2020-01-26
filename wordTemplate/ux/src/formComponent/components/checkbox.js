@@ -4,11 +4,9 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Checkbox from "@material-ui/core/Checkbox";
-import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from "@material-ui/core/Grid";
-import { showComponent } from "./utils";
-import { RenderContext } from "../renderProvider";
+import { MemoComponent } from "../fieldComponent";
 
 const isChecked = (currentValues, value) => {
   if (Array.isArray(currentValues)) {
@@ -17,12 +15,11 @@ const isChecked = (currentValues, value) => {
   return false;
 };
 
-export const MyCheckbox = React.memo(
-  ({ label, options, handleBlur, handleChange, mutate, type }) => {
-    if (showComponent(mutate["show"]) === false) {
+export const MyCheckbox = MemoComponent(
+  ({ label, options, handleBlur, handleChange, mutate, type, renderBag }) => {
+    if (mutate["show"] === false) {
       return;
     }
-    const renderConfig = React.useContext(RenderContext);
     const { error, touched, value, name } = mutate;
     let checkboxes;
     if (Array.isArray(options)) {
@@ -44,7 +41,7 @@ export const MyCheckbox = React.memo(
       ));
     }
     return (
-      <Grid item {...renderConfig.gridConfig.item.size}>
+      <Grid item {...renderBag.gridConfig.item.size}>
         <FormControl error={touched && !!error}>
           <FormLabel component="legend">{label}</FormLabel>
           <FormGroup>{checkboxes}</FormGroup>
@@ -52,15 +49,5 @@ export const MyCheckbox = React.memo(
         </FormControl>
       </Grid>
     );
-  },
-  (prevProps, nextProps) => {
-    if (
-      !shallowEqual(prevProps.mutate, nextProps.mutate) ||
-      prevProps.label !== nextProps.label
-    ) {
-      return false;
-    } else {
-      return true;
-    }
   }
 );

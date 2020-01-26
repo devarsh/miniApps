@@ -3,19 +3,16 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
-import shallowEqual from "../utils/shallowEqual";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
-import { showComponent } from "./utils";
 import Grid from "@material-ui/core/Grid";
-import { RenderContext } from "../renderProvider";
+import { MemoComponent } from "../fieldComponent";
 
-export const MyRadio = React.memo(
-  ({ label, options, handleBlur, handleChange, type, mutate }) => {
-    if (showComponent(mutate["show"]) === false) {
+export const MyRadio = MemoComponent(
+  ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
+    if (mutate["show"] === false) {
       return;
     }
-    const renderConfig = React.useContext(RenderContext);
     const { error, touched, value, name } = mutate;
     let radios;
 
@@ -42,7 +39,7 @@ export const MyRadio = React.memo(
       });
     }
     return (
-      <Grid item {...renderConfig.gridConfig.item.size}>
+      <Grid item {...renderBag.gridConfig.item.size}>
         <FormControl error={touched && !!error}>
           <FormLabel component="legend">{label}</FormLabel>
           <FormGroup>{radios}</FormGroup>
@@ -50,15 +47,5 @@ export const MyRadio = React.memo(
         </FormControl>
       </Grid>
     );
-  },
-  (prevProps, nextProps) => {
-    if (
-      !shallowEqual(prevProps.mutate, nextProps.mutate) ||
-      prevProps.label !== nextProps.label
-    ) {
-      return false;
-    } else {
-      return true;
-    }
   }
 );

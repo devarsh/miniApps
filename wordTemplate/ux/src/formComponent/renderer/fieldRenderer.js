@@ -8,106 +8,126 @@ import {
   MyKeyboardDatePicker,
   MySlider,
   MySwitch
-} from "./components/index";
+} from "../components/index";
 
-import fieldBag from "./fieldBag";
+import { FieldBagWrapper } from "../fieldComponent";
 
-const renderField = (formikBag, asyncBag, index, field, gridConfig) => {
+const renderField = (index, field) => {
   const { type, name, label } = field;
   const key = `${name}-${index}`;
   switch (type) {
     case "text":
       const { asyncValidationFn } = field;
       return (
-        <MyTextField
-          label={label}
-          {...fieldBag(formikBag, asyncBag, "text", name)}
+        <FieldBagWrapper
           key={key}
+          label={label}
           asyncValidationFn={asyncValidationFn}
-        />
+          name={name}
+          type={type}
+        >
+          <MyTextField />
+        </FieldBagWrapper>
       );
     case "slider": {
       const { min, max, step } = field;
       return (
-        <MySlider
+        <FieldBagWrapper
           label={label}
-          {...fieldBag(formikBag, asyncBag, "slider", name)}
+          type={type}
+          name={name}
           min={min}
           max={max}
           step={step}
           key={key}
-        />
+        >
+          <MySlider />
+        </FieldBagWrapper>
       );
     }
     case "radio": {
       const { options } = field;
       return (
-        <MyRadio
+        <FieldBagWrapper
           options={options}
           label={label}
-          {...fieldBag(formikBag, asyncBag, "radio", name)}
+          type={type}
+          name={name}
           key={key}
-        />
+        >
+          <MyRadio />
+        </FieldBagWrapper>
       );
     }
     case "switch": {
       const { options } = field;
       return (
-        <MySwitch
+        <FieldBagWrapper
           options={options}
           label={label}
-          {...fieldBag(formikBag, asyncBag, "checkbox", name)}
+          type={"checkbox"}
+          name={name}
           key={key}
-        />
+        >
+          <MySwitch />
+        </FieldBagWrapper>
       );
     }
     case "checkbox": {
       const { options } = field;
       return (
-        <MyCheckbox
+        <FieldBagWrapper
+          name={name}
+          type={type}
           options={options}
           label={label}
-          {...fieldBag(formikBag, asyncBag, "checkbox", name)}
           key={key}
-        />
+        >
+          <MyCheckbox />
+        </FieldBagWrapper>
       );
     }
     case "selectStatic": {
       const { options, defaultValue } = field;
       return (
-        <MySelectStatic
+        <FieldBagWrapper
           options={options}
           defaultValue={defaultValue}
           label={label}
-          {...fieldBag(formikBag, asyncBag, "select", name)}
+          type="select"
+          name={name}
           key={key}
-        />
+        >
+          <MySelectStatic />
+        </FieldBagWrapper>
       );
     }
     case "selectDependent": {
       const { callback, watch } = field;
       return (
-        <MySelectDependent
+        <FieldBagWrapper
           label={label}
           callback={callback}
-          {...fieldBag(formikBag, asyncBag, "select", name, { watch })}
+          type="select"
+          name={name}
+          others={{ watch }}
           key={key}
-        />
+        >
+          <MySelectDependent />
+        </FieldBagWrapper>
       );
     }
     case "date":
     case "time":
     case "datetime": {
       return (
-        <MyKeyboardDatePicker
-          label={label}
-          {...fieldBag(formikBag, asyncBag, "datetime", name)}
-          key={key}
-        />
+        <FieldBagWrapper label={label} type={type} name={name} key={key}>
+          <MyKeyboardDatePicker />
+        </FieldBagWrapper>
       );
     }
     default:
-      return undefined;
+      return null;
   }
 };
 

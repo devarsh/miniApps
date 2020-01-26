@@ -1,15 +1,13 @@
 import React from "react";
-import shallowEqual from "../utils/shallowEqual";
 import {
   KeyboardDatePicker,
   KeyboardTimePicker,
   KeyboardDateTimePicker
 } from "@material-ui/pickers";
-import { showComponent } from "./utils";
 import Grid from "@material-ui/core/Grid";
-import { RenderContext } from "../renderProvider";
+import { MemoComponent } from "../fieldComponent";
 
-export const MyKeyboardDatePicker = React.memo(
+export const MyKeyboardDatePicker = MemoComponent(
   ({
     label,
     handleBlur,
@@ -17,20 +15,21 @@ export const MyKeyboardDatePicker = React.memo(
     mutate,
     type,
     runAsyncFn,
+    renderBag,
     ...others
   }) => {
-    if (showComponent(mutate["show"]) === false) {
+    if (mutate["show"] === false) {
       return;
     }
-    const renderConfig = React.useContext(RenderContext);
     const { error, touched, value, name } = mutate;
-    const handleDateChange = e =>
+    const handleDateChange = date => {
       handleChange({
         target: {
-          value: e,
+          value: date,
           name: name
         }
       });
+    };
     const ComponentType =
       type === "date"
         ? KeyboardDatePicker
@@ -39,8 +38,16 @@ export const MyKeyboardDatePicker = React.memo(
         : type === "datetime"
         ? KeyboardDateTimePicker
         : KeyboardDatePicker;
+    const format =
+      type === "date"
+        ? "dd/MM/yyyy"
+        : type === "time"
+        ? "h:mm:ss aaaa"
+        : type === "datetime"
+        ? "dd/MM/yyyy h:mm:ss aaaa"
+        : "dd/MM/yyyy";
     return (
-      <Grid item {...renderConfig.gridConfig.item.size}>
+      <Grid item {...renderBag.gridConfig.item.size}>
         <ComponentType
           disableToolbar
           label={label}
@@ -55,18 +62,9 @@ export const MyKeyboardDatePicker = React.memo(
           name={name}
           {...others}
           fullWidth={true}
+          format={format}
         />
       </Grid>
     );
-  },
-  (prevProps, nextProps) => {
-    if (
-      !shallowEqual(prevProps.mutate, nextProps.mutate) ||
-      prevProps.label !== nextProps.label
-    ) {
-      return false;
-    } else {
-      return true;
-    }
   }
 );

@@ -34,7 +34,7 @@ const formData = {
       item: {
         size: {
           xs: 12,
-          sm: 3,
+          sm: 6,
           md: 3
         }
       },
@@ -43,7 +43,7 @@ const formData = {
         spacing: 2
       }
     },
-    renderType: "groups",
+    renderType: "groupss",
     renderTabs: true
   },
   form: {
@@ -244,6 +244,11 @@ const formData = {
             { value: "rajasthan", label: "Rajasthan" },
             { value: "maharashtra", label: "Maharashtra" }
           ]
+        },
+        {
+          name: "dob",
+          label: "Date of Birth",
+          type: "date"
         }
       ]
     }

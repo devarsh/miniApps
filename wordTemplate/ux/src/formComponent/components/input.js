@@ -1,13 +1,12 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
-import shallowEqual from "../utils/shallowEqual";
-import { useDebouncedCallback } from "use-debounce";
-import { showComponent, asyncValidationWrapper } from "./utils";
 import Grid from "@material-ui/core/Grid";
-import { RenderContext } from "../renderProvider";
+import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import CircularProgress from "@material-ui/core/CircularProgress";
-export const MyTextField = React.memo(
+import { useDebouncedCallback } from "use-debounce";
+import { MemoComponent } from "../fieldComponent";
+import { asyncValidationWrapper } from "./utils";
+export const MyTextField = MemoComponent(
   ({
     label,
     type,
@@ -16,12 +15,12 @@ export const MyTextField = React.memo(
     mutate,
     runAsyncFn,
     asyncValidationFn = false,
+    renderBag,
     ...others
   }) => {
-    if (showComponent(mutate["show"]) === false) {
+    if (mutate["show"] === false) {
       return;
     }
-    const renderConfig = React.useContext(RenderContext);
     const { name, value, touched, error, asyncError } = mutate;
     const debounceDelay = 200;
     const blurDelay = 500;
@@ -47,7 +46,7 @@ export const MyTextField = React.memo(
       setInputValue(e.target.value);
       handleChangeDebounce(e.target.value);
     };
-
+    const count = React.useRef(0);
     const handleBlurWrapper =
       asyncValidationFn === false
         ? handleBlur
@@ -68,7 +67,7 @@ export const MyTextField = React.memo(
     const userErrorMsg =
       touched && !!error ? error : touched && !!asyncError ? asyncError : null;
     return (
-      <Grid item {...renderConfig.gridConfig.item.size}>
+      <Grid item {...renderBag.gridConfig.item.size}>
         <TextField
           size="small"
           label={label}
@@ -90,17 +89,8 @@ export const MyTextField = React.memo(
           }}
           {...others}
         />
+        {count.current++}
       </Grid>
     );
-  },
-  (prevProps, nextProps) => {
-    if (
-      !shallowEqual(prevProps.mutate, nextProps.mutate) ||
-      prevProps.label !== nextProps.label
-    ) {
-      return false;
-    } else {
-      return true;
-    }
   }
 );
