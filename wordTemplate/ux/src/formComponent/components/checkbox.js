@@ -6,16 +6,10 @@ import FormControl from "@material-ui/core/FormControl";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from "@material-ui/core/Grid";
-import { MemoComponent } from "../fieldComponent";
+import { MemoizeFieldComponent } from "../renderer/memoizer";
+import { isChecked } from "./utils";
 
-const isChecked = (currentValues, value) => {
-  if (Array.isArray(currentValues)) {
-    return currentValues.indexOf(value) < 0 ? false : true;
-  }
-  return false;
-};
-
-export const MyCheckbox = MemoComponent(
+export const MyCheckbox = MemoizeFieldComponent(
   ({ label, options, handleBlur, handleChange, mutate, type, renderBag }) => {
     if (mutate["show"] === false) {
       return;

@@ -10,7 +10,7 @@ import {
   MySwitch
 } from "../components/index";
 import ArrayField from "./arrayComponent";
-import { FieldBagWrapper } from "../fieldComponent";
+import { FieldBagWrapper } from "./fieldBagWrapper";
 
 const renderField = (field, index = "") => {
   const { type, name, label } = field;

@@ -5,7 +5,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from "@material-ui/core/Grid";
-import { MemoComponent } from "../fieldComponent";
+import { MemoizeFieldComponent } from "../renderer/memoizer";
 
 const renderMenuItems = options => {
   if (!Array.isArray(options)) {
@@ -73,7 +73,7 @@ const SelectRender = ({
   );
 };
 
-export const MySelectStatic = MemoComponent(
+export const MySelectStatic = MemoizeFieldComponent(
   ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
     if (mutate["show"] === false) {
       return;
@@ -97,7 +97,7 @@ export const MySelectStatic = MemoComponent(
   }
 );
 
-export const MySelectDependent = MemoComponent(
+export const MySelectDependent = MemoizeFieldComponent(
   ({ label, handleBlur, handleChange, type, mutate, renderBag, callback }) => {
     if (mutate["show"] === false) {
       return;

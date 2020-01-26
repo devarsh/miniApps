@@ -6,9 +6,9 @@ import Radio from "@material-ui/core/Radio";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
-import { MemoComponent } from "../fieldComponent";
+import { MemoizeFieldComponent } from "../renderer/memoizer";
 
-export const MyRadio = MemoComponent(
+export const MyRadio = MemoizeFieldComponent(
   ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
     if (mutate["show"] === false) {
       return;

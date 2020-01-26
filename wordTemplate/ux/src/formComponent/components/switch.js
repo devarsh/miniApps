@@ -6,16 +6,10 @@ import FormControl from "@material-ui/core/FormControl";
 import Switch from "@material-ui/core/Switch";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from "@material-ui/core/Grid";
-import { MemoComponent } from "../fieldComponent";
+import { isChecked } from "./utils";
+import { MemoizeFieldComponent } from "../renderer/memoizer";
 
-const isChecked = (currentValues, value) => {
-  if (Array.isArray(currentValues)) {
-    return currentValues.indexOf(value) < 0 ? false : true;
-  }
-  return false;
-};
-
-export const MySwitch = MemoComponent(
+export const MySwitch = MemoizeFieldComponent(
   ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
     if (mutate["show"] === false) {
       return;

@@ -4,9 +4,10 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useDebouncedCallback } from "use-debounce";
-import { MemoComponent } from "../fieldComponent";
 import { asyncValidationWrapper } from "./utils";
-export const MyTextField = MemoComponent(
+import { MemoizeFieldComponent } from "../renderer/memoizer";
+
+export const MyTextField = MemoizeFieldComponent(
   ({
     label,
     type,

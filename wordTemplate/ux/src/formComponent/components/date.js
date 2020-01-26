@@ -5,9 +5,9 @@ import {
   KeyboardDateTimePicker
 } from "@material-ui/pickers";
 import Grid from "@material-ui/core/Grid";
-import { MemoComponent } from "../fieldComponent";
+import { MemoizeFieldComponent } from "../renderer/memoizer";
 
-export const MyKeyboardDatePicker = MemoComponent(
+export const MyKeyboardDatePicker = MemoizeFieldComponent(
   ({
     label,
     handleBlur,

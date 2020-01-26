@@ -1,10 +1,9 @@
 import React from "react";
 import invariant from "tiny-warning";
 import { FormikContext, getIn } from "formik";
-import { AsyncContext } from "./contexts/useAsync";
-import { RenderContext } from "./contexts/renderProvider";
-import shallowEqual from "./utils/shallowEqual";
-import { showComponent } from "./utils/showComponent";
+import { AsyncContext } from "../contexts/useAsync";
+import { RenderContext } from "../contexts/renderProvider";
+import { showComponent } from "../utils/showComponent";
 
 const useFieldBag = (type, name, others = {}) => {
   invariant(!!name, "name is required");
@@ -42,17 +41,4 @@ const useFieldBag = (type, name, others = {}) => {
 export const FieldBagWrapper = ({ type, name, others, children, ...rest }) => {
   const fieldBag = useFieldBag(type, name, others);
   return React.cloneElement(children, { ...rest, ...fieldBag });
-};
-
-export const MemoComponent = Component => {
-  return React.memo(Component, (prevProps, nextProps) => {
-    if (
-      !shallowEqual(prevProps.mutate, nextProps.mutate) ||
-      prevProps.label !== nextProps.label
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  });
 };
