@@ -9,7 +9,7 @@ import {
   MySlider,
   MySwitch
 } from "../components/index";
-
+import ArrayField from "./arrayComponent";
 import { FieldBagWrapper } from "../fieldComponent";
 
 const renderField = (field, index = "") => {
@@ -126,9 +126,25 @@ const renderField = (field, index = "") => {
         </FieldBagWrapper>
       );
     }
+    case "array": {
+      const { template } = field;
+      return (
+        <ArrayField label={label} parent={name} key={key} template={template} />
+      );
+    }
     default:
       return null;
   }
 };
 
-export default renderField;
+const MetaDataRendered = ({ fieldMetaData }) => {
+  let renderMap = null;
+  if (Array.isArray(fieldMetaData)) {
+    renderMap = fieldMetaData.map((field, index) => {
+      return renderField(field, index);
+    });
+  }
+  return renderMap;
+};
+
+export default MetaDataRendered;

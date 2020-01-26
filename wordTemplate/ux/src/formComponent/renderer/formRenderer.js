@@ -9,7 +9,7 @@ import makeSchemaFromTemplate from "../yupSchemaBuilder";
 import { setIn, getIn, useFormik, FormikProvider } from "formik";
 import useAsync, { AsyncProvider } from "../contexts/useAsync";
 import { RenderProvider, RenderContext } from "../contexts/renderProvider";
-import MetaDataRenderer from "./metaDataRenderer";
+import MetaDataRenderer from "./fieldRenderer";
 
 const constructValues = (dependency, formikBag, asyncBag) => {
   if (!Array.isArray(dependency)) {
