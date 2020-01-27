@@ -72,83 +72,101 @@ const SelectRender = ({
   );
 };
 
-export const MySelectStatic = MemoizeFieldComponent(
-  ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
-    if (mutate["show"] === false) {
-      return null;
-    }
-    const { error, touched, value, name } = mutate;
-    const [menuItems] = React.useState(renderMenuItems(options));
-    return (
-      <SelectRender
-        error={error}
-        label={label}
-        type={type}
-        value={value || ""}
-        name={name}
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        touched={touched}
-        menuItems={menuItems}
-        renderBag={renderBag}
-      />
-    );
-  }
-);
+let MySelectStatic = ({
+  label,
+  options,
+  handleBlur,
+  handleChange,
+  type,
+  mutate,
+  renderBag
+}) => {
+  const { error, touched, value, name, show } = mutate;
+  const [menuItems] = React.useState(renderMenuItems(options));
+  return (
+    <>
+      {show ? (
+        <SelectRender
+          error={error}
+          label={label}
+          type={type}
+          value={value || ""}
+          name={name}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+          touched={touched}
+          menuItems={menuItems}
+          renderBag={renderBag}
+        />
+      ) : null}
+    </>
+  );
+};
 
-export const MySelectDependent = MemoizeFieldComponent(
-  ({ label, handleBlur, handleChange, type, mutate, renderBag, callback }) => {
-    if (mutate["show"] === false) {
-      return null;
-    }
-    const { error, touched, value, name, watch } = mutate;
-    const [menuItems, setMenuItems] = React.useState(renderMenuItems(null));
-    const _mounted = React.useRef(true);
-    /* eslint-disable react-hooks/exhaustive-deps*/
-    useEffect(() => {
-      if (typeof callback === "function" && !!watch) {
-        //remove any existing value, since parent checkbox changed and we're dynamic
-        handleChange({
-          target: {
-            value: "",
-            name: name
-          },
-          type: "click"
+let MySelectDependent = ({
+  label,
+  handleBlur,
+  handleChange,
+  type,
+  mutate,
+  renderBag,
+  callback
+}) => {
+  const { error, touched, value, name, watch, show } = mutate;
+  const [menuItems, setMenuItems] = React.useState(renderMenuItems(null));
+  const _mounted = React.useRef(true);
+  /* eslint-disable react-hooks/exhaustive-deps*/
+  useEffect(() => {
+    if (typeof callback === "function" && !!watch) {
+      //remove any existing value, since parent checkbox changed and we're dynamic
+      handleChange({
+        target: {
+          value: "",
+          name: name
+        },
+        type: "click"
+      });
+      callback(watch)
+        .then(data => {
+          if (_mounted.current) {
+            let menuItemsList = renderMenuItems(data);
+            setMenuItems(menuItemsList);
+          }
+        })
+        .catch(err => {
+          if (_mounted.current) {
+            let menuItemList = renderMenuItems(null);
+            setMenuItems(menuItemList);
+          }
         });
-        callback(watch)
-          .then(data => {
-            if (_mounted.current) {
-              let menuItemsList = renderMenuItems(data);
-              setMenuItems(menuItemsList);
-            }
-          })
-          .catch(err => {
-            if (_mounted.current) {
-              let menuItemList = renderMenuItems(null);
-              setMenuItems(menuItemList);
-            }
-          });
-      }
-    }, [watch]);
-    useEffect(() => {
-      _mounted.current = true;
-      return () => {
-        _mounted.current = false;
-      };
-    });
-    return (
-      <SelectRender
-        error={error}
-        label={label}
-        type={type}
-        value={value || ""}
-        name={name}
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        touched={touched}
-        menuItems={menuItems}
-        renderBag={renderBag}
-      />
-    );
-  }
-);
+    }
+  }, [watch]);
+  useEffect(() => {
+    _mounted.current = true;
+    return () => {
+      _mounted.current = false;
+    };
+  });
+  return (
+    <>
+      {show ? (
+        <SelectRender
+          error={error}
+          label={label}
+          type={type}
+          value={value || ""}
+          name={name}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+          touched={touched}
+          menuItems={menuItems}
+          renderBag={renderBag}
+        />
+      ) : null}
+    </>
+  );
+};
+
+MySelectDependent = MemoizeFieldComponent(MySelectDependent);
+MySelectStatic = MemoizeFieldComponent(MySelectStatic);
+export { MySelectDependent, MySelectStatic };

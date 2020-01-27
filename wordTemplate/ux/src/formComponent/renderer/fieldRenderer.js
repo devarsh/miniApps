@@ -14,7 +14,11 @@ import { FieldBagWrapper } from "./fieldBagWrapper";
 
 export const renderField = (field, index = "") => {
   const { type, name, label, watch, show } = field;
-  const key = `${name}-${index}`;
+  let key;
+  if (index === "") {
+    key = name;
+  }
+  key = `${name}-${index}`;
   const commonProps = { key, type, name, label, others: { watch, show } };
   switch (type) {
     case "text":

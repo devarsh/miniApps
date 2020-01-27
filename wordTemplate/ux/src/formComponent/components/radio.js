@@ -8,44 +8,56 @@ import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
 import { MemoizeFieldComponent } from "../renderer/memoizer";
 
-export const MyRadio = MemoizeFieldComponent(
-  ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
-    if (mutate["show"] === false) {
-      return null;
-    }
-    const { error, touched, value, name } = mutate;
-    let radios;
+let MyRadio = ({
+  label,
+  options,
+  handleBlur,
+  handleChange,
+  type,
+  mutate,
+  renderBag
+}) => {
+  const { error, touched, value, name, show } = mutate;
+  let radios;
 
-    if (Array.isArray(options)) {
-      radios = options.map((currentCheckBox, index) => {
-        /* eslint-disable eqeqeq*/
-        const ischecked = value == currentCheckBox.value;
-        return (
-          <FormControlLabel
-            key={`${index}-${currentCheckBox.value}`}
-            control={
-              <Radio
-                type={type}
-                name={name}
-                value={currentCheckBox.value || ""}
-                checked={ischecked}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-            }
-            label={currentCheckBox.label}
-          />
-        );
-      });
-    }
-    return (
-      <Grid item {...renderBag.gridConfig.item.size}>
-        <FormControl error={touched && !!error}>
-          <FormLabel component="legend">{label}</FormLabel>
-          <FormGroup>{radios}</FormGroup>
-          {touched && !!error ? <FormHelperText>{error}</FormHelperText> : null}
-        </FormControl>
-      </Grid>
-    );
+  if (Array.isArray(options)) {
+    radios = options.map((currentCheckBox, index) => {
+      /* eslint-disable eqeqeq*/
+      const ischecked = value == currentCheckBox.value;
+      return (
+        <FormControlLabel
+          key={`${index}-${currentCheckBox.value}`}
+          control={
+            <Radio
+              type={type}
+              name={name}
+              value={currentCheckBox.value || ""}
+              checked={ischecked}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          }
+          label={currentCheckBox.label}
+        />
+      );
+    });
   }
-);
+  return (
+    <>
+      {show ? (
+        <Grid item {...renderBag.gridConfig.item.size}>
+          <FormControl error={touched && !!error}>
+            <FormLabel component="legend">{label}</FormLabel>
+            <FormGroup>{radios}</FormGroup>
+            {touched && !!error ? (
+              <FormHelperText>{error}</FormHelperText>
+            ) : null}
+          </FormControl>
+        </Grid>
+      ) : null}
+    </>
+  );
+};
+
+MyRadio = MemoizeFieldComponent(MyRadio);
+export { MyRadio };

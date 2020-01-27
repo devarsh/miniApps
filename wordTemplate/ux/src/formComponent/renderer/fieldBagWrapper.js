@@ -29,17 +29,14 @@ const useFieldBag = (type, name, others = {}) => {
   if (!!watch) {
     fieldBag.mutate.watch = getIn(formikBag.values, watch);
   }
+  fieldBag.mutate.show = true;
   if (Array.isArray(show) && show.length === 2) {
     const [callback, watcher] = show;
     if (typeof callback === "function") {
       const value = getIn(formikBag.values, watcher);
       const result = callback(value);
       fieldBag.mutate.show = showComponent(result);
-    } else {
-      fieldBag.mutate.show = true;
     }
-  } else {
-    fieldBag.mutate.show = true;
   }
   return fieldBag;
 };
