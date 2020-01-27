@@ -20,7 +20,7 @@ export const MyTextField = MemoizeFieldComponent(
     ...others
   }) => {
     if (mutate["show"] === false) {
-      return;
+      return null;
     }
     const { name, value, touched, error, asyncError } = mutate;
     const debounceDelay = 200;

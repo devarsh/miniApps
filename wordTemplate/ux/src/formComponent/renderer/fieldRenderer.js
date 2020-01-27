@@ -12,35 +12,22 @@ import {
 import ArrayField from "./arrayComponent";
 import { FieldBagWrapper } from "./fieldBagWrapper";
 
-const renderField = (field, index = "") => {
-  const { type, name, label } = field;
+export const renderField = (field, index = "") => {
+  const { type, name, label, watch, show } = field;
   const key = `${name}-${index}`;
+  const commonProps = { key, type, name, label, others: { watch, show } };
   switch (type) {
     case "text":
       const { asyncValidationFn } = field;
       return (
-        <FieldBagWrapper
-          key={key}
-          label={label}
-          asyncValidationFn={asyncValidationFn}
-          name={name}
-          type={type}
-        >
+        <FieldBagWrapper {...commonProps} asyncValidationFn={asyncValidationFn}>
           <MyTextField />
         </FieldBagWrapper>
       );
     case "slider": {
       const { min, max, step } = field;
       return (
-        <FieldBagWrapper
-          label={label}
-          type={type}
-          name={name}
-          min={min}
-          max={max}
-          step={step}
-          key={key}
-        >
+        <FieldBagWrapper {...commonProps} min={min} max={max} step={step}>
           <MySlider />
         </FieldBagWrapper>
       );
@@ -48,13 +35,7 @@ const renderField = (field, index = "") => {
     case "radio": {
       const { options } = field;
       return (
-        <FieldBagWrapper
-          options={options}
-          label={label}
-          type={type}
-          name={name}
-          key={key}
-        >
+        <FieldBagWrapper {...commonProps} options={options}>
           <MyRadio />
         </FieldBagWrapper>
       );
@@ -62,13 +43,7 @@ const renderField = (field, index = "") => {
     case "switch": {
       const { options } = field;
       return (
-        <FieldBagWrapper
-          options={options}
-          label={label}
-          type={"checkbox"}
-          name={name}
-          key={key}
-        >
+        <FieldBagWrapper {...commonProps} options={options}>
           <MySwitch />
         </FieldBagWrapper>
       );
@@ -76,13 +51,7 @@ const renderField = (field, index = "") => {
     case "checkbox": {
       const { options } = field;
       return (
-        <FieldBagWrapper
-          name={name}
-          type={type}
-          options={options}
-          label={label}
-          key={key}
-        >
+        <FieldBagWrapper {...commonProps} options={options}>
           <MyCheckbox />
         </FieldBagWrapper>
       );
@@ -91,28 +60,18 @@ const renderField = (field, index = "") => {
       const { options, defaultValue } = field;
       return (
         <FieldBagWrapper
+          {...commonProps}
           options={options}
           defaultValue={defaultValue}
-          label={label}
-          type="select"
-          name={name}
-          key={key}
         >
           <MySelectStatic />
         </FieldBagWrapper>
       );
     }
     case "selectDependent": {
-      const { callback, watch } = field;
+      const { callback } = field;
       return (
-        <FieldBagWrapper
-          label={label}
-          callback={callback}
-          type="select"
-          name={name}
-          others={{ watch }}
-          key={key}
-        >
+        <FieldBagWrapper {...commonProps} callback={callback}>
           <MySelectDependent />
         </FieldBagWrapper>
       );
@@ -121,16 +80,14 @@ const renderField = (field, index = "") => {
     case "time":
     case "datetime": {
       return (
-        <FieldBagWrapper label={label} type={type} name={name} key={key}>
+        <FieldBagWrapper {...commonProps}>
           <MyKeyboardDatePicker />
         </FieldBagWrapper>
       );
     }
     case "array": {
       const { template } = field;
-      return (
-        <ArrayField label={label} parent={name} key={key} template={template} />
-      );
+      return <ArrayField {...commonProps} template={template} />;
     }
     default:
       return null;
@@ -138,13 +95,13 @@ const renderField = (field, index = "") => {
 };
 
 const MetaDataRendered = ({ fieldMetaData }) => {
-  let renderMap = null;
   if (Array.isArray(fieldMetaData)) {
-    renderMap = fieldMetaData.map((field, index) => {
+    const renderMap = fieldMetaData.map((field, index) => {
       return renderField(field, index);
     });
+    return renderMap;
   }
-  return renderMap;
+  return null;
 };
 
 export default MetaDataRendered;

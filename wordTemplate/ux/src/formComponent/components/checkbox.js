@@ -12,7 +12,7 @@ import { isChecked } from "./utils";
 export const MyCheckbox = MemoizeFieldComponent(
   ({ label, options, handleBlur, handleChange, mutate, type, renderBag }) => {
     if (mutate["show"] === false) {
-      return;
+      return null;
     }
     const { error, touched, value, name } = mutate;
     let checkboxes;

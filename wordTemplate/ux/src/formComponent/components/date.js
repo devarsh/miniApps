@@ -19,7 +19,7 @@ export const MyKeyboardDatePicker = MemoizeFieldComponent(
     ...others
   }) => {
     if (mutate["show"] === false) {
-      return;
+      return null;
     }
     const { error, touched, value, name } = mutate;
     const handleDateChange = date => {

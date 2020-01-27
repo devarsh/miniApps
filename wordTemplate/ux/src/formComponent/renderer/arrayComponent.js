@@ -4,7 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import { FormikContext, FieldArray, setIn, getIn } from "formik";
 import { AsyncContext } from "../contexts/useAsync";
 import { RenderContext } from "../contexts/renderProvider";
-import renderField from "./fieldRenderer.js";
+import { renderField } from "./fieldRenderer.js";
 import { remove as removeAsyncFn } from "../utils/formikArrayUtils";
 
 const generateTemplateRow = template => {
@@ -57,16 +57,16 @@ const TemplateRow = ({
   return <>{fieldRow}</>;
 };
 
-const Template = ({ template, parent, label }) => {
+const Template = ({ template, name }) => {
   const asyncBag = React.useContext(AsyncContext);
   const formikBag = React.useContext(FormikContext);
   const renderBag = React.useContext(RenderContext);
   const templateObject = React.useRef(generateTemplateRow(template));
-  const templateFieldValue = formikBag.values[parent];
+  const templateFieldValue = formikBag.values[name];
   return (
     <Grid container item xs={12} {...renderBag.gridConfig.container}>
       <FieldArray
-        name={parent}
+        name={name}
         render={({ push, remove }) => {
           if (templateFieldValue && templateFieldValue.length > 0) {
             const result = templateFieldValue.map((_, index) => {
@@ -80,7 +80,7 @@ const Template = ({ template, parent, label }) => {
                 >
                   <TemplateRow
                     template={template}
-                    parent={parent}
+                    parent={name}
                     index={index}
                     setAsyncErrors={asyncBag.setErrors}
                     remove={remove}

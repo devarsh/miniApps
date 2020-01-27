@@ -26,7 +26,6 @@ const renderMenuItems = options => {
 const SelectRender = ({
   error,
   label,
-  type,
   value,
   name,
   handleChange,
@@ -58,7 +57,7 @@ const SelectRender = ({
         </InputLabel>
         <Select
           labelId={`${label}-${name}`}
-          type={type}
+          type={"select"}
           value={value || []}
           name={name}
           onChange={handleChange}
@@ -76,7 +75,7 @@ const SelectRender = ({
 export const MySelectStatic = MemoizeFieldComponent(
   ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
     if (mutate["show"] === false) {
-      return;
+      return null;
     }
     const { error, touched, value, name } = mutate;
     const [menuItems] = React.useState(renderMenuItems(options));
@@ -100,7 +99,7 @@ export const MySelectStatic = MemoizeFieldComponent(
 export const MySelectDependent = MemoizeFieldComponent(
   ({ label, handleBlur, handleChange, type, mutate, renderBag, callback }) => {
     if (mutate["show"] === false) {
-      return;
+      return null;
     }
     const { error, touched, value, name, watch } = mutate;
     const [menuItems, setMenuItems] = React.useState(renderMenuItems(null));

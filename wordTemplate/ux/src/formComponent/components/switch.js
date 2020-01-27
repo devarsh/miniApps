@@ -10,9 +10,9 @@ import { isChecked } from "./utils";
 import { MemoizeFieldComponent } from "../renderer/memoizer";
 
 export const MySwitch = MemoizeFieldComponent(
-  ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
+  ({ label, options, handleBlur, handleChange, mutate, renderBag }) => {
     if (mutate["show"] === false) {
-      return;
+      return null;
     }
     const { error, touched, value, name } = mutate;
     let switches;
@@ -29,7 +29,7 @@ export const MySwitch = MemoizeFieldComponent(
           key={`${index}-${currentCheckBox.value}`}
           control={
             <Switch
-              type={type}
+              type="checkbox"
               name={name}
               value={currentCheckBox.value || ""}
               checked={isChecked(value, currentCheckBox.value)}

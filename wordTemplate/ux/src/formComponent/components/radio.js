@@ -11,7 +11,7 @@ import { MemoizeFieldComponent } from "../renderer/memoizer";
 export const MyRadio = MemoizeFieldComponent(
   ({ label, options, handleBlur, handleChange, type, mutate, renderBag }) => {
     if (mutate["show"] === false) {
-      return;
+      return null;
     }
     const { error, touched, value, name } = mutate;
     let radios;

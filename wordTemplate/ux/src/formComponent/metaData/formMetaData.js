@@ -121,7 +121,8 @@ const formData = {
       options: [
         { value: 1, label: "Boy" },
         { value: 2, label: "Girl" }
-      ]
+      ],
+      show: [val => val == 1, "gender"]
     },
     {
       group: "groupB",

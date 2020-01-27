@@ -8,6 +8,7 @@ import { MemoizeFieldComponent } from "../renderer/memoizer";
 export const MySlider = MemoizeFieldComponent(
   ({
     label,
+    type,
     handleBlur,
     handleChange,
     mutate,
@@ -16,7 +17,7 @@ export const MySlider = MemoizeFieldComponent(
     ...others
   }) => {
     if (mutate["show"] === false) {
-      return;
+      return null;
     }
     const { error, touched, value, name } = mutate;
     const handleSliderChange = (_, v) => {
@@ -42,7 +43,7 @@ export const MySlider = MemoizeFieldComponent(
           onChange={handleSliderChange}
           onBlur={handleSliderBlur}
           value={value || 0}
-          type={"slider"}
+          type={type}
           name={name}
           {...others}
         />

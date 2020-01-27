@@ -33,11 +33,7 @@ const FormRenderer = ({ formMetaData }) => {
           <AsyncProvider value={asyncBag}>
             <FormikProvider value={formikBag}>
               {renderType === "groups" ? (
-                <GroupFormRenderer
-                  formMetaData={formMetaData}
-                  asyncBag={asyncBag}
-                  formikBag={formikBag}
-                />
+                <GroupFormRenderer formMetaData={formMetaData} />
               ) : (
                 <SimpleFormRenderer formMetaData={formMetaData} />
               )}
