@@ -4,6 +4,7 @@ import toPath from "lodash/toPath";
 import PromiseQueue from "../utils/promiseQueue";
 
 export const AsyncContext = React.createContext({});
+AsyncContext.displayName = "AsyncContext";
 export const AsyncProvider = AsyncContext.Provider;
 
 const useAsync = () => {

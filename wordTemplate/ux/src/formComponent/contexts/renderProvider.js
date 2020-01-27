@@ -2,6 +2,7 @@ import React from "react";
 import merge from "lodash/merge";
 
 export const RenderContext = React.createContext(null);
+RenderContext.displayName = "RenderContext";
 
 export const RenderProvider = ({ value, children }) => {
   if (!typeof value === "object") {
