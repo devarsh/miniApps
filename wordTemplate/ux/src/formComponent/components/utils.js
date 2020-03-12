@@ -6,12 +6,12 @@ export const asyncValidationWrapper = async (
   key,
   value,
   validationFn,
-  loadingFn,
-  timeout = 2
+  loadingFn = () => {},
+  ...others
 ) => {
   try {
     loadingFn(true);
-    const res = await validationFn(key, value, timeout);
+    const res = await validationFn(key, value, 2);
     return Promise.resolve(res);
   } catch (e) {
     return Promise.reject(e);

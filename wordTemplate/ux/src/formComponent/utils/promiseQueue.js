@@ -50,26 +50,51 @@ export const ErrorConst = {
 const defaultConfig = {
   cacheInvalidateTimeInSeconds: 30,
   timeoutInSeconds: 15,
-  cleanupIntervalInSeconds: 1,
-  enableLogging: process.env.NODE_ENV === "development"
+  cleanupIntervalInSeconds: 1
 };
 
 const PromiseQueue = (userConfig = {}) => {
   let _internalQueue = {};
   let interval = null;
+  let globalWaitResolver = () => {};
+  let globalWaitPromise;
+  let globalWaitPromiseState = "resolved";
   const config = { ...defaultConfig, ...userConfig };
   const {
     cacheInvalidateTimeInSeconds,
     timeoutInSeconds,
-    cleanupIntervalInSeconds,
-    enableLogging
+    cleanupIntervalInSeconds
   } = config;
+
+  const waitForEnd = () => {
+    if (
+      globalWaitPromiseState === "pending" &&
+      Promise.resolve(globalWaitPromise) === globalWaitPromise
+    ) {
+      return globalWaitPromise;
+    } else {
+      globalWaitPromise = new Promise(res => {
+        globalWaitResolver = res;
+        globalWaitPromiseState = "pending";
+        if (interval === null) {
+          globalWaitResolverHandler();
+        }
+      });
+      return globalWaitPromise;
+    }
+  };
+
+  const globalWaitResolverHandler = () => {
+    globalWaitResolver(true);
+    globalWaitPromiseState = "resolved";
+    globalWaitPromise = null;
+    globalWaitResolver = () => {};
+  };
 
   const cancelFn = (reason, callback, key) => {
     _internalQueue[key][DONE] = true;
     _internalQueue[key][ENDTIME] = Date.now();
     callback(reason);
-    enableLogging && console.log(`Promise Ended:[${key}]:`, _internalQueue);
   };
 
   const functionWrapper = (fn, key, value, ...others) => {
@@ -91,8 +116,6 @@ const PromiseQueue = (userConfig = {}) => {
             cancelFn(reason, rej, key);
           }
         };
-        enableLogging &&
-          console.log(`Promise Started:[${key}]:`, _internalQueue);
         let result = await Promise.resolve(
           fn(isCancelled, key, value, ...others)
         );
@@ -110,8 +133,6 @@ const PromiseQueue = (userConfig = {}) => {
         if (!cancelled) {
           _internalQueue[key][DONE] = true;
           _internalQueue[key][ENDTIME] = Date.now();
-          enableLogging &&
-            console.log(`Promise Ended:[${key}]:`, _internalQueue);
         }
       }
     });
@@ -166,6 +187,9 @@ const PromiseQueue = (userConfig = {}) => {
     if (count() === 0) {
       stopCleanUp();
     }
+    if (globalWaitPromiseState === "pending" && activeCount() === 0) {
+      globalWaitResolverHandler();
+    }
   };
   const activeCount = () => {
     let count = 0;
@@ -205,7 +229,8 @@ const PromiseQueue = (userConfig = {}) => {
     activeCount,
     resetQueue,
     startCleanUp,
-    stopCleanUp
+    stopCleanUp,
+    waitForEnd
   };
 };
 
@@ -264,9 +289,8 @@ export default PromiseQueue;
     });
   };
 */
-
 /*
-const fetchResult = async (key, value, timeout) => {
+const fetchResult = async (cancelFn, key, value, timeout) => {
   try {
     const res = await fetch(
       `http://localhost:8081/error?sleep=${timeout}&name=${value}`,
@@ -286,7 +310,7 @@ const fetchResult = async (key, value, timeout) => {
   }
 };
 
-(function abc() {
+(async function abc() {
   const names = [
     { path: "name", value: "name1", timeout: 5 },
     { path: "address", value: "name2", timeout: 5 },
@@ -324,5 +348,7 @@ const fetchResult = async (key, value, timeout) => {
         .catch(e => console.log("err", path, value, e));
     });
   }, 5000);
+  await newQueue.waitForEnd();
+  console.log("samapt");
 })();
-//*/
+*/

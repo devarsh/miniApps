@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import {
   KeyboardDatePicker,
   KeyboardTimePicker,
@@ -15,9 +15,11 @@ let MyKeyboardDatePicker = ({
   type,
   runAsyncFn,
   renderBag,
+  registerField,
+  unregisterField,
   ...others
 }) => {
-  const { error, touched, value, name, show } = mutate;
+  const { error, touched, value, name, disabled } = mutate;
   const handleDateChange = date => {
     handleChange({
       target: {
@@ -26,6 +28,10 @@ let MyKeyboardDatePicker = ({
       }
     });
   };
+  React.useEffect(() => {
+    registerField(name);
+    return () => unregisterField(name);
+  }, [registerField, unregisterField, name]);
   const ComponentType =
     type === "date"
       ? KeyboardDatePicker
@@ -43,28 +49,25 @@ let MyKeyboardDatePicker = ({
       ? "dd/MM/yyyy h:mm:ss aaaa"
       : "dd/MM/yyyy";
   return (
-    <>
-      {show ? (
-        <Grid item {...renderBag.gridConfig.item.size}>
-          <ComponentType
-            disableToolbar
-            label={label}
-            error={touched && !!error}
-            helperText={touched && error}
-            onChange={handleDateChange}
-            onBlur={handleBlur}
-            value={!!value ? new Date(value) : new Date()}
-            type={"text"}
-            inputVariant="outlined"
-            size="small"
-            name={name}
-            {...others}
-            fullWidth={true}
-            format={format}
-          />
-        </Grid>
-      ) : null}
-    </>
+    <Grid item {...renderBag.gridConfig.item.size}>
+      <ComponentType
+        disabled={disabled}
+        disableToolbar
+        label={label}
+        error={touched && !!error}
+        helperText={touched && error}
+        onChange={handleDateChange}
+        onBlur={handleBlur}
+        value={!!value ? new Date(value) : new Date()}
+        type={"text"}
+        inputVariant="outlined"
+        size="small"
+        name={name}
+        {...others}
+        fullWidth={true}
+        format={format}
+      />
+    </Grid>
   );
 };
 

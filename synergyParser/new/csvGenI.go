@@ -14,6 +14,7 @@ import (
 func writeInvoiceToCsv(invoice *FinalInvoices) {
 	if invoice == nil {
 		fmt.Println("Invoice is not found")
+		return
 	}
 	records := make([][]string, 0)
 	headerRecord := []string{"Name (EID)", "From", "To", "Days", "Amt"}

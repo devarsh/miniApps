@@ -4,16 +4,9 @@ import AppBar from "@material-ui/core/AppBar";
 import ToolBar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import grey from "@material-ui/core/colors/grey";
-
-import {
-  ThemeProvider,
-  makeStyles,
-  createMuiTheme
-} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import SaveIcon from "@material-ui/icons/Save";
-import EditIcon from "@material-ui/icons/Edit";
-import Add from "@material-ui/icons/Add";
+import ClearAllIcon from "@material-ui/icons/ClearAll";
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -39,13 +32,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column"
   }
 }));
-const FormContainer = ({ children, saveFn }) => {
-  if (!typeof saveFn === "function") {
-    console.log("saveFn not passed");
-    saveFn = () => {
-      alert("save function not passed");
-    };
-  }
+const FormContainer = ({ children, handleSubmit, handleReset }) => {
   const classes = useStyles();
   return (
     <Paper square>
@@ -60,21 +47,19 @@ const FormContainer = ({ children, saveFn }) => {
         <AppBar position="relative" color="secondary" elevation={0} square>
           <ToolBar variant="dense">
             <div className={classes.sectionDesktop}>
-              <Button className={classes.button} startIcon={<Add>New</Add>}>
-                New
-              </Button>
               <Button
-                className={classes.button}
-                startIcon={<EditIcon>New</EditIcon>}
-              >
-                Edit
-              </Button>
-              <Button
-                onClick={saveFn}
+                onClick={handleSubmit}
                 className={classes.button}
                 startIcon={<SaveIcon>Save</SaveIcon>}
               >
                 Save
+              </Button>
+              <Button
+                onClick={handleReset}
+                className={classes.button}
+                startIcon={<ClearAllIcon>Reset</ClearAllIcon>}
+              >
+                Reset
               </Button>
             </div>
           </ToolBar>
@@ -85,22 +70,4 @@ const FormContainer = ({ children, saveFn }) => {
   );
 };
 
-const Wrapper = ({ children }) => {
-  const theme = createMuiTheme({
-    palette: {
-      primary: {
-        main: grey[900]
-      },
-      secondary: {
-        main: grey[300]
-      }
-    }
-  });
-  return (
-    <ThemeProvider theme={theme}>
-      <FormContainer>{children}</FormContainer>
-    </ThemeProvider>
-  );
-};
-
-export default Wrapper;
+export default FormContainer;

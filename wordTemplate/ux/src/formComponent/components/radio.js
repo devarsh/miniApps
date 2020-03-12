@@ -15,11 +15,16 @@ let MyRadio = ({
   handleChange,
   type,
   mutate,
-  renderBag
+  renderBag,
+  registerField,
+  unregisterField
 }) => {
-  const { error, touched, value, name, show } = mutate;
+  const { error, touched, value, name, disabled } = mutate;
   let radios;
-
+  React.useEffect(() => {
+    registerField(name);
+    return () => unregisterField(name);
+  }, [registerField, unregisterField, name]);
   if (Array.isArray(options)) {
     radios = options.map((currentCheckBox, index) => {
       /* eslint-disable eqeqeq*/
@@ -27,6 +32,7 @@ let MyRadio = ({
       return (
         <FormControlLabel
           key={`${index}-${currentCheckBox.value}`}
+          disabled={disabled}
           control={
             <Radio
               type={type}
@@ -43,19 +49,13 @@ let MyRadio = ({
     });
   }
   return (
-    <>
-      {show ? (
-        <Grid item {...renderBag.gridConfig.item.size}>
-          <FormControl error={touched && !!error}>
-            <FormLabel component="legend">{label}</FormLabel>
-            <FormGroup>{radios}</FormGroup>
-            {touched && !!error ? (
-              <FormHelperText>{error}</FormHelperText>
-            ) : null}
-          </FormControl>
-        </Grid>
-      ) : null}
-    </>
+    <Grid item {...renderBag.gridConfig.item.size}>
+      <FormControl error={touched && !!error}>
+        <FormLabel component="legend">{label}</FormLabel>
+        <FormGroup>{radios}</FormGroup>
+        {touched && !!error ? <FormHelperText>{error}</FormHelperText> : null}
+      </FormControl>
+    </Grid>
   );
 };
 

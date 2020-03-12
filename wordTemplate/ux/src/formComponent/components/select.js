@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -32,7 +32,8 @@ const SelectRender = ({
   handleBlur,
   touched,
   menuItems,
-  renderBag
+  renderBag,
+  disabled
 }) => {
   const selectLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
@@ -46,6 +47,7 @@ const SelectRender = ({
         variant="outlined"
         error={touched && !!error}
         size="small"
+        disabled={disabled}
       >
         <InputLabel
           ref={selectLabel}
@@ -79,27 +81,30 @@ let MySelectStatic = ({
   handleChange,
   type,
   mutate,
-  renderBag
+  renderBag,
+  registerField,
+  unregisterField
 }) => {
-  const { error, touched, value, name, show } = mutate;
+  const { error, touched, value, name, disabled } = mutate;
+  React.useEffect(() => {
+    registerField(name);
+    return () => unregisterField(name);
+  }, [registerField, unregisterField, name]);
   const [menuItems] = React.useState(renderMenuItems(options));
   return (
-    <>
-      {show ? (
-        <SelectRender
-          error={error}
-          label={label}
-          type={type}
-          value={value || ""}
-          name={name}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          touched={touched}
-          menuItems={menuItems}
-          renderBag={renderBag}
-        />
-      ) : null}
-    </>
+    <SelectRender
+      error={error}
+      label={label}
+      type={type}
+      value={value || ""}
+      name={name}
+      handleChange={handleChange}
+      handleBlur={handleBlur}
+      touched={touched}
+      menuItems={menuItems}
+      renderBag={renderBag}
+      disabled={disabled}
+    />
   );
 };
 
@@ -110,13 +115,15 @@ let MySelectDependent = ({
   type,
   mutate,
   renderBag,
-  callback
+  callback,
+  registerField,
+  unregisterField
 }) => {
-  const { error, touched, value, name, watch, show } = mutate;
+  const { error, touched, value, name, watch, disabled } = mutate;
   const [menuItems, setMenuItems] = React.useState(renderMenuItems(null));
   const _mounted = React.useRef(true);
   /* eslint-disable react-hooks/exhaustive-deps*/
-  useEffect(() => {
+  React.useEffect(() => {
     if (typeof callback === "function" && !!watch) {
       //remove any existing value, since parent checkbox changed and we're dynamic
       handleChange({
@@ -141,29 +148,30 @@ let MySelectDependent = ({
         });
     }
   }, [watch]);
-  useEffect(() => {
+  React.useEffect(() => {
     _mounted.current = true;
     return () => {
       _mounted.current = false;
     };
-  });
+  }, []);
+  React.useEffect(() => {
+    registerField(name);
+    return () => unregisterField(name);
+  }, [registerField, unregisterField, name]);
   return (
-    <>
-      {show ? (
-        <SelectRender
-          error={error}
-          label={label}
-          type={type}
-          value={value || ""}
-          name={name}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          touched={touched}
-          menuItems={menuItems}
-          renderBag={renderBag}
-        />
-      ) : null}
-    </>
+    <SelectRender
+      error={error}
+      label={label}
+      type={type}
+      value={value || ""}
+      name={name}
+      handleChange={handleChange}
+      handleBlur={handleBlur}
+      touched={touched}
+      menuItems={menuItems}
+      renderBag={renderBag}
+      disabled={disabled}
+    />
   );
 };
 

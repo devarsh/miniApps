@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -16,20 +16,56 @@ let MyTextField = ({
   runAsyncFn,
   asyncValidationFn = false,
   renderBag,
+  registerField,
+  unregisterField,
   ...others
 }) => {
-  const { name, value, touched, error, asyncError, show } = mutate;
+  const {
+    name,
+    value,
+    touched,
+    error,
+    asyncError,
+    executeAsync,
+    disabled
+  } = mutate;
   const debounceDelay = 200;
   const blurDelay = 500;
+  const count = React.useRef(0);
+  const asyncRunCount = React.useRef(0);
   const [inputValue, setInputValue] = React.useState(value);
   const [asyncLoader, setAsyncLoader] = React.useState(false);
-  //need reference to sync error between renders to determine when async validation should be dispatched
-  //if font-end error exist dont call async validation.
+  /*need reference to sync error between renders to determine 
+  when async validation should be dispatched
+  if font-end error exist dont call async validation.*/
   const syncError = React.useRef(error);
   syncError.current = error;
+  /* run async validation if never ran and user had passed it */
+  /*eslint-disable react-hooks/exhaustive-deps*/
+  React.useEffect(() => {
+    if (asyncRunCount.current === 0 && executeAsync === true) {
+      asyncRunCount.current++;
+      runAsyncFn(
+        asyncValidationWrapper,
+        name,
+        inputValue,
+        asyncValidationFn,
+        setAsyncLoader
+      );
+    }
+  }, [executeAsync]);
+  /*register and unregister field*/
+  React.useEffect(() => {
+    registerField(name, asyncValidationFn);
+    return () => unregisterField(name);
+  }, [registerField, unregisterField, name]);
+  /*everytime component re-renders, reset the formvalue 
+  to the value coming from props to avoid any kind of data inconsistency*/
   React.useEffect(() => {
     setInputValue(value);
   }, [value]);
+  /*debounce the handleChange event and mainatin the state locally 
+  to avoid rendering the entier form on every keystroke*/
   const [handleChangeDebounce] = useDebouncedCallback(value => {
     const e = {
       target: {
@@ -43,7 +79,9 @@ let MyTextField = ({
     setInputValue(e.target.value);
     handleChangeDebounce(e.target.value);
   };
-  const count = React.useRef(0);
+  /*handleBlur wrapper would wrap async error calls, incase user had 
+  enabled async validation otherwise fallback to actual handleblur 
+  which would only check for static error*/
   const handleBlurWrapper =
     asyncValidationFn === false
       ? handleBlur
@@ -51,6 +89,7 @@ let MyTextField = ({
           handleBlur(e);
           setTimeout(() => {
             if (!!syncError.current === false && inputValue !== "") {
+              asyncRunCount.current++;
               runAsyncFn(
                 asyncValidationWrapper,
                 name,
@@ -64,34 +103,31 @@ let MyTextField = ({
   const userErrorMsg =
     touched && !!error ? error : touched && !!asyncError ? asyncError : null;
   return (
-    <>
-      {show ? (
-        <Grid item {...renderBag.gridConfig.item.size}>
-          <TextField
-            size="small"
-            label={label}
-            error={!!userErrorMsg}
-            helperText={userErrorMsg}
-            onChange={handleChangeWrapper}
-            onBlur={handleBlurWrapper}
-            type={type}
-            name={name}
-            value={inputValue || ""}
-            fullWidth={true}
-            variant="outlined"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  {asyncLoader && <CircularProgress size={24} thickness={4} />}
-                </InputAdornment>
-              )
-            }}
-            {...others}
-          />
-          {count.current++}
-        </Grid>
-      ) : null}
-    </>
+    <Grid item {...renderBag.gridConfig.item.size}>
+      <TextField
+        disabled={disabled}
+        size="small"
+        label={label}
+        error={!!userErrorMsg}
+        helperText={userErrorMsg}
+        onChange={handleChangeWrapper}
+        onBlur={handleBlurWrapper}
+        type={type}
+        name={name}
+        value={inputValue || ""}
+        fullWidth={true}
+        variant="outlined"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="start">
+              {asyncLoader && <CircularProgress size={24} thickness={4} />}
+            </InputAdornment>
+          )
+        }}
+        {...others}
+      />
+      {count.current++}
+    </Grid>
   );
 };
 

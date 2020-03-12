@@ -13,9 +13,15 @@ let MySlider = ({
   mutate,
   runAsyncFn,
   renderBag,
+  registerField,
+  unregisterField,
   ...others
 }) => {
-  const { error, touched, value, name, show } = mutate;
+  const { error, touched, value, name, disabled } = mutate;
+  React.useEffect(() => {
+    registerField(name);
+    return () => unregisterField(name);
+  }, [registerField, unregisterField, name]);
   const handleSliderChange = (_, v) => {
     handleChange({
       target: {
@@ -33,22 +39,21 @@ let MySlider = ({
   };
 
   return (
-    <>
-      {show ? (
-        <Grid item {...renderBag.gridConfig.item.size}>
-          <InputLabel component="legend">{label}</InputLabel>
-          <Slider
-            onChange={handleSliderChange}
-            onBlur={handleSliderBlur}
-            value={value || 0}
-            type={type}
-            name={name}
-            {...others}
-          />
-          {touched && !!error ? <FormHelperText>{error}</FormHelperText> : null}
-        </Grid>
-      ) : null}
-    </>
+    <Grid item {...renderBag.gridConfig.item.size}>
+      <InputLabel disabled={disabled} component="legend">
+        {label}
+      </InputLabel>
+      <Slider
+        onChange={handleSliderChange}
+        onBlur={handleSliderBlur}
+        value={value || 0}
+        type={type}
+        name={name}
+        disabled={disabled}
+        {...others}
+      />
+      {touched && !!error ? <FormHelperText>{error}</FormHelperText> : null}
+    </Grid>
   );
 };
 

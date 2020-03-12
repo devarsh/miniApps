@@ -2,7 +2,7 @@ import React from "react";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Grid from "@material-ui/core/Grid";
-import { RenderContext } from "../../contexts/renderProvider";
+import { RenderContext } from "../../context/renderProvider";
 import MetaDataRenderer from "../fieldRenderer";
 import {
   MemoizeGroupComponent,

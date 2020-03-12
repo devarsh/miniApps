@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -16,14 +16,21 @@ let MyCheckbox = ({
   handleChange,
   mutate,
   type,
-  renderBag
+  renderBag,
+  registerField,
+  unregisterField
 }) => {
-  const { error, touched, value, name, show } = mutate;
+  const { error, touched, value, name, disabled } = mutate;
   let checkboxes;
+  React.useEffect(() => {
+    registerField(name);
+    return () => unregisterField(name);
+  }, [registerField, unregisterField, name]);
   if (Array.isArray(options)) {
     checkboxes = options.map((currentCheckBox, index) => (
       <FormControlLabel
         key={`${index}-${currentCheckBox.value}`}
+        disabled={disabled}
         control={
           <Checkbox
             type={type}
@@ -39,19 +46,13 @@ let MyCheckbox = ({
     ));
   }
   return (
-    <>
-      {show ? (
-        <Grid item {...renderBag.gridConfig.item.size}>
-          <FormControl error={touched && !!error}>
-            <FormLabel component="legend">{label}</FormLabel>
-            <FormGroup>{checkboxes}</FormGroup>
-            {touched && !!error ? (
-              <FormHelperText>{error}</FormHelperText>
-            ) : null}
-          </FormControl>
-        </Grid>
-      ) : null}
-    </>
+    <Grid item {...renderBag.gridConfig.item.size}>
+      <FormControl error={touched && !!error}>
+        <FormLabel component="legend">{label}</FormLabel>
+        <FormGroup>{checkboxes}</FormGroup>
+        {touched && !!error ? <FormHelperText>{error}</FormHelperText> : null}
+      </FormControl>
+    </Grid>
   );
 };
 

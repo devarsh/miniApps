@@ -15,14 +15,21 @@ let MySwitch = ({
   handleBlur,
   handleChange,
   mutate,
-  renderBag
+  renderBag,
+  registerField,
+  unregisterField
 }) => {
-  const { error, touched, value, name, show } = mutate;
+  const { error, touched, value, name, disabled } = mutate;
   let switches;
+  React.useEffect(() => {
+    registerField(name);
+    return () => unregisterField(name);
+  }, [registerField, unregisterField, name]);
   if (Array.isArray(options)) {
     switches = options.map((currentCheckBox, index) => (
       <FormControlLabel
         key={`${index}-${currentCheckBox.value}`}
+        disabled={disabled}
         control={
           <Switch
             type="checkbox"
@@ -38,19 +45,15 @@ let MySwitch = ({
     ));
   }
   return (
-    <>
-      {show ? (
-        <Grid item {...renderBag.gridConfig.item.size}>
-          <FormControl>
-            <FormLabel error={!!error} component="legend">
-              {label}
-            </FormLabel>
-            <FormGroup row={true}>{switches}</FormGroup>
-            <FormHelperText error={touched && !!error}>{error}</FormHelperText>
-          </FormControl>
-        </Grid>
-      ) : null}
-    </>
+    <Grid item {...renderBag.gridConfig.item.size}>
+      <FormControl>
+        <FormLabel error={!!error} component="legend">
+          {label}
+        </FormLabel>
+        <FormGroup row={true}>{switches}</FormGroup>
+        <FormHelperText error={touched && !!error}>{error}</FormHelperText>
+      </FormControl>
+    </Grid>
   );
 };
 

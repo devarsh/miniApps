@@ -24,7 +24,8 @@ const asyncValidationHandler = async (fieldName, value, timeout) => {
       return Promise.resolve("");
     }
   } catch (e) {
-    return Promise.reject(e);
+    //return Promise.reject(e);
+    return Promise.resolve("error calling remote validation");
   }
 };
 
@@ -74,7 +75,8 @@ const formData = {
       group: "groupA",
       name: "sunil",
       label: "Sunil",
-      type: "date"
+      type: "text",
+      asyncValidationFn: asyncValidationHandler
     },
     {
       group: "groupA",
@@ -91,7 +93,8 @@ const formData = {
       group: "groupA",
       name: "middleName",
       label: "Middle Name",
-      type: "text"
+      type: "text",
+      asyncValidationFn: asyncValidationHandler
     },
     {
       group: "groupB",
@@ -122,6 +125,7 @@ const formData = {
         { value: 1, label: "Boy" },
         { value: 2, label: "Girl" }
       ],
+      /*eslint-disable eqeqeq */
       show: [val => val == 1, "gender"]
     },
     {
@@ -191,7 +195,7 @@ const formData = {
       ]
     },
     {
-      group: "switch",
+      group: "groupD",
       name: "SlideMe",
       label: "Rank",
       type: "slider",
