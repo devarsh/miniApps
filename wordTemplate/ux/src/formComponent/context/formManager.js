@@ -40,7 +40,11 @@ const runAsyncErrors = async (fieldRegister = [], asyncBag, formikBag) => {
         asyncValidation
       );
       if (result !== null) {
-        errorResult = setIn(errorResult, name, result);
+        if (result === "") {
+          errorResult = setIn(errorResult, name, undefined);
+        } else {
+          errorResult = setIn(errorResult, name, result);
+        }
       }
     }
   }
