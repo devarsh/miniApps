@@ -1,4 +1,4 @@
-import { QueueError } from "../utils/promiseQueue";
+import { QueueError } from "./promiseQueue";
 
 //first argument `isCancelled` will be passed by promiseQueue Manager
 export const asyncValidationWrapper = async (
@@ -26,11 +26,4 @@ export const asyncValidationWrapper = async (
     }
     loadingFn(false);
   }
-};
-
-export const isChecked = (currentValues, value) => {
-  if (Array.isArray(currentValues)) {
-    return currentValues.indexOf(value) < 0 ? false : true;
-  }
-  return false;
 };

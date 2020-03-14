@@ -1,7 +1,7 @@
 import React from "react";
 import { setIn, getIn } from "formik";
 import toPath from "lodash/toPath";
-import PromiseQueue from "../utils/promiseQueue";
+import PromiseQueue from "formComponent/utils/promiseQueue";
 
 export const AsyncContext = React.createContext({});
 AsyncContext.displayName = "AsyncContext";
@@ -77,7 +77,7 @@ const useAsync = () => {
     count: queue.activeCount,
     reset: resetAsyncError,
     putTaskOnQueue: putTaskOnQueue,
-    waitForEnd: queue.waitForEnd
+    waitAll: queue.waitAll
   };
 };
 

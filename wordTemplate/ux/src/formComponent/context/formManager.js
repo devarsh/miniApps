@@ -1,11 +1,57 @@
 import React from "react";
 import { getIn, setIn } from "formik";
-
-import { asyncValidationWrapper } from "../components/utils";
+import { asyncValidationWrapper } from "formComponent/utils/asyncValidationWrapper";
 
 export const FormManagerContext = React.createContext(null);
 FormManagerContext.displayName = "FormManagerContext";
 export const FormManagerProvider = FormManagerContext.Provider;
+
+export const useFormManager = (formikBag, asyncBag, isDisabled = false) => {
+  const fieldRegister = React.useRef([]);
+  const registerField = React.useCallback((name, asyncValidation = false) => {
+    fieldRegister.current.push({ name, asyncValidation });
+  }, []);
+  const unregisterField = React.useCallback(name => {
+    fieldRegister.current = fieldRegister.current.filter(val => {
+      return val.name === name ? false : true;
+    });
+  }, []);
+  const [fieldState, setfieldState] = React.useState(isDisabled);
+  const handleSubmit = async () => {
+    const staticErrors = await formikBag.validateForm();
+    const result = isError(fieldRegister.current, staticErrors);
+    if (result) {
+      const newTouched = touchAll(fieldRegister.current);
+      formikBag.setTouched(newTouched);
+    } else {
+      const asyncErrors = await runAsyncErrors(
+        fieldRegister.current,
+        asyncBag,
+        formikBag
+      );
+      const result = isError(fieldRegister.current, asyncErrors);
+      if (result) {
+        const newTouched = touchAll(fieldRegister.current);
+        formikBag.setTouched(newTouched);
+        asyncBag.setErrors(asyncErrors);
+      } else {
+        console.log("form submitted");
+      }
+    }
+  };
+  const resetForm = () => {
+    formikBag.resetForm({});
+    asyncBag.reset();
+  };
+  return {
+    registerField,
+    unregisterField,
+    handleSubmit,
+    fieldState,
+    setfieldState,
+    resetForm
+  };
+};
 
 const isError = (fieldRegister = [], errorBag = {}) => {
   for (let i = 0; i < fieldRegister.length; i++) {
@@ -48,56 +94,8 @@ const runAsyncErrors = async (fieldRegister = [], asyncBag, formikBag) => {
       }
     }
   }
-  await asyncBag.waitForEnd();
+  await asyncBag.waitAll();
   return Promise.resolve(errorResult);
-};
-
-export const useFormManager = (formikBag, asyncBag, isDisabled = false) => {
-  const fieldRegister = React.useRef([]);
-  const registerField = React.useCallback((name, asyncValidation = false) => {
-    fieldRegister.current.push({ name, asyncValidation });
-  }, []);
-  const unregisterField = React.useCallback(name => {
-    fieldRegister.current = fieldRegister.current.filter(val => {
-      return val.name === name ? false : true;
-    });
-  }, []);
-  const [fieldState, setfieldState] = React.useState(isDisabled);
-  const handleSubmit = async () => {
-    const staticErrors = await formikBag.validateForm();
-    const result = isError(fieldRegister.current, staticErrors);
-    if (result) {
-      const newTouched = touchAll(fieldRegister.current);
-      formikBag.setTouched(newTouched);
-    } else {
-      const asyncErrors = await runAsyncErrors(
-        fieldRegister.current,
-        asyncBag,
-        formikBag
-      );
-      const result = isError(fieldRegister.current, asyncErrors);
-      if (result) {
-        const newTouched = touchAll(fieldRegister.current);
-        formikBag.setTouched(newTouched);
-        asyncBag.setErrors(asyncErrors);
-      } else {
-        console.log("form submitted");
-      }
-    }
-  };
-  const resetForm = () => {
-    formikBag.resetForm({});
-    console.log(asyncBag);
-    asyncBag.reset();
-  };
-  return {
-    registerField,
-    unregisterField,
-    handleSubmit,
-    fieldState,
-    setfieldState,
-    resetForm
-  };
 };
 
 /*

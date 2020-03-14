@@ -6,8 +6,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from "@material-ui/core/Grid";
-import { MemoizeFieldComponent } from "../renderer/memoizer";
-import { isChecked } from "./utils";
+import { MemoizeFieldComponent } from "formComponent/componentWrapper/memoizer";
+import { isChecked } from "formComponent/utils/isChecked";
 
 let MyCheckbox = ({
   label,

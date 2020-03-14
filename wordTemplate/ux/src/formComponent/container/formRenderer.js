@@ -2,13 +2,13 @@ import React from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useFormik, FormikProvider } from "formik";
-import makeSchemaFromTemplate from "./yupSchemaBuilder";
+import makeSchemaFromTemplate from "../utils/yupSchemaBuilder";
 import useAsync, { AsyncProvider } from "../context/useAsync";
 import { RenderProvider } from "../context/renderProvider";
 import { useFormManager, FormManagerProvider } from "../context/formManager";
 import { SimpleFormRenderer } from "./variants/simpleFormRenderer";
-import { GroupFormRenderer } from "./variants/groupFormRenderer";
-import FormContainer from "./formContainer";
+/*import { GroupFormRenderer } from "./variants/groupFormRenderer";*/
+import FormToolBar from "./formToolBar";
 
 const FormRenderer = ({ formMetaData }) => {
   const validationSchemaRef = React.useRef(null);
@@ -36,18 +36,18 @@ const FormRenderer = ({ formMetaData }) => {
           <FormManagerProvider value={formManagerBag}>
             <AsyncProvider value={asyncBag}>
               <FormikProvider value={formikBag}>
-                <FormContainer
+                <FormToolBar
                   handleSubmit={formManagerBag.handleSubmit}
                   handleReset={formManagerBag.resetForm}
                   handleEditMode={formManagerBag.setfieldState}
                   editState={formManagerBag.fieldState}
                 >
                   {renderType === "groups" ? (
-                    <GroupFormRenderer formMetaData={formMetaData} />
+                    <SimpleFormRenderer formMetaData={formMetaData} />
                   ) : (
                     <SimpleFormRenderer formMetaData={formMetaData} />
                   )}
-                </FormContainer>
+                </FormToolBar>
               </FormikProvider>
             </AsyncProvider>
           </FormManagerProvider>

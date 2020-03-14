@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "components/*": ["formComponent/components/*"],
+      "container/*": ["formComponent/container/*"],
+      "context/*": ["formComponent/context/*"],
+      "renderer/*": ["formComponent/renderer/*"],
+      "utils/*": ["formComponent/utils/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

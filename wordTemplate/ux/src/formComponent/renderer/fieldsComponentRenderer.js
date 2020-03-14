@@ -8,9 +8,11 @@ import {
   MyKeyboardDatePicker,
   MySlider,
   MySwitch
-} from "../components/index";
-import ArrayField from "./arrayComponent";
-import { FieldBagWrapper } from "./fieldBagWrapper";
+} from "formComponent/components";
+import {
+  ArrayComponent,
+  FieldBagWrapper
+} from "formComponent/componentWrapper";
 
 export const renderField = (field, index = "") => {
   const { type, name, label, watch, show } = field;
@@ -91,7 +93,7 @@ export const renderField = (field, index = "") => {
     }
     case "array": {
       const { template } = field;
-      return <ArrayField {...commonProps} template={template} />;
+      return <ArrayComponent {...commonProps} template={template} />;
     }
     default:
       return null;

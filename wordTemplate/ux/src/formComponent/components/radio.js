@@ -6,7 +6,7 @@ import Radio from "@material-ui/core/Radio";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
-import { MemoizeFieldComponent } from "../renderer/memoizer";
+import { MemoizeFieldComponent } from "formComponent/componentWrapper/memoizer";
 
 let MyRadio = ({
   label,

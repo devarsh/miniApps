@@ -49,7 +49,7 @@ export const ErrorConst = {
 
 const defaultConfig = {
   cacheInvalidateTimeInSeconds: 30,
-  timeoutInSeconds: 15,
+  promiseTimeoutInSeconds: 15,
   cleanupIntervalInSeconds: 1
 };
 
@@ -62,11 +62,11 @@ const PromiseQueue = (userConfig = {}) => {
   const config = { ...defaultConfig, ...userConfig };
   const {
     cacheInvalidateTimeInSeconds,
-    timeoutInSeconds,
+    promiseTimeoutInSeconds,
     cleanupIntervalInSeconds
   } = config;
 
-  const waitForEnd = () => {
+  const waitAll = () => {
     if (
       globalWaitPromiseState === "pending" &&
       Promise.resolve(globalWaitPromise) === globalWaitPromise
@@ -179,7 +179,7 @@ const PromiseQueue = (userConfig = {}) => {
         let startTime = new Date(state[STARTTIME]).getTime();
         let currTime = new Date().getTime();
         let inseconds = (currTime - startTime) / 1000;
-        if (inseconds > timeoutInSeconds) {
+        if (inseconds > promiseTimeoutInSeconds) {
           _internalQueue[keys[i]][CANCELFN](ErrorConst._TIMEOUT_);
         }
       }
@@ -230,65 +230,12 @@ const PromiseQueue = (userConfig = {}) => {
     resetQueue,
     startCleanUp,
     stopCleanUp,
-    waitForEnd
+    waitAll
   };
 };
 
 export default PromiseQueue;
 
-/*const fetchWrapper = (key, options) => {
-    const { timeout, value } = options;
-    return new Promise(async (res, rej) => {
-      try {
-        const controller = new AbortController();
-        const signal = controller.signal;
-        const abort = controller.abort.bind(controller);
-        _internalQueue[key] = {
-          [DONE]: false,
-          [STARTTIME]: Date.now(),
-          [VALUE]: value,
-          [CANCELFN]: () => abort()
-        };
-
-        let response = await fetch(
-          `http://localhost:8081/error?sleep=${timeout}&name=${value}`,
-          { mode: "cors", signal }
-        );
-        let json = await response.json();
-        const result = {
-          path: key,
-          value: value,
-          others: [timeout],
-          result: json
-        };
-        _internalQueue[key][RESULT] = result;
-        res(result);
-      } catch (e) {
-        const error = {};
-        if (e.name === "AbortError") {
-          error = {
-            path: key,
-            value: value,
-            others: [timeout],
-            error: new Error("Stale Promise")
-          };
-        } else {
-          error = {
-            path: key,
-            value: value,
-            others: [timeout],
-            error: e
-          };
-        }
-        _internalQueue[key][ERROR] = error;
-        rej(error);
-      } finally {
-        _internalQueue[key][DONE] = true;
-        _internalQueue[key][ENDTIME] = Date.now();
-      }
-    });
-  };
-*/
 /*
 const fetchResult = async (cancelFn, key, value, timeout) => {
   try {

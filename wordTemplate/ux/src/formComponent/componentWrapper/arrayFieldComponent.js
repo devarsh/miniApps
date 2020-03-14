@@ -2,12 +2,12 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { FormikContext, FieldArray, setIn, getIn } from "formik";
-import { AsyncContext } from "../context/useAsync";
-import { RenderContext } from "../context/renderProvider";
-import { renderField } from "./fieldRenderer.js";
-import { remove as removeAsyncFn } from "../utils/formikArrayUtils";
+import { AsyncContext } from "formComponent/context/useAsync";
+import { RenderContext } from "formComponent/context/renderProvider";
+import { renderField } from "formComponent/renderer/fieldsComponentRenderer.js";
+import { remove as removeAsyncFn } from "formComponent/utils/formikArrayUtils";
 
-const generateTemplateRow = template => {
+const generateArrayItemTemplateObject = template => {
   let obj = {};
   if (Array.isArray(template)) {
     for (let i = 0; i < template.length; i++) {
@@ -17,7 +17,7 @@ const generateTemplateRow = template => {
   return obj;
 };
 
-const TemplateRow = ({
+const ArrayItem = ({
   template,
   parent,
   index,
@@ -57,11 +57,13 @@ const TemplateRow = ({
   return <>{fieldRow}</>;
 };
 
-const Template = ({ template, name }) => {
+export const ArrayComponent = ({ template, name }) => {
   const asyncBag = React.useContext(AsyncContext);
   const formikBag = React.useContext(FormikContext);
   const renderBag = React.useContext(RenderContext);
-  const templateObject = React.useRef(generateTemplateRow(template));
+  const templateObject = React.useRef(
+    generateArrayItemTemplateObject(template)
+  );
   const templateFieldValue = formikBag.values[name];
   return (
     <Grid container item xs={12} {...renderBag.gridConfig.container}>
@@ -78,7 +80,7 @@ const Template = ({ template, name }) => {
                   key={index}
                   {...renderBag.gridConfig.container}
                 >
-                  <TemplateRow
+                  <ArrayItem
                     template={template}
                     parent={name}
                     index={index}
@@ -109,5 +111,3 @@ const Template = ({ template, name }) => {
     </Grid>
   );
 };
-
-export default Template;

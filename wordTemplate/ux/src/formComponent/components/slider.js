@@ -3,7 +3,7 @@ import Slider from "@material-ui/core/Slider";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from "@material-ui/core/Grid";
-import { MemoizeFieldComponent } from "../renderer/memoizer";
+import { MemoizeFieldComponent } from "formComponent/componentWrapper/memoizer";
 
 let MySlider = ({
   label,

@@ -6,8 +6,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Switch from "@material-ui/core/Switch";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from "@material-ui/core/Grid";
-import { isChecked } from "./utils";
-import { MemoizeFieldComponent } from "../renderer/memoizer";
+import { isChecked } from "formComponent/utils/isChecked";
+import { MemoizeFieldComponent } from "formComponent/componentWrapper/memoizer";
 
 let MySwitch = ({
   label,

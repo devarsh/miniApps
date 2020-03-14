@@ -1,5 +1,5 @@
 import React from "react";
-import shallowEqual from "../utils/shallowEqual";
+import shallowEqual from "formComponent/utils/shallowEqual";
 /* For Individual Fields we would use this function to compare */
 export const MemoizeFieldComponent = Component => {
   return React.memo(Component, (prevProps, nextProps) => {

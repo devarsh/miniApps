@@ -1,7 +1,7 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import MetaDataRenderer from "../fieldRenderer";
-import { RenderContext } from "../../context/renderProvider";
+import MetaDataRenderer from "formComponent/renderer/fieldsComponentRenderer";
+import { RenderContext } from "formComponent/context/renderProvider";
 
 export const SimpleFormRenderer = ({ formMetaData }) => {
   const renderConfig = React.useContext(RenderContext);

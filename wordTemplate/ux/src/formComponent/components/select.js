@@ -5,7 +5,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from "@material-ui/core/Grid";
-import { MemoizeFieldComponent } from "../renderer/memoizer";
+import { MemoizeFieldComponent } from "formComponent/componentWrapper/memoizer";
 
 const renderMenuItems = options => {
   if (!Array.isArray(options)) {

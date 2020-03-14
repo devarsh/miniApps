@@ -32,14 +32,14 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column"
   }
 }));
-const FormContainer = ({ children, handleSubmit, handleReset }) => {
+const FormContainer = ({ children, handleSubmit, handleReset, formName }) => {
   const classes = useStyles();
   return (
     <Paper square>
       <AppBar position="relative" elevation={0} square>
         <ToolBar variant="dense">
           <Typography variant="h6" noWrap>
-            From Name
+            {formName}
           </Typography>
         </ToolBar>
       </AppBar>

@@ -1,10 +1,10 @@
 import React from "react";
 import invariant from "tiny-warning";
 import { FormikContext, getIn } from "formik";
-import { AsyncContext } from "../context/useAsync";
-import { RenderContext } from "../context/renderProvider";
-import { FormManagerContext } from "../context/formManager";
-import { showComponent } from "../utils/showComponent";
+import { AsyncContext } from "formComponent/context/useAsync";
+import { RenderContext } from "formComponent/context/renderProvider";
+import { FormManagerContext } from "formComponent/context/formManager";
+import { showComponent } from "formComponent/utils/showComponent";
 
 const useFieldBag = (type, name, others = {}) => {
   invariant(!!name, "name is required");

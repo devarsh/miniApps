@@ -4,8 +4,8 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useDebouncedCallback } from "use-debounce";
-import { asyncValidationWrapper } from "./utils";
-import { MemoizeFieldComponent } from "../renderer/memoizer";
+import { asyncValidationWrapper } from "formComponent/utils/asyncValidationWrapper";
+import { MemoizeFieldComponent } from "formComponent/componentWrapper/memoizer";
 
 let MyTextField = ({
   label,
