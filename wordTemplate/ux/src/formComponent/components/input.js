@@ -31,7 +31,6 @@ let MyTextField = ({
   } = mutate;
   const debounceDelay = 200;
   const blurDelay = 500;
-  const count = React.useRef(0);
   const asyncRunCount = React.useRef(0);
   const [inputValue, setInputValue] = React.useState(value);
   const [asyncLoader, setAsyncLoader] = React.useState(false);
@@ -126,7 +125,6 @@ let MyTextField = ({
         }}
         {...others}
       />
-      {count.current++}
     </Grid>
   );
 };

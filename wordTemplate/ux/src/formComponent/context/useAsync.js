@@ -2,6 +2,7 @@ import React from "react";
 import { setIn, getIn } from "formik";
 import toPath from "lodash/toPath";
 import PromiseQueue from "formComponent/utils/promiseQueue";
+import { ValidationErrorType } from "formComponent/types";
 
 export const AsyncContext = React.createContext({});
 AsyncContext.displayName = "AsyncContext";
@@ -23,25 +24,28 @@ const useAsync = () => {
 
   const putTaskOnQueue = async (fn, key, value, ...others) => {
     try {
-      const error = await queue.addTask(fn, key, value, ...others);
-      if (typeof error === "string") {
-        return error;
+      const result = await queue.addTask(fn, key, value, ...others);
+      if (!(result instanceof ValidationErrorType)) {
+        console.log(
+          "invalid error type returned expected error of ValidationErrorType, check validationMethod passed"
+        );
+        return "unexpected error occured while validating";
       } else {
-        console.log("error is not of type string", error);
-        return "unexpected error occurred";
+        let result = result.getError(undefined);
+        return result;
       }
     } catch (e) {
       console.log(e);
-      return "unexpected error occured";
+      return "unexpected error occured while validating";
     }
   };
 
   const handleTask = (key, error) => {
-    if (error !== "") {
+    if (error !== undefined) {
       setErrors(oldError => setIn(oldError, key, error));
     } else {
       setErrors(oldError => {
-        oldError = setIn(oldError, key, undefined);
+        oldError = setIn(oldError, key, error);
         let path = toPath(key);
         if (path.length >= 2) {
           path = path.slice(0, path.length - 1);
@@ -60,9 +64,7 @@ const useAsync = () => {
 
   const _runner = async (fn, key, value, ...others) => {
     const error = await putTaskOnQueue(fn, key, value, ...others);
-    if (error !== null) {
-      handleTask(key, error);
-    }
+    handleTask(key, error);
   };
 
   const resetAsyncError = () => {

@@ -6,15 +6,14 @@ export const asyncValidationWrapper = async (
   key,
   value,
   validationFn,
-  loadingFn = () => {},
-  ...others
+  loadingFn = () => {}
 ) => {
   try {
     loadingFn(true);
     const res = await validationFn(key, value, 2);
     return Promise.resolve(res);
   } catch (e) {
-    return Promise.reject(e);
+    return Promise.resolve(e);
   } finally {
     const { cancelled, cancelReason } = isCancelled();
     if (

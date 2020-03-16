@@ -1,6 +1,6 @@
 import { isFunction } from "formik";
 
-export const copyArrayLike = arrayLike => {
+const copyArrayLike = arrayLike => {
   if (!arrayLike) {
     return [];
   } else if (Array.isArray(arrayLike)) {

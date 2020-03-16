@@ -1,16 +1,30 @@
 import React from "react";
 import DateFnsUtils from "@date-io/date-fns";
+import Paper from "@material-ui/core/Paper";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useFormik, FormikProvider } from "formik";
+import { makeStyles } from "@material-ui/core/styles";
 import makeSchemaFromTemplate from "../utils/yupSchemaBuilder";
 import useAsync, { AsyncProvider } from "../context/useAsync";
 import { RenderProvider } from "../context/renderProvider";
 import { useFormManager, FormManagerProvider } from "../context/formManager";
 import { SimpleFormRenderer } from "./variants/simpleFormRenderer";
-/*import { GroupFormRenderer } from "./variants/groupFormRenderer";*/
 import FormToolBar from "./formToolBar";
 
-const FormRenderer = ({ formMetaData }) => {
+const useStyles = makeStyles(
+  theme =>
+    console.log(theme) || {
+      paper: {
+        padding: `${theme.spacing(3)}px`,
+        height: "calc(100vh - 48px - 48px - 48px - 15px)",
+        overflow: "auto",
+        display: "flex",
+        flexDirection: "column"
+      }
+    }
+);
+
+const FormContainer = ({ formMetaData }) => {
   const validationSchemaRef = React.useRef(null);
   function getInstance() {
     let instance = validationSchemaRef.current;
@@ -28,7 +42,9 @@ const FormRenderer = ({ formMetaData }) => {
     validationSchema
   });
   const formManagerBag = useFormManager(formikBag, asyncBag);
-  const renderType = formMetaData["render"]["renderType"];
+  //const renderType = formMetaData["render"]["renderType"];
+  const formName = formMetaData?.form?.name ?? "DEMO";
+  const classes = useStyles();
   return (
     <>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -36,18 +52,16 @@ const FormRenderer = ({ formMetaData }) => {
           <FormManagerProvider value={formManagerBag}>
             <AsyncProvider value={asyncBag}>
               <FormikProvider value={formikBag}>
-                <FormToolBar
-                  handleSubmit={formManagerBag.handleSubmit}
-                  handleReset={formManagerBag.resetForm}
-                  handleEditMode={formManagerBag.setfieldState}
-                  editState={formManagerBag.fieldState}
-                >
-                  {renderType === "groups" ? (
+                <Paper square>
+                  <FormToolBar
+                    handleSubmit={formManagerBag.handleSubmit}
+                    handleReset={formManagerBag.resetForm}
+                    formName={formName}
+                  />
+                  <Paper variant="outlined" square className={classes.paper}>
                     <SimpleFormRenderer formMetaData={formMetaData} />
-                  ) : (
-                    <SimpleFormRenderer formMetaData={formMetaData} />
-                  )}
-                </FormToolBar>
+                  </Paper>
+                </Paper>
               </FormikProvider>
             </AsyncProvider>
           </FormManagerProvider>
@@ -59,4 +73,4 @@ const FormRenderer = ({ formMetaData }) => {
   );
 };
 
-export default FormRenderer;
+export default FormContainer;

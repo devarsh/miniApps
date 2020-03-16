@@ -1,3 +1,5 @@
+import { ValidationErrorType } from "formComponent/types";
+
 const makeAsyncRequest = value => {
   return new Promise(async (res, rej) => {
     try {
@@ -18,14 +20,13 @@ const asyncValidationHandler = async (fieldName, value, timeout) => {
       { mode: "cors" }
     );
     let data = await res.json();
-    if (data && data.error) {
-      return Promise.resolve(data.error);
-    } else {
-      return Promise.resolve("");
-    }
+    //check if error property exist on data and if not return empty string
+    let result = data?.error ?? "";
+    let errorWrapper = new ValidationErrorType(result);
+    return Promise.resolve(errorWrapper);
   } catch (e) {
-    //return Promise.reject(e);
-    return Promise.resolve("error calling remote validation");
+    let errorWrapper = new ValidationErrorType(e);
+    return Promise.resolve(errorWrapper);
   }
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "typeface-roboto";
-import Form from "./formComponent/index.js";
+import FormContainer from "./formComponent/container/formContainer";
 import formData from "./metaData/formMetaData.js";
 import grey from "@material-ui/core/colors/grey";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
@@ -18,7 +18,7 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
-    <Form formMetaData={formData} />
+    <FormContainer formMetaData={formData} />
   </ThemeProvider>,
   document.getElementById("⚛️")
 );

@@ -5,7 +5,7 @@ import { FormikContext, FieldArray, setIn, getIn } from "formik";
 import { AsyncContext } from "formComponent/context/useAsync";
 import { RenderContext } from "formComponent/context/renderProvider";
 import { renderField } from "formComponent/renderer/fieldsComponentRenderer.js";
-import { remove as removeAsyncFn } from "formComponent/utils/formikArrayUtils";
+import { remove as removeArrayItemAtIndex } from "formComponent/utils/formikArrayUtils";
 
 const generateArrayItemTemplateObject = template => {
   let obj = {};
@@ -44,7 +44,11 @@ const ArrayItem = ({
       <Button
         onClick={() => {
           setAsyncErrors(errors =>
-            setIn(errors, parent, removeAsyncFn(getIn(errors, parent), index))
+            setIn(
+              errors,
+              parent,
+              removeArrayItemAtIndex(getIn(errors, parent), index)
+            )
           );
           remove(index);
         }}

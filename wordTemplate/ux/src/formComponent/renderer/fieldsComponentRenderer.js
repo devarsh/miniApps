@@ -100,9 +100,9 @@ export const renderField = (field, index = "") => {
   }
 };
 
-const MetaDataRendered = ({ fieldMetaData }) => {
-  if (Array.isArray(fieldMetaData)) {
-    const renderMap = fieldMetaData.map((field, index) => {
+const MetaDataRendered = ({ formMetaData }) => {
+  if (Array.isArray(formMetaData)) {
+    const renderMap = formMetaData.map((field, index) => {
       return renderField(field, index);
     });
     return renderMap;

@@ -7,7 +7,7 @@ export const SimpleFormRenderer = ({ formMetaData }) => {
   const renderConfig = React.useContext(RenderContext);
   return (
     <Grid container {...renderConfig.gridConfig.container}>
-      <MetaDataRenderer fieldMetaData={formMetaData.fields} />
+      <MetaDataRenderer formMetaData={formMetaData.fields} />
     </Grid>
   );
 };
