@@ -23,3 +23,39 @@ export class ValidationErrorType {
     }
   }
 }
+
+export class BoolType {
+  #result = true;
+  constructor(result) {
+    if (typeof result === "boolean") {
+      this.#result = result;
+      return;
+    }
+    if (result === null || result === undefined) {
+      this.#result = true;
+      return;
+    }
+    if (typeof result === "string") {
+      if (result === "true" || result === "1") {
+        this.#result = true;
+      } else if (result === "false" || result === "0") {
+        this.#result = false;
+      } else {
+        this.#result = true;
+      }
+      return;
+    }
+    if (typeof result === "number") {
+      if (result !== 0) {
+        this.#result = true;
+      } else {
+        this.#result = false;
+      }
+      return;
+    }
+    this.#result = true;
+  }
+  getResult() {
+    return this.#result;
+  }
+}

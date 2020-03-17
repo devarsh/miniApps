@@ -4,7 +4,7 @@ import { FormikContext, getIn } from "formik";
 import { AsyncContext } from "formComponent/context/useAsync";
 import { RenderContext } from "formComponent/context/renderProvider";
 import { FormManagerContext } from "formComponent/context/formManager";
-import { showComponent } from "formComponent/utils/showComponent";
+import { BoolType } from "formComponent/types";
 
 const useFieldBag = (type, name, others = {}) => {
   invariant(!!name, "name is required");
@@ -41,7 +41,13 @@ const useFieldBag = (type, name, others = {}) => {
     if (typeof callback === "function") {
       const value = getIn(formikBag.values, watcher);
       const result = callback(value);
-      fieldBag.mutate.show = showComponent(result);
+      if (!(result instanceof BoolType)) {
+        console.log(
+          "check callback method it should return BoolType, by default it will always be hidden"
+        );
+        fieldBag.mutate.show = false;
+      }
+      fieldBag.mutate.show = result.getResult();
     }
   }
   return fieldBag;

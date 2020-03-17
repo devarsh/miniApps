@@ -31,8 +31,8 @@ const useAsync = () => {
         );
         return "unexpected error occured while validating";
       } else {
-        let result = result.getError(undefined);
-        return result;
+        const result1 = result.getError(undefined);
+        return result1;
       }
     } catch (e) {
       console.log(e);

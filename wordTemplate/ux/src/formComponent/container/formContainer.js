@@ -2,13 +2,16 @@ import React from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import Paper from "@material-ui/core/Paper";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { useFormik, FormikProvider } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
-import makeSchemaFromTemplate from "../utils/yupSchemaBuilder";
-import useAsync, { AsyncProvider } from "../context/useAsync";
-import { RenderProvider } from "../context/renderProvider";
-import { useFormManager, FormManagerProvider } from "../context/formManager";
-import { SimpleFormRenderer } from "./variants/simpleFormRenderer";
+import makeSchemaFromTemplate from "formComponent/utils/yupSchemaBuilder";
+import useAsync, { AsyncProvider } from "formComponent/context/useAsync";
+import { RenderProvider } from "formComponent/context/renderProvider";
+import {
+  useFormManager,
+  FormManagerProvider
+} from "formComponent/context/formManager";
+import { useFormik, FormikProvider } from "formik";
+import { SimpleFormRenderer } from "formComponent/variants/simpleFormRenderer";
 import FormToolBar from "./formToolBar";
 
 const useStyles = makeStyles(
