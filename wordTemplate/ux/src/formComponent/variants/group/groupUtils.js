@@ -2,12 +2,12 @@ import React from "react";
 import { setIn, getIn } from "formik";
 import equal from "fast-deep-equal";
 
-export const generateFieldGroupDepedency = fieldsMetaData => {
+export const generateFieldGroupDepedency = fieldsArray => {
   const groupFieldDepedency = {};
   const groupWiseFields = {};
-  if (Array.isArray(fieldsMetaData)) {
-    for (let i = 0; i < fieldsMetaData.length; i++) {
-      const field = fieldsMetaData[i];
+  if (Array.isArray(fieldsArray)) {
+    for (let i = 0; i < fieldsArray.length; i++) {
+      const field = fieldsArray[i];
       const { group, name, watch, show } = field;
       if (groupFieldDepedency[group] instanceof Set) {
         groupFieldDepedency[group].add(name);

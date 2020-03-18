@@ -4,7 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import { FormikContext, FieldArray, setIn, getIn } from "formik";
 import { AsyncContext } from "formComponent/context/useAsync";
 import { RenderContext } from "formComponent/context/renderProvider";
-import { renderField } from "formComponent/renderer/fieldsComponentRenderer.js";
+import { renderField } from "formComponent/renderer/fieldsRenderer";
 import { remove as removeArrayItemAtIndex } from "formComponent/utils/formikArrayUtils";
 
 const generateArrayItemTemplateObject = template => {

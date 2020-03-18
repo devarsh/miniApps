@@ -99,15 +99,3 @@ export const renderField = (field, index = "") => {
       return null;
   }
 };
-
-const MetaDataRendered = ({ formMetaData }) => {
-  if (Array.isArray(formMetaData)) {
-    const renderMap = formMetaData.map((field, index) => {
-      return renderField(field, index);
-    });
-    return renderMap;
-  }
-  return null;
-};
-
-export default MetaDataRendered;
