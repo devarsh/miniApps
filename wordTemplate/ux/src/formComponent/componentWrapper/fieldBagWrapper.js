@@ -13,6 +13,17 @@ const useFieldBag = (type, name, others = {}) => {
   const formikBag = React.useContext(FormikContext);
   const renderBag = React.useContext(RenderContext);
   const formManagerBag = React.useContext(FormManagerContext);
+
+  //would impliment a custom onBlur handler to save touched field being touched
+  //repeatedly and save rerenders, but need to rely on formik to expose
+  //`validateFormWithLowPriority` method to be exposed on formik context
+  /*const isTouched = getIn(formikBag.touched, name, false);
+  const handleBlurWithNoTouch = e => {
+    e?.persist?.();
+    const { name, id } = e.target;
+    const field = name ? name : id;
+  };
+  */
   const fieldBag = {
     mutate: {
       name: name,

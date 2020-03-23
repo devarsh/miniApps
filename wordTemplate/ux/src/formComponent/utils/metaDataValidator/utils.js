@@ -34,3 +34,13 @@ export function validateWatcher(watchField) {
   let result = fieldNames.indexOf(watchField) >= 0 ? true : false;
   return result;
 }
+
+export function isFunctionNotRequired(fieldValue) {
+  if (fieldValue === null || fieldValue === undefined) {
+    return true;
+  }
+  if (typeof fieldValue === "function") {
+    return true;
+  }
+  return false;
+}

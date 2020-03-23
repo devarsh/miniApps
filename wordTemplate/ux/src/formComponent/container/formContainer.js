@@ -60,10 +60,9 @@ const FormContainer = ({ formMetaData }) => {
     validationSchema
   });
   const formManagerBag = useFormManager(formikBag, asyncBag);
-  const renderType = formMetaData?.form?.renderType ?? "simple";
-  const renderTabs =
-    renderType === "group" && (formMetaData?.form?.renderTabs ?? false);
-  const formName = formMetaData?.form?.name ?? "NO_NAME";
+  const renderType = formMetaData.form?.renderType ?? "simple";
+  const renderTabs = renderType === "group" && formMetaData.form.renderTabs;
+  const formName = formMetaData.form.name;
   const classes = useStyles();
   const count = React.useRef(0);
   return (
@@ -95,9 +94,9 @@ const FormContainer = ({ formMetaData }) => {
           </FormManagerProvider>
         </RenderProvider>
       </MuiPickersUtilsProvider>
+      <p>{count.current++}</p>
       <pre>{JSON.stringify(asyncBag, null, 2)}</pre>
       <pre>{JSON.stringify(formikBag, null, 2)}</pre>
-      <p>{count.current++}</p>
     </>
   );
 };

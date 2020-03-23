@@ -9,10 +9,8 @@ import { remove as removeArrayItemAtIndex } from "formComponent/utils/formikArra
 
 const generateArrayItemTemplateObject = template => {
   let obj = {};
-  if (Array.isArray(template)) {
-    for (let i = 0; i < template.length; i++) {
-      obj[template[i].name] = "";
-    }
+  for (let i = 0; i < template.length; i++) {
+    obj[template[i].name] = "";
   }
   return obj;
 };

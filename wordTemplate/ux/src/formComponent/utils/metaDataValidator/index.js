@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { formSchemaValidator } from "./formValidator";
-import { fieldSchemaValidator } from "./fieldValidator";
+import { fieldsSchemaValidator } from "./fieldValidator";
 import { MetaDataSchemaValidatorType } from "formComponent/types";
 
 let validationConfig = {
@@ -10,7 +10,7 @@ let validationConfig = {
 
 let schema = yup.object().shape({
   form: formSchemaValidator,
-  fields: fieldSchemaValidator
+  fields: fieldsSchemaValidator
 });
 
 export const metaDataSchemaValidator = metaData => {
