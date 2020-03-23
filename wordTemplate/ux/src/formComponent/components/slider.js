@@ -1,4 +1,5 @@
 import React from "react";
+import { useDebouncedCallback } from "use-debounce";
 import Slider from "@material-ui/core/Slider";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -18,17 +19,25 @@ let MySlider = ({
   ...others
 }) => {
   const { error, touched, value, name, disabled } = mutate;
+  const debounceDelay = 200;
+  const [sliderValue, setSliderValue] = React.useState(value);
   React.useEffect(() => {
     registerField(name);
     return () => unregisterField(name);
   }, [registerField, unregisterField, name]);
-  const handleSliderChange = (_, v) => {
-    handleChange({
+  const [handleChangeDebounce] = useDebouncedCallback(eventVal => {
+    const e = {
       target: {
-        name: name,
-        value: v
+        value: eventVal,
+        name: name
       }
-    });
+    };
+    handleChange(e);
+  }, debounceDelay);
+
+  const handleSliderChangeWrapper = (_, v) => {
+    setSliderValue(v);
+    handleChangeDebounce(v);
   };
   const handleSliderBlur = e => {
     handleBlur({
@@ -39,14 +48,14 @@ let MySlider = ({
   };
 
   return (
-    <Grid item {...renderBag.gridConfig.item.size}>
+    <Grid item {...renderBag.item.size}>
       <InputLabel disabled={disabled} component="legend">
         {label}
       </InputLabel>
       <Slider
-        onChange={handleSliderChange}
+        onChange={handleSliderChangeWrapper}
         onBlur={handleSliderBlur}
-        value={value || 0}
+        value={sliderValue || 0}
         type={type}
         name={name}
         disabled={disabled}

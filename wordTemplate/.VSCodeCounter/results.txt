@@ -1,0 +1,166 @@
+Date : 2020-03-21 20:54:55
+Directory : /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate
+Total : 106 files,  18753 codes, 359 comments, 2227 blanks, all 21339 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| Log              |          1 |     10,264 |          0 |      1,529 |     11,793 |
+| Go               |         23 |      2,994 |        140 |        214 |      3,348 |
+| JavaScript       |         45 |      2,595 |        209 |        160 |      2,964 |
+| Markdown         |          4 |      1,070 |          0 |        272 |      1,342 |
+| JavaScript React |          2 |        873 |          0 |         22 |        895 |
+| Nunjucks         |         16 |        771 |          0 |         18 |        789 |
+| JSON             |          5 |        120 |         10 |          3 |        133 |
+| CSV              |          1 |         48 |          0 |          0 |         48 |
+| XML              |          9 |         18 |          0 |          9 |         27 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                             | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                |        106 |     18,753 |        359 |      2,227 |     21,339 |
+| dummy                                                                                                                            |         11 |        407 |         51 |         33 |        491 |
+| dummy/build                                                                                                                      |          8 |         80 |         20 |          9 |        109 |
+| dummy/build/static                                                                                                               |          3 |          3 |          3 |          0 |          6 |
+| dummy/build/static/js                                                                                                            |          3 |          3 |          3 |          0 |          6 |
+| minify                                                                                                                           |          3 |        259 |         15 |         30 |        304 |
+| out                                                                                                                              |         11 |        891 |          0 |         31 |        922 |
+| out/outUnzip                                                                                                                     |          9 |         18 |          0 |          9 |         27 |
+| out/outUnzip/docProps                                                                                                            |          2 |          4 |          0 |          2 |          6 |
+| out/outUnzip/word                                                                                                                |          6 |         12 |          0 |          6 |         18 |
+| parser                                                                                                                           |         14 |      3,325 |        125 |        370 |      3,820 |
+| templategen                                                                                                                      |          1 |         20 |          0 |          4 |         24 |
+| tmpl                                                                                                                             |         13 |        715 |          0 |         14 |        729 |
+| ux                                                                                                                               |         49 |     12,926 |        168 |      1,723 |     14,817 |
+| ux/.VSCodeCounter                                                                                                                |          3 |        135 |          0 |         13 |        148 |
+| ux/public                                                                                                                        |          2 |         65 |          0 |          5 |         70 |
+| ux/src                                                                                                                           |         39 |      2,358 |        158 |        143 |      2,659 |
+| ux/src/formComponent                                                                                                             |         36 |      2,099 |        129 |        134 |      2,362 |
+| ux/src/formComponent/componentWrapper                                                                                            |          4 |        185 |          5 |         11 |        201 |
+| ux/src/formComponent/components                                                                                                  |          8 |        592 |         31 |         27 |        650 |
+| ux/src/formComponent/container                                                                                                   |          2 |        134 |          0 |          7 |        141 |
+| ux/src/formComponent/context                                                                                                     |          3 |        197 |         10 |         19 |        226 |
+| ux/src/formComponent/renderer                                                                                                    |          2 |        110 |          0 |          3 |        113 |
+| ux/src/formComponent/types                                                                                                       |          1 |         60 |          0 |          2 |         62 |
+| ux/src/formComponent/utils                                                                                                       |         10 |        581 |         83 |         48 |        712 |
+| ux/src/formComponent/utils/metaDataValidator                                                                                     |          4 |        244 |          0 |         14 |        258 |
+| ux/src/formComponent/variants                                                                                                    |          6 |        240 |          0 |         17 |        257 |
+| ux/src/formComponent/variants/group                                                                                              |          5 |        228 |          0 |         15 |        243 |
+| ux/src/metaData                                                                                                                  |          2 |        258 |          2 |          6 |        266 |
++----------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                                                                                         | language         | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/build/asset-manifest.json                                   | JSON             |         18 |          0 |          0 |         18 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/build/index.html                                            | Nunjucks         |          1 |          0 |          0 |          1 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/build/manifest.json                                         | JSON             |         25 |          0 |          1 |         26 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/build/precache-manifest.1a87e73aa3523a2c401096d85edf8b51.js | JavaScript       |         18 |          0 |          0 |         18 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/build/service-worker.js                                     | JavaScript       |         15 |         17 |          8 |         40 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/build/static/js/2.be94f24d.chunk.js                         | JavaScript       |          1 |          1 |          0 |          2 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/build/static/js/main.e60ce12e.chunk.js                      | JavaScript       |          1 |          1 |          0 |          2 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/build/static/js/runtime-main.d01d61ca.js                    | JavaScript       |          1 |          1 |          0 |          2 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/demo.js                                                     | JavaScript       |        201 |         31 |          9 |        241 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/dummyServer.go                                              | Go               |        115 |          0 |         12 |        127 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/dummy/jscode.go                                                   | Go               |         11 |          0 |          3 |         14 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/fields.go                                                         | Go               |         70 |          0 |         10 |         80 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/minify/customBuffer.go                                            | Go               |         68 |          6 |         10 |         84 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/minify/customMinifer.go                                           | Go               |        151 |          9 |         13 |        173 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/minify/main.go                                                    | Go               |         40 |          0 |          7 |         47 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/out.jsx                                                       | JavaScript React |        710 |          0 |         22 |        732 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/out.min.jsx                                                   | JavaScript React |        163 |          0 |          0 |        163 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/outUnzip/[Content_Types].xml                                  | XML              |          2 |          0 |          1 |          3 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/outUnzip/docProps/app.xml                                     | XML              |          2 |          0 |          1 |          3 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/outUnzip/docProps/core.xml                                    | XML              |          2 |          0 |          1 |          3 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/outUnzip/word/document.xml                                    | XML              |          2 |          0 |          1 |          3 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/outUnzip/word/footer1.xml                                     | XML              |          2 |          0 |          1 |          3 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/outUnzip/word/header1.xml                                     | XML              |          2 |          0 |          1 |          3 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/outUnzip/word/numbering.xml                                   | XML              |          2 |          0 |          1 |          3 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/outUnzip/word/settings.xml                                    | XML              |          2 |          0 |          1 |          3 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/out/outUnzip/word/styles.xml                                      | XML              |          2 |          0 |          1 |          3 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/const.go                                                   | Go               |        200 |         45 |         28 |        273 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/docProps.go                                                | Go               |        307 |          0 |         12 |        319 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/globalProps.go                                             | Go               |        106 |          0 |          8 |        114 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/headerFooterProps.go                                       | Go               |         19 |          0 |          4 |         23 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/imageProps.go                                              | Go               |         94 |          0 |          6 |        100 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/listProps.go                                               | Go               |         81 |          0 |          7 |         88 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/main.go                                                    | Go               |         70 |          0 |          8 |         78 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/paraProps.go                                               | Go               |        318 |         78 |         19 |        415 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/parser.go                                                  | Go               |        489 |          2 |          8 |        499 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/parserProps.go                                             | Go               |         36 |          0 |          5 |         41 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/readme.md                                                  | Markdown         |        946 |          0 |        227 |      1,173 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/tableProps.go                                              | Go               |        272 |          0 |         13 |        285 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/textProps.go                                               | Go               |        363 |          0 |         20 |        383 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/parser/utils.go                                                   | Go               |         24 |          0 |          5 |         29 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/server.go                                                         | Go               |         25 |          0 |          4 |         29 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/templateService.go                                                | Go               |         49 |          0 |          4 |         53 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/templategen/main.go                                               | Go               |         20 |          0 |          4 |         24 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/00-main.tmpl                                                 | Nunjucks         |         33 |          0 |          1 |         34 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/01-Document.tmpl                                             | Nunjucks         |         40 |          0 |          1 |         41 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/02-Introduction.tmpl                                         | Nunjucks         |         57 |          0 |          1 |         58 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/03-AboutUs.tmpl                                              | Nunjucks         |         49 |          0 |          1 |         50 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/04-EBCSolution.tmpl                                          | Nunjucks         |         91 |          0 |          1 |         92 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/05-ProjectMileStone.tmpl                                     | Nunjucks         |         31 |          0 |          1 |         32 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/06-EffortEstimate.tmpl                                       | Nunjucks         |         41 |          0 |          1 |         42 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/07-Assumptions.tmpl                                          | Nunjucks         |         58 |          0 |          1 |         59 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/08-Privacy.tmpl                                              | Nunjucks         |         12 |          0 |          1 |         13 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/09-Validity.tmpl                                             | Nunjucks         |          8 |          0 |          1 |          9 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/10-LeadTime.tmpl                                             | Nunjucks         |          8 |          0 |          1 |          9 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/11-Investment.tmpl                                           | Nunjucks         |        195 |          0 |          2 |        197 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/tmpl/12-TermsAndConditions.tmpl                                   | Nunjucks         |         92 |          0 |          1 |         93 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/utils.go                                                          | Go               |         66 |          0 |          4 |         70 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/.VSCodeCounter/details.md                                      | Markdown         |         55 |          0 |          6 |         61 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/.VSCodeCounter/results.csv                                     | CSV              |         48 |          0 |          0 |         48 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/.VSCodeCounter/results.md                                      | Markdown         |         32 |          0 |          7 |         39 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/README.md                                                      | Markdown         |         37 |          0 |         32 |         69 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/dummy.html                                                     | Nunjucks         |         15 |          0 |          0 |         15 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/jsconfig.json                                                  | JSON             |          5 |         10 |          0 |         15 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/package.json                                                   | JSON             |         47 |          0 |          1 |         48 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/public/index.html                                              | Nunjucks         |         40 |          0 |          4 |         44 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/public/manifest.json                                           | JSON             |         25 |          0 |          1 |         26 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/componentWrapper/arrayFieldComponent.js      | JavaScript       |        108 |          2 |          4 |        114 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/componentWrapper/fieldBagWrapper.js          | JavaScript       |         63 |          2 |          4 |         69 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/componentWrapper/index.js                    | JavaScript       |          3 |          0 |          1 |          4 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/componentWrapper/memoizer.js                 | JavaScript       |         11 |          1 |          2 |         14 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/components/checkbox.js                       | JavaScript       |         58 |          0 |          3 |         61 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/components/date.js                           | JavaScript       |         73 |          0 |          3 |         76 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/components/index.js                          | JavaScript       |          7 |          0 |          1 |          8 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/components/input.js                          | JavaScript       |        103 |         28 |          5 |        136 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/components/radio.js                          | JavaScript       |         60 |          1 |          3 |         64 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/components/select.js                         | JavaScript       |        174 |          2 |          5 |        181 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/components/slider.js                         | JavaScript       |         58 |          0 |          4 |         62 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/components/switch.js                         | JavaScript       |         59 |          0 |          3 |         62 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/container/formContainer.js                   | JavaScript       |         83 |          0 |          4 |         87 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/container/formToolBar.js                     | JavaScript       |         51 |          0 |          3 |         54 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/context/formManager.js                       | JavaScript       |         94 |         10 |          7 |        111 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/context/renderProvider.js                    | JavaScript       |         25 |          0 |          3 |         28 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/context/useAsync.js                          | JavaScript       |         78 |          0 |          9 |         87 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/renderer/fieldsRenderer.js                   | JavaScript       |        100 |          0 |          2 |        102 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/renderer/index.js                            | JavaScript       |         10 |          0 |          1 |         11 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/types/index.js                               | JavaScript       |         60 |          0 |          2 |         62 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/asyncValidationWrapper.js              | JavaScript       |         26 |          1 |          2 |         29 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/formikArrayUtils.js                    | JavaScript       |         24 |          0 |          3 |         27 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/isChecked.js                           | JavaScript       |          6 |          0 |          1 |          7 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/metaDataValidator/fieldValidator.js    | JavaScript       |        112 |          0 |          4 |        116 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/metaDataValidator/formValidator.js     | JavaScript       |         50 |          0 |          3 |         53 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/metaDataValidator/index.js             | JavaScript       |         47 |          0 |          5 |         52 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/metaDataValidator/utils.js             | JavaScript       |         35 |          0 |          2 |         37 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/promiseQueue.js                        | JavaScript       |        211 |         77 |         14 |        302 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/shallowEqual.js                        | JavaScript       |         35 |          5 |         10 |         50 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/utils/yupSchemaBuilder.js                    | JavaScript       |         35 |          0 |          4 |         39 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/variants/group/groupsRenderer.js             | JavaScript       |         32 |          0 |          3 |         35 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/variants/group/index.js                      | JavaScript       |         38 |          0 |          3 |         41 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/variants/group/memoize.js                    | JavaScript       |         81 |          0 |          5 |         86 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/variants/group/tabsRenderer.js               | JavaScript       |         47 |          0 |          3 |         50 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/variants/group/utils.js                      | JavaScript       |         30 |          0 |          1 |         31 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/formComponent/variants/simpleFormRenderer.js               | JavaScript       |         12 |          0 |          2 |         14 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/index.js                                                   | JavaScript       |          1 |         27 |          3 |         31 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/metaData/fns.js                                            | JavaScript       |         28 |          1 |          3 |         32 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/src/metaData/index.js                                          | JavaScript       |        230 |          1 |          3 |        234 |
+| /Users/devarsh/go/src/github.com/devarsh/miniApps/wordTemplate/ux/yarn-error.log                                                 | Log              |     10,264 |          0 |      1,529 |     11,793 |
+| Total                                                                                                                            |                  |     18,753 |        359 |      2,227 |     21,339 |
++----------------------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+

@@ -49,7 +49,7 @@ let MyKeyboardDatePicker = ({
       ? "dd/MM/yyyy h:mm:ss aaaa"
       : "dd/MM/yyyy";
   return (
-    <Grid item {...renderBag.gridConfig.item.size}>
+    <Grid item {...renderBag.item.size}>
       <ComponentType
         disabled={disabled}
         disableToolbar

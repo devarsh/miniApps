@@ -45,7 +45,7 @@ let MySwitch = ({
     ));
   }
   return (
-    <Grid item {...renderBag.gridConfig.item.size}>
+    <Grid item {...renderBag.item.size}>
       <FormControl>
         <FormLabel error={!!error} component="legend">
           {label}

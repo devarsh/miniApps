@@ -2,7 +2,11 @@ import { BoolType } from "formComponent/types";
 import { asyncValidationHandler, makeAsyncRequest } from "./fns.js";
 
 const formData = {
-  render: {
+  form: {
+    name: "Orders",
+    fieldGroups: ["groupA", "groupB", "groupC", "groupD"],
+    renderType: "group",
+    renderTabs: true,
     gridConfig: {
       item: {
         size: {
@@ -15,13 +19,7 @@ const formData = {
         direction: "row",
         spacing: 2
       }
-    },
-    renderType: "groupss",
-    renderTabs: true
-  },
-  form: {
-    name: "Orders",
-    fieldGroups: ["groupA", "groupB", "groupC", "groupD"]
+    }
   },
   fields: [
     {

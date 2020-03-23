@@ -36,11 +36,7 @@ const ArrayItem = ({
     return renderField(fieldCopy);
   });
   const btn = (
-    <Grid
-      key={`${parent}[${index}].removeBtn`}
-      item
-      {...renderBag.gridConfig.item.size}
-    >
+    <Grid key={`${parent}[${index}].removeBtn`} item {...renderBag.item.size}>
       <Button
         onClick={() => {
           setAsyncErrors(errors =>
@@ -70,7 +66,7 @@ export const ArrayComponent = ({ template, name }) => {
   );
   const templateFieldValue = formikBag.values[name];
   return (
-    <Grid container item xs={12} {...renderBag.gridConfig.container}>
+    <Grid container item xs={12} {...renderBag.container}>
       <FieldArray
         name={name}
         render={({ push, remove }) => {
@@ -82,7 +78,7 @@ export const ArrayComponent = ({ template, name }) => {
                   item
                   xs={12}
                   key={index}
-                  {...renderBag.gridConfig.container}
+                  {...renderBag.container}
                 >
                   <ArrayItem
                     template={template}

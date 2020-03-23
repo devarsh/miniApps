@@ -1,3 +1,27 @@
+import { ValidationError } from "yup";
+
+export class MetaDataSchemaValidatorType {
+  #result = null;
+  #iserror = false;
+  constructor(result) {
+    if (result instanceof ValidationError) {
+      this.#iserror = true;
+      this.#result = result?.errors;
+    } else if (typeof result === "object") {
+      this.#iserror = false;
+      this.#result = result;
+    } else {
+      throw new Error("MetaDataSchemaValidatorType: Not a valid type passed");
+    }
+  }
+  isError() {
+    return this.#iserror;
+  }
+  getValue() {
+    return this.#result;
+  }
+}
+
 export class ValidationErrorType {
   #result = null;
   constructor(result) {

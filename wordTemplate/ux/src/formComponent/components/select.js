@@ -41,7 +41,7 @@ const SelectRender = ({
     setLabelWidth(selectLabel.current.offsetWidth);
   }, []);
   return (
-    <Grid item {...renderBag.gridConfig.item.size}>
+    <Grid item {...renderBag.item.size}>
       <FormControl
         fullWidth={true}
         variant="outlined"

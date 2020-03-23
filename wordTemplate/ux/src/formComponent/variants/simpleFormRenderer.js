@@ -6,7 +6,7 @@ import { RenderContext } from "formComponent/context/renderProvider";
 export const SimpleFormRenderer = ({ formMetaData }) => {
   const renderConfig = React.useContext(RenderContext);
   return (
-    <Grid container {...renderConfig.gridConfig.container}>
+    <Grid container {...renderConfig.container}>
       <FormRenderer fieldsArray={formMetaData.fields} />
     </Grid>
   );

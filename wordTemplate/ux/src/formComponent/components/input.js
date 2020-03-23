@@ -26,22 +26,23 @@ let MyTextField = ({
     touched,
     error,
     asyncError,
-    executeAsync,
+    //executeAsync,
     disabled
   } = mutate;
   const debounceDelay = 200;
   const blurDelay = 500;
-  const asyncRunCount = React.useRef(0);
   const [inputValue, setInputValue] = React.useState(value);
   const [asyncLoader, setAsyncLoader] = React.useState(false);
   /*need reference to sync error between renders to determine 
   when async validation should be dispatched
-  if font-end error exist dont call async validation.*/
+  if sync error exist dont call async validation.*/
   const syncError = React.useRef(error);
   syncError.current = error;
+
   /* run async validation if never ran and user had passed it */
+  //const asyncRunCount = React.useRef(0);
   /*eslint-disable react-hooks/exhaustive-deps*/
-  React.useEffect(() => {
+  /*React.useEffect(() => {
     if (asyncRunCount.current === 0 && executeAsync === true) {
       asyncRunCount.current++;
       runAsyncFn(
@@ -52,7 +53,8 @@ let MyTextField = ({
         setAsyncLoader
       );
     }
-  }, [executeAsync]);
+  }, [executeAsync]);*/
+
   /*register and unregister field*/
   React.useEffect(() => {
     registerField(name, asyncValidationFn);
@@ -88,7 +90,7 @@ let MyTextField = ({
           handleBlur(e);
           setTimeout(() => {
             if (!!syncError.current === false && inputValue !== "") {
-              asyncRunCount.current++;
+              //asyncRunCount.current++;
               runAsyncFn(
                 asyncValidationWrapper,
                 name,
@@ -102,7 +104,7 @@ let MyTextField = ({
   const userErrorMsg =
     touched && !!error ? error : touched && !!asyncError ? asyncError : null;
   return (
-    <Grid item {...renderBag.gridConfig.item.size}>
+    <Grid item {...renderBag.item.size}>
       <TextField
         disabled={disabled}
         size="small"

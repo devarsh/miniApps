@@ -46,7 +46,7 @@ let MyCheckbox = ({
     ));
   }
   return (
-    <Grid item {...renderBag.gridConfig.item.size}>
+    <Grid item {...renderBag.item.size}>
       <FormControl error={touched && !!error}>
         <FormLabel component="legend">{label}</FormLabel>
         <FormGroup>{checkboxes}</FormGroup>

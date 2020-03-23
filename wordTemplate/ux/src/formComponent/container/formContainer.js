@@ -12,20 +12,35 @@ import {
 } from "formComponent/context/formManager";
 import { useFormik, FormikProvider } from "formik";
 import { SimpleFormRenderer } from "formComponent/variants/simpleFormRenderer";
+import { GroupFormRenderer } from "formComponent/variants/group";
 import FormToolBar from "./formToolBar";
+import { metaDataSchemaValidator } from "formComponent/utils/metaDataValidator";
 
-const useStyles = makeStyles(
-  theme =>
-    console.log(theme) || {
-      paper: {
-        padding: `${theme.spacing(3)}px`,
-        height: "calc(100vh - 48px - 48px - 48px - 15px)",
-        overflow: "auto",
-        display: "flex",
-        flexDirection: "column"
-      }
-    }
-);
+const useStyles = makeStyles(theme => ({
+  paper: {
+    padding: `${theme.spacing(3)}px`,
+    height: "calc(100vh - 48px - 48px - 48px - 15px)",
+    overflow: "auto",
+    display: "flex",
+    flexDirection: "column"
+  }
+}));
+
+const FormMetaDataValidator = ({ formMetaData }) => {
+  let metaDataValidationResult = metaDataSchemaValidator(formMetaData);
+  let isError = metaDataValidationResult.isError();
+  let value = metaDataValidationResult.getValue();
+  if (isError) {
+    console.log(value);
+  }
+  return isError ? (
+    <div>Error with user meta data passed check console</div>
+  ) : (
+    <>
+      <FormContainer formMetaData={value} />
+    </>
+  );
+};
 
 const FormContainer = ({ formMetaData }) => {
   const validationSchemaRef = React.useRef(null);
@@ -45,13 +60,16 @@ const FormContainer = ({ formMetaData }) => {
     validationSchema
   });
   const formManagerBag = useFormManager(formikBag, asyncBag);
-  //const renderType = formMetaData["render"]["renderType"];
-  const formName = formMetaData?.form?.name ?? "DEMO";
+  const renderType = formMetaData?.form?.renderType ?? "simple";
+  const renderTabs =
+    renderType === "group" && (formMetaData?.form?.renderTabs ?? false);
+  const formName = formMetaData?.form?.name ?? "NO_NAME";
   const classes = useStyles();
+  const count = React.useRef(0);
   return (
     <>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <RenderProvider value={formMetaData["render"]}>
+        <RenderProvider value={formMetaData?.form?.gridConfig ?? {}}>
           <FormManagerProvider value={formManagerBag}>
             <AsyncProvider value={asyncBag}>
               <FormikProvider value={formikBag}>
@@ -62,7 +80,14 @@ const FormContainer = ({ formMetaData }) => {
                     formName={formName}
                   />
                   <Paper variant="outlined" square className={classes.paper}>
-                    <SimpleFormRenderer formMetaData={formMetaData} />
+                    {renderType === "group" ? (
+                      <GroupFormRenderer
+                        formMetaData={formMetaData}
+                        renderTabs={renderTabs}
+                      />
+                    ) : (
+                      <SimpleFormRenderer formMetaData={formMetaData} />
+                    )}
                   </Paper>
                 </Paper>
               </FormikProvider>
@@ -72,8 +97,9 @@ const FormContainer = ({ formMetaData }) => {
       </MuiPickersUtilsProvider>
       <pre>{JSON.stringify(asyncBag, null, 2)}</pre>
       <pre>{JSON.stringify(formikBag, null, 2)}</pre>
+      <p>{count.current++}</p>
     </>
   );
 };
 
-export default FormContainer;
+export default FormMetaDataValidator;

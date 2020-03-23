@@ -20,7 +20,8 @@ const useFieldBag = (type, name, others = {}) => {
       error: getIn(formikBag.errors, name),
       touched: getIn(formikBag.touched, name),
       asyncError: getIn(asyncBag.errors, name),
-      executeAsync: false,
+      //do not delete it yet, commented for now, need to inspect why it was added in the first place
+      //executeAsync: false,
       disabled: formManagerBag.fieldState
     },
     type: type,
@@ -35,21 +36,7 @@ const useFieldBag = (type, name, others = {}) => {
   if (!!watch) {
     fieldBag.mutate.watch = getIn(formikBag.values, watch);
   }
-  fieldBag.mutate.show = true;
-  if (Array.isArray(show) && show.length === 2) {
-    const [callback, watcher] = show;
-    if (typeof callback === "function") {
-      const value = getIn(formikBag.values, watcher);
-      const result = callback(value);
-      if (!(result instanceof BoolType)) {
-        console.log(
-          "check callback method it should return BoolType, by default it will always be hidden"
-        );
-        fieldBag.mutate.show = false;
-      }
-      fieldBag.mutate.show = result.getResult();
-    }
-  }
+  fieldBag.mutate.show = callShowHelper(show, formikBag);
   return fieldBag;
 };
 
@@ -60,4 +47,22 @@ export const FieldBagWrapper = ({ type, name, others, children, ...rest }) => {
   } else {
     return null;
   }
+};
+
+export const callShowHelper = (show, formikBag) => {
+  if (Array.isArray(show) && show.length === 2) {
+    const [callback, watcher] = show;
+    if (typeof callback === "function") {
+      const value = getIn(formikBag.values, watcher);
+      const result = callback(value);
+      if (!(result instanceof BoolType)) {
+        console.log(
+          "check callback method it should return BoolType, by default it will always be hidden"
+        );
+        return false;
+      }
+      return result.getResult();
+    }
+  }
+  return true;
 };
