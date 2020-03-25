@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import invariant from "tiny-warning";
 import { FormikContext, getIn } from "formik";
 import { AsyncContext } from "formComponent/context/useAsync";

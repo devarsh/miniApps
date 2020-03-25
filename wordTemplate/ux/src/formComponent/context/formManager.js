@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { getIn, setIn } from "formik";
 import { asyncValidationWrapper } from "formComponent/utils/asyncValidationWrapper";
 

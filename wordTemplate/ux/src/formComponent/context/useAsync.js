@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { setIn, getIn } from "formik";
 import toPath from "lodash/toPath";
 import PromiseQueue from "formComponent/utils/promiseQueue";

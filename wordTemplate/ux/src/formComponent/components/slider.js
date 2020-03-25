@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { useDebouncedCallback } from "use-debounce";
 import Slider from "@material-ui/core/Slider";
 import InputLabel from "@material-ui/core/InputLabel";

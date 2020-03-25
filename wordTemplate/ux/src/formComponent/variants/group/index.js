@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { generateFieldGroupDepedency } from "./utils";
 import { TabsRenderer } from "./tabsRenderer";
 import { GroupsRenderer } from "./groupsRenderer";

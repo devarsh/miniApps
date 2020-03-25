@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import merge from "lodash/merge";
 
 export const RenderContext = React.createContext(null);

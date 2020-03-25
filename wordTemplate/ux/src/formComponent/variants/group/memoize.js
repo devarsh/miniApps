@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { setIn, getIn } from "formik";
 import equal from "fast-deep-equal";
 import { callShowHelper } from "formComponent/componentWrapper";

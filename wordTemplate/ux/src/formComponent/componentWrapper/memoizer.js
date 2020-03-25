@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import shallowEqual from "formComponent/utils/shallowEqual";
 
 /* For Individual Fields we would use this function to compare */

@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import Paper from "@material-ui/core/Paper";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
