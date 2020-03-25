@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "typeface-roboto";
-import FormContainer from "./formComponent/container/formContainer";
+import FormContainer from "./formComponent";
 import formData from "./metaData";
 import grey from "@material-ui/core/colors/grey";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";

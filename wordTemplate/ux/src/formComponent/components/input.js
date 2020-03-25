@@ -30,7 +30,7 @@ let MyTextField = ({
     disabled
   } = mutate;
   const debounceDelay = 200;
-  const blurDelay = 500;
+  const blurDelay = debounceDelay * 2;
   const [inputValue, setInputValue] = React.useState(value);
   const [asyncLoader, setAsyncLoader] = React.useState(false);
   /*need reference to sync error between renders to determine 

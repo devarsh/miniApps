@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const FormMetaDataValidator = ({ formMetaData }) => {
+export const FormContainerWithMetaDataValidator = ({ formMetaData }) => {
   let metaDataValidationResult = metaDataSchemaValidator(formMetaData);
   let isError = metaDataValidationResult.isError();
   let value = metaDataValidationResult.getValue();
@@ -100,5 +100,3 @@ const FormContainer = ({ formMetaData }) => {
     </>
   );
 };
-
-export default FormMetaDataValidator;
