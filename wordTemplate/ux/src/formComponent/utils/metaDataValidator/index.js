@@ -12,7 +12,6 @@ let schema = yup.object().shape({
   form: formSchemaValidator,
   fields: fieldsSchemaValidator
 });
-
 export const metaDataSchemaValidator = metaData => {
   try {
     validationConfig.context = metaData;

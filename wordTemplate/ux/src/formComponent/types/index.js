@@ -1,4 +1,39 @@
 import { ValidationError } from "yup";
+import * as yup from "yup";
+
+export class OptionsType {
+  #result = null;
+  constructor(options) {
+    try {
+      let optionsSchema = yup
+        .array()
+        .required()
+        .of(
+          yup.object().shape({
+            value: yup.lazy(value => {
+              switch (typeof value) {
+                case "number":
+                  return yup.number().required();
+                default:
+                  return yup.string().required();
+              }
+            }),
+            label: yup.string().required()
+          })
+        );
+      let result = optionsSchema.validateSync(options, {
+        abortEarly: false,
+        strict: true
+      });
+      this.#result = result;
+    } catch (e) {
+      throw e;
+    }
+  }
+  getValue() {
+    return this.#result;
+  }
+}
 
 export class MetaDataSchemaValidatorType {
   #result = null;

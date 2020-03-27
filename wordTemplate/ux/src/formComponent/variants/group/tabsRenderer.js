@@ -37,9 +37,13 @@ export const TabsRenderer = ({
     const display =
       index !== currentIndex ? { display: "none" } : { display: "flex" };
     return (
-      <Grid container {...renderBag.container} style={display}>
+      <Grid
+        container
+        {...renderBag.container}
+        key={`${group}-${index}`}
+        style={display}
+      >
         <GroupItem
-          key={`${group}-${index}`}
           groupMetaData={groupWiseFields[group]}
           groupDepedency={groupWiseFieldDepedency[group]}
           asyncBag={asyncBag}

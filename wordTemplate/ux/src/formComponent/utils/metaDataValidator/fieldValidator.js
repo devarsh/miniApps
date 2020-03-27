@@ -12,7 +12,10 @@ const componentTypes = [
   "date",
   "time",
   "datetime",
-  "array"
+  "array",
+  "autocompleteStatic",
+  "autocompleteDynamic",
+  "rating"
 ];
 
 const fieldSchemaValidator = yup.object().shape({
@@ -150,13 +153,14 @@ const fieldSchemaValidator = yup.object().shape({
     otherwise: yup.number().notRequired()
   }),
   callback: yup.object().when("type", {
-    is: type => type === "selectDependent",
+    is: type => ["selectDependent", "autocompleteDynamic"].indexOf(type) >= 0,
     then: yup
       .object()
       .required()
       .test("callback", "callback must be a function", isFunctionNotRequired),
     otherwise: yup.object().notRequired()
-  })
+  }),
+  multiple: yup.boolean()
 });
 
 const templateSchema = yup.object().shape({

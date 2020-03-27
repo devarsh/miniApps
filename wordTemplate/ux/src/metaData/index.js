@@ -1,5 +1,9 @@
 import { BoolType } from "formComponent/types";
-import { asyncValidationHandler, makeAsyncRequest } from "./fns.js";
+import {
+  asyncValidationHandler,
+  makeAsyncRequest,
+  fetchAutoCompleteData
+} from "./fns.js";
 
 const formData = {
   form: {
@@ -43,10 +47,54 @@ const formData = {
     },
     {
       group: "groupA",
-      name: "sunil",
-      label: "Sunil",
-      type: "text",
-      asyncValidationFn: asyncValidationHandler
+      name: "person",
+      label: "Person",
+      type: "autocompleteStatic",
+      multiple: true,
+      getOptionLabel: option => option.label,
+      options: [
+        { value: 1, label: "devarsh" },
+        { vale: 2, label: "dvija" },
+        { value: 3, label: "muktesh" },
+        { value: 4, label: "ashini" },
+        { value: 5, label: "ayush" },
+        { value: 6, label: "urja" },
+        { value: 7, label: "nimisha" },
+        { value: 8, label: "nilesh" },
+        { value: 23, label: "rutvi" },
+        { value: 9, label: "harsh" },
+        { value: 10, label: "nirali" },
+        { value: 11, label: "mona" },
+        { value: 12, label: "trilok" },
+        { value: 13, label: "jay" },
+        { value: 14, label: "kaveer" },
+        { value: 15, label: "rimoni" },
+        { value: 16, label: "shimoli" },
+        { value: 17, label: "sangita" },
+        { value: 18, label: "kandarp" },
+        { value: 19, label: "prashant" },
+        { value: 20, label: "alok" },
+        { value: 21, label: "saanvi" },
+        { value: 22, label: "bijal" },
+        { value: 24, label: "anal" },
+        { value: 25, label: "aryaman" },
+        { value: 26, label: "hriman" }
+      ]
+    },
+    {
+      group: "groupA",
+      name: "person2",
+      label: "Person2",
+      type: "autocompleteDynamic",
+      multiple: true,
+      getOptionLabel: option => option.name,
+      callback: fetchAutoCompleteData
+    },
+    {
+      group: "groupA",
+      name: "person3",
+      label: "Person3",
+      type: "rating"
     },
     {
       group: "groupA",
@@ -103,6 +151,7 @@ const formData = {
       name: "age",
       label: "Age",
       type: "selectStatic",
+      multiple: true,
       options: [
         { value: 1, label: "1-10" },
         { value: 2, label: "11-20" },

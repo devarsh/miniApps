@@ -7,7 +7,10 @@ import {
   MyRadio,
   MyKeyboardDatePicker,
   MySlider,
-  MySwitch
+  MySwitch,
+  MyAutoCompleteStatic,
+  MyAutoCompleteDynamic,
+  MyRating
 } from "formComponent/components";
 import {
   ArrayComponent,
@@ -23,13 +26,60 @@ export const renderField = (field, index = "") => {
   key = `${name}-${index}`;
   const commonProps = { key, type, name, label, others: { watch, show } };
   switch (type) {
-    case "text":
+    case "text": {
       const { asyncValidationFn } = field;
       return (
         <FieldBagWrapper {...commonProps} asyncValidationFn={asyncValidationFn}>
           <MyTextField />
         </FieldBagWrapper>
       );
+    }
+    case "rating": {
+      const { max, precision } = field;
+      return (
+        <FieldBagWrapper {...commonProps} max={max} precision={precision}>
+          <MyRating />
+        </FieldBagWrapper>
+      );
+    }
+    case "autocompleteStatic": {
+      const {
+        options,
+        getOptionLabel,
+        multiple = false,
+        freeSolo = false
+      } = field;
+      return (
+        <FieldBagWrapper
+          {...commonProps}
+          options={options}
+          getOptionLabel={getOptionLabel}
+          multiple={multiple}
+          freeSolo={freeSolo}
+        >
+          <MyAutoCompleteStatic />
+        </FieldBagWrapper>
+      );
+    }
+    case "autocompleteDynamic": {
+      const {
+        callback = () => {},
+        getOptionLabel,
+        multiple = false,
+        freeSolo = false
+      } = field;
+      return (
+        <FieldBagWrapper
+          {...commonProps}
+          getOptionLabel={getOptionLabel}
+          multiple={multiple}
+          freeSolo={freeSolo}
+          callback={callback}
+        >
+          <MyAutoCompleteDynamic />
+        </FieldBagWrapper>
+      );
+    }
     case "slider": {
       const { min, max, step } = field;
       return (
@@ -63,21 +113,26 @@ export const renderField = (field, index = "") => {
       );
     }
     case "selectStatic": {
-      const { options, defaultValue } = field;
+      const { options, defaultValue, multiple = false } = field;
       return (
         <FieldBagWrapper
           {...commonProps}
           options={options}
           defaultValue={defaultValue}
+          multiple={multiple}
         >
           <MySelectStatic />
         </FieldBagWrapper>
       );
     }
     case "selectDependent": {
-      const { callback } = field;
+      const { callback, multiple = false } = field;
       return (
-        <FieldBagWrapper {...commonProps} callback={callback}>
+        <FieldBagWrapper
+          {...commonProps}
+          callback={callback}
+          multiple={multiple}
+        >
           <MySelectDependent />
         </FieldBagWrapper>
       );
