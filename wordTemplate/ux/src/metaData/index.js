@@ -52,6 +52,7 @@ const formData = {
       type: "autocompleteStatic",
       multiple: true,
       getOptionLabel: option => option.label,
+      freeSolo: true,
       options: [
         { value: 1, label: "devarsh" },
         { vale: 2, label: "dvija" },

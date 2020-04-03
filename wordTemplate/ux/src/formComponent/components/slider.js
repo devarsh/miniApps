@@ -25,6 +25,9 @@ let MySlider = ({
     registerField(name);
     return () => unregisterField(name);
   }, [registerField, unregisterField, name]);
+  React.useEffect(() => {
+    setSliderValue(value);
+  }, [value]);
   const [handleChangeDebounce] = useDebouncedCallback(eventVal => {
     const e = {
       target: {

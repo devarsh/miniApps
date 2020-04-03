@@ -1,12 +1,14 @@
 import * as React from "react";
 import ReactDOM from "react-dom";
 import "typeface-roboto";
-import FormContainer from "./formComponent";
-import formData from "./metaData";
-import grey from "@material-ui/core/colors/grey";
-import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+//import FormContainer from "./formComponent";
+//import formData from "./metaData";
+//import grey from "@material-ui/core/colors/grey";
 
-const theme = createMuiTheme({
+//import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import Dnd from "./formUpload";
+
+/*const theme = createMuiTheme({
   palette: {
     primary: {
       main: grey[900]
@@ -16,10 +18,10 @@ const theme = createMuiTheme({
     }
   }
 });
-
+*/
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
+  /*<ThemeProvider theme={theme}>
     <FormContainer formMetaData={formData} />
-  </ThemeProvider>,
+  </ThemeProvider>*/ <Dnd />,
   document.getElementById("⚛️")
 );

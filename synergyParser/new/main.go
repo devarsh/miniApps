@@ -32,6 +32,7 @@ var (
 	waitThreshold         = 10
 	version               = ""
 	proxyG                = false
+	retryCountLimit       = 5
 )
 
 var proxy *utils.Proxy
@@ -46,6 +47,7 @@ func setupFlags() {
 	reimbursementBE := flag.Bool("re", false, "If Need to fetch reimbursement invoice employee details pass true")
 	outFilePath := flag.String("p", "./out", "outfile path")
 	generateCreateInvFileG := flag.Bool("g", false, "If need to generate create invoice file pass true")
+	retryCountLimitG := flag.Int("rcl", 1, "Retry request count when timesheet data is not available")
 	proxyB := flag.Bool("proxy", false, "Should Proxy be enabled or not")
 	flag.Parse()
 	proxyG = *proxyB
@@ -58,6 +60,7 @@ func setupFlags() {
 	filePath = *outFilePath
 	monthStr := time.Month(*monthInt)
 	month = monthStr.String()
+	retryCountLimit = *retryCountLimitG
 	return
 }
 
@@ -144,7 +147,8 @@ func main() {
 	} else {
 		if generateCreateInvFile == true {
 			fmt.Println("Generate Invoices")
-			getCreateInvoiceList(client, cookie, logintoken)
+			err = getCreateInvoiceList(client, cookie, logintoken, retryCountLimit)
+			fmt.Println(err)
 			return
 		}
 		if reimbursement == true {
