@@ -1,7 +1,5 @@
 import { renderField } from "./fieldsRenderer";
 export const FormRenderer = ({ fieldsArray }) => {
-  const renderMap = fieldsArray.map((field, index) => {
-    return renderField(field, index);
-  });
+  const renderMap = fieldsArray.map((field) => renderField(field));
   return renderMap;
 };

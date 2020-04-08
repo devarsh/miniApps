@@ -7,7 +7,7 @@ import { RenderContext } from "formComponent/context/renderProvider";
 import { renderField } from "formComponent/renderer/fieldsRenderer";
 import { remove as removeArrayItemAtIndex } from "formComponent/utils/formikArrayUtils";
 
-const generateArrayItemTemplateObject = template => {
+const generateArrayItemTemplateObject = (template) => {
   let obj = {};
   for (let i = 0; i < template.length; i++) {
     obj[template[i].name] = "";
@@ -21,12 +21,12 @@ const ArrayItem = ({
   index,
   setAsyncErrors,
   remove,
-  renderBag
+  renderBag,
 }) => {
   if (!Array.isArray(template)) {
     return null;
   }
-  const fieldRow = template.map(field => {
+  const fieldRow = template.map((field) => {
     const { name } = field;
     //DONT try to act smart and remove this line, its required to copy this object and manipulate,
     //its there to prevent actual object manuipulation. I know what I am doing.
@@ -37,7 +37,7 @@ const ArrayItem = ({
     <Grid key={`${parent}[${index}].removeBtn`} item {...renderBag.item.size}>
       <Button
         onClick={() => {
-          setAsyncErrors(errors =>
+          setAsyncErrors((errors) =>
             setIn(
               errors,
               parent,

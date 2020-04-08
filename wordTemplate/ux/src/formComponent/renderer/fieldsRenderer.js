@@ -10,20 +10,16 @@ import {
   MySwitch,
   MyAutoCompleteStatic,
   MyAutoCompleteDynamic,
-  MyRating
+  MyRating,
 } from "formComponent/components";
 import {
   ArrayComponent,
-  FieldBagWrapper
+  FieldBagWrapper,
 } from "formComponent/componentWrapper";
 
-export const renderField = (field, index = "") => {
+export const renderField = (field) => {
   const { type, name, label, watch, show } = field;
-  let key;
-  if (index === "") {
-    key = name;
-  }
-  key = `${name}-${index}`;
+  key = `${name}`;
   const commonProps = { key, type, name, label, others: { watch, show } };
   switch (type) {
     case "text": {
@@ -47,7 +43,7 @@ export const renderField = (field, index = "") => {
         options,
         getOptionLabel,
         multiple = false,
-        freeSolo = false
+        freeSolo = false,
       } = field;
       return (
         <FieldBagWrapper
@@ -66,7 +62,7 @@ export const renderField = (field, index = "") => {
         callback = () => {},
         getOptionLabel,
         multiple = false,
-        freeSolo = false
+        freeSolo = false,
       } = field;
       return (
         <FieldBagWrapper

@@ -4,11 +4,12 @@ import {
   PAUSE_UPLOAD,
   COMPLETE_UPLOAD,
   DELETE_FILE,
-  REPLACE_STATE
+  REPLACE_STATE,
+  SET_ERROR,
 } from "./consts";
 
 export const initialState = {
-  files: []
+  files: [],
 };
 
 export const immutableReducer = (draft, { type, payload }) => {
@@ -16,7 +17,7 @@ export const immutableReducer = (draft, { type, payload }) => {
     case QUEUE_FILES: {
       const { files } = payload;
       for (let file of files) {
-        draft.files.unshift(file);
+        draft.files.push(file);
       }
       return;
     }
@@ -25,6 +26,8 @@ export const immutableReducer = (draft, { type, payload }) => {
       for (let file of draft.files) {
         if (fileIDs.indexOf(file.id) >= 0) {
           file.uploading = true;
+          file.uploadInterrupted = false;
+          file.error = "";
         }
       }
       return;
@@ -34,7 +37,10 @@ export const immutableReducer = (draft, { type, payload }) => {
       for (let file of draft.files) {
         if (file.id === fileID) {
           file.uploading = false;
+          file.uploadInterrupted = false;
           file.uploaded = true;
+          file.error = "";
+          return;
         }
       }
       return;
@@ -47,13 +53,13 @@ export const immutableReducer = (draft, { type, payload }) => {
             file.uploading = false;
             file.uploadInterrupted = byUser;
           }
+          return;
         }
       }
       return;
     }
     case DELETE_FILE: {
       const { fileID } = payload;
-      console.log(fileID);
       let index = -1;
       for (let i = 0; i < draft.files.length; i++) {
         if (draft.files[i].id === fileID) {
@@ -63,6 +69,16 @@ export const immutableReducer = (draft, { type, payload }) => {
       }
       if (index >= 0) {
         draft.files.splice(index, 1);
+      }
+      return;
+    }
+    case SET_ERROR: {
+      const { fileID, error } = payload;
+      for (let file of draft.files) {
+        if (file.id === fileID) {
+          file.error = error;
+          return;
+        }
       }
       return;
     }

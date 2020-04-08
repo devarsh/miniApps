@@ -14,6 +14,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/olekukonko/tablewriter v0.0.1
 	github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942 // indirect
+	github.com/rs/cors v1.7.0
 	github.com/russross/blackfriday/v2 v2.0.1
 	github.com/tdewolff/minify v2.3.6+incompatible // indirect
 	github.com/tdewolff/minify/v2 v2.5.1

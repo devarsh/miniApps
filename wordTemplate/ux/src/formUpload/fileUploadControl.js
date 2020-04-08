@@ -1,39 +1,44 @@
+//pending task
+//1. Queuing of the uploads scheduler with pause all and resume all
+//2. Deriving mime types using magic numbers
+//3. reject upload of file types with particular mime-types
+
 import React from "react";
 import Card from "@material-ui/core/card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
-import List from "@material-ui/core/List";
+
 import { makeStyles } from "@material-ui/core/styles";
 import produce from "immer";
 import { useDrop } from "react-dnd";
 import { NativeTypes } from "react-dnd-html5-backend";
 import DragDropPlaceholder from "./dragDropPlaceholder";
-import File from "./file";
+import { FileList } from "./filesList";
 import {
   immutableReducer,
   initialState,
   queueFilesForUpload,
-  startUpload,
+  queueUpload,
   monkeyPatchReducer,
-  replaceState
 } from "./redux";
 import { FileUploadContext } from "./context";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   cardHeader: {
     backgroundColor: theme.palette.primary.main,
-    padding: theme.spacing(1)
+    padding: theme.spacing(1),
   },
   card: {
     minWidth: "450px",
-    boxShadow: theme.shadows[2]
+    boxShadow: theme.shadows[2],
   },
   cardContent: {
+    height: "350px",
+  },
+  listContainer: {
     height: "250px",
-    overflow: "scroll"
-  }
+    overflow: "scroll",
+  },
 }));
 
 const useImmerReducer = (reducer, initialState, initialAction) => {
@@ -41,67 +46,64 @@ const useImmerReducer = (reducer, initialState, initialAction) => {
   return React.useReducer(cachedReducer, initialState, initialAction);
 };
 
-const FileList = ({ files }) => {
-  const filesArray = files.map(file => <File {...file} key={file.id} />);
-  return <List dense={true}>{filesArray}</List>;
-};
-
 const FileUploadController = () => {
   const classes = useStyles();
   const fileDialogRef = React.useRef();
   const [state, dispatch] = useImmerReducer(immutableReducer, initialState);
-  const [, drop] = useDrop({
+  const dispatchActionsToQueueFiles = (files) => {
+    monkeyPatchReducer(queueFilesForUpload(files), queueUpload)(
+      dispatch,
+      state
+    );
+  };
+  const [{ canDrop, isOver }, drop] = useDrop({
     accept: NativeTypes.FILE,
     drop(items) {
       const { files } = items;
-      let newState = monkeyPatchReducer(state, queueFilesForUpload, files);
-      newState = monkeyPatchReducer(newState, startUpload);
-      replaceState(dispatch)(newState);
+      dispatchActionsToQueueFiles(files);
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       canDrop: monitor.canDrop(),
-      isOver: monitor.isOver()
-    })
+      isOver: monitor.isOver(),
+    }),
   });
-  const selectedFilesCapture = e => {
+  const selectedFilesCapture = (e) => {
     const files = e.target.files;
     const filesArray = Array.from(files);
-    let newState = monkeyPatchReducer(state, queueFilesForUpload, filesArray);
-    newState = monkeyPatchReducer(newState, startUpload);
-    replaceState(dispatch)(newState);
+    dispatchActionsToQueueFiles(filesArray);
   };
-
+  const uploadFileHandler = () => fileDialogRef.current.click();
   return (
-    <FileUploadContext.Provider value={{ dispatch: dispatch, state: state }}>
+    <FileUploadContext.Provider
+      value={{
+        dispatch: dispatch,
+        state: state,
+        endpoint: "http://localhost:8080/files/",
+      }}
+    >
+      <input
+        type="file"
+        multiple
+        style={{ display: "none" }}
+        ref={fileDialogRef}
+        onChange={selectedFilesCapture}
+      />
       <Card classes={{ root: classes.card }}>
         <CardHeader
           title="File Upload Control"
           classes={{ root: classes.cardHeader }}
         />
-        <CardContent ref={drop} className={classes.cardContent}>
-          {state.files.length ? (
-            <FileList files={state.files} />
-          ) : (
-            <DragDropPlaceholder />
-          )}
-        </CardContent>
-        <CardActions>
-          <input
-            type="file"
-            multiple
-            style={{ display: "none" }}
-            ref={fileDialogRef}
-            onChange={selectedFilesCapture}
+        <CardContent className={classes.cardContent} ref={drop}>
+          <DragDropPlaceholder
+            uploadHandler={uploadFileHandler}
+            height={"100px"}
+            canDrop={canDrop}
+            isOver={isOver}
           />
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            onClick={() => fileDialogRef.current.click()}
-          >
-            Upload File
-          </Button>
-        </CardActions>
+          <div className={classes.listContainer}>
+            <FileList files={state.files} />
+          </div>
+        </CardContent>
       </Card>
     </FileUploadContext.Provider>
   );

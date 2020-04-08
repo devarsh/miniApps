@@ -2,32 +2,32 @@ import { BoolType } from "formComponent/types";
 import {
   asyncValidationHandler,
   makeAsyncRequest,
-  fetchAutoCompleteData
+  fetchAutoCompleteData,
 } from "./fns.js";
 
 const formData = {
   form: {
-    name: "Orders",
+    name: "Orders-Sajid",
     fieldGroups: ["groupA", "groupB", "groupC", "groupD"],
-    renderType: "group",
+    renderType: "simple",
     renderTabs: true,
     gridConfig: {
       item: {
         size: {
           xs: 12,
           sm: 6,
-          md: 3
-        }
+          md: 4,
+        },
       },
       container: {
         direction: "row",
-        spacing: 2
-      }
-    }
+        spacing: 2,
+      },
+    },
   },
   fields: [
     {
-      group: "groupA",
+      group: "FirstGroup",
       name: "firstName",
       label: "First Name",
       type: "text",
@@ -36,22 +36,22 @@ const formData = {
         { type: "required", params: ["First Name is a required field"] },
         {
           type: "min",
-          params: [5, "First Name should be minimum 5 characters long"]
+          params: [5, "First Name should be minimum 5 characters long"],
         },
         {
           type: "max",
-          params: [30, "First Name should not be more than 30 characters long"]
-        }
+          params: [30, "First Name should not be more than 30 characters long"],
+        },
       ],
-      asyncValidationFn: asyncValidationHandler
+      asyncValidationFn: asyncValidationHandler,
     },
     {
       group: "groupA",
       name: "person",
       label: "Person",
       type: "autocompleteStatic",
-      multiple: true,
-      getOptionLabel: option => option.label,
+      multiple: false,
+      getOptionLabel: (option) => option.label,
       freeSolo: true,
       options: [
         { value: 1, label: "devarsh" },
@@ -79,8 +79,8 @@ const formData = {
         { value: 22, label: "bijal" },
         { value: 24, label: "anal" },
         { value: 25, label: "aryaman" },
-        { value: 26, label: "hriman" }
-      ]
+        { value: 26, label: "hriman" },
+      ],
     },
     {
       group: "groupA",
@@ -88,14 +88,14 @@ const formData = {
       label: "Person2",
       type: "autocompleteDynamic",
       multiple: true,
-      getOptionLabel: option => option.name,
-      callback: fetchAutoCompleteData
+      getOptionLabel: (option) => option.name,
+      callback: fetchAutoCompleteData,
     },
     {
       group: "groupA",
       name: "person3",
       label: "Person3",
-      type: "rating"
+      type: "rating",
     },
     {
       group: "groupA",
@@ -105,15 +105,15 @@ const formData = {
       validationType: "string",
       validations: [
         { type: "required", params: ["Surname is required. by mahendra"] },
-        { type: "email", params: ["it should be a valid email"] }
-      ]
+        { type: "email", params: ["it should be a valid email"] },
+      ],
     },
     {
       group: "groupA",
       name: "middleName",
       label: "Middle Name",
       type: "text",
-      asyncValidationFn: asyncValidationHandler
+      asyncValidationFn: asyncValidationHandler,
     },
     {
       group: "groupB",
@@ -122,8 +122,8 @@ const formData = {
       type: "text",
       validationType: "number",
       validations: [
-        { type: "min", params: [50, "Number should be 50 or more"] }
-      ]
+        { type: "min", params: [50, "Number should be 50 or more"] },
+      ],
     },
     {
       group: "groupB",
@@ -132,8 +132,8 @@ const formData = {
       type: "radio",
       options: [
         { value: 1, label: "Male" },
-        { value: 2, label: "Female" }
-      ]
+        { value: 2, label: "Female" },
+      ],
     },
     {
       group: "groupB",
@@ -142,10 +142,10 @@ const formData = {
       type: "radio",
       options: [
         { value: 1, label: "Boy" },
-        { value: 2, label: "Girl" }
+        { value: 2, label: "Girl" },
       ],
       /*eslint-disable eqeqeq */
-      show: [val => new BoolType(val == 1), "gender"]
+      show: [(val) => new BoolType(val == 1), "gender"],
     },
     {
       group: "groupB",
@@ -163,14 +163,14 @@ const formData = {
         { value: 7, label: "61-70" },
         { value: 8, label: "71-80" },
         { value: 9, label: "81-90" },
-        { value: 10, label: "91 and Above" }
-      ]
+        { value: 10, label: "91 and Above" },
+      ],
     },
     {
       group: "groupB",
       name: "dob",
       label: "Date of Birth",
-      type: "date"
+      type: "date",
     },
     {
       group: "groupC",
@@ -180,8 +180,8 @@ const formData = {
       options: [
         { value: "gujarat", label: "Gujarat" },
         { value: "rajasthan", label: "Rajasthan" },
-        { value: "maharashtra", label: "Maharashtra" }
-      ]
+        { value: "maharashtra", label: "Maharashtra" },
+      ],
     },
     {
       group: "groupC",
@@ -190,7 +190,7 @@ const formData = {
       type: "slider",
       min: 0,
       max: 100,
-      step: 1
+      step: 1,
     },
     {
       group: "groupC",
@@ -200,8 +200,8 @@ const formData = {
       options: [
         { value: "email", label: "Email" },
         { value: "sms", label: "SMS" },
-        { value: "mobile", label: "Mobile" }
-      ]
+        { value: "mobile", label: "Mobile" },
+      ],
     },
     {
       group: "groupC",
@@ -211,8 +211,8 @@ const formData = {
       options: [
         { value: "email", label: "Email" },
         { value: "sms", label: "SMS" },
-        { value: "mobile", label: "Mobile" }
-      ]
+        { value: "mobile", label: "Mobile" },
+      ],
     },
     {
       group: "groupD",
@@ -221,7 +221,7 @@ const formData = {
       type: "slider",
       min: 0,
       max: 100,
-      step: 1
+      step: 1,
     },
     {
       group: "groupD",
@@ -229,7 +229,7 @@ const formData = {
       label: "City",
       type: "selectDependent",
       watch: "state",
-      callback: makeAsyncRequest
+      callback: makeAsyncRequest,
     },
     {
       group: "groupD",
@@ -246,19 +246,22 @@ const formData = {
             { type: "required", params: ["Street1 is a required field"] },
             {
               type: "min",
-              params: [5, "Street1 should be minimum 5 characters long"]
+              params: [5, "Street1 should be minimum 5 characters long"],
             },
             {
               type: "max",
-              params: [30, "Street1 should not be more than 30 characters long"]
-            }
-          ]
+              params: [
+                30,
+                "Street1 should not be more than 30 characters long",
+              ],
+            },
+          ],
         },
         {
           name: "street2",
           label: "Street-2",
           type: "text",
-          asyncValidationFn: asyncValidationHandler
+          asyncValidationFn: asyncValidationHandler,
         },
         {
           name: "state",
@@ -267,17 +270,17 @@ const formData = {
           options: [
             { value: "gujarat", label: "Gujarat" },
             { value: "rajasthan", label: "Rajasthan" },
-            { value: "maharashtra", label: "Maharashtra" }
-          ]
+            { value: "maharashtra", label: "Maharashtra" },
+          ],
         },
         {
           name: "dob",
           label: "Date of Birth",
-          type: "date"
-        }
-      ]
-    }
-  ]
+          type: "date",
+        },
+      ],
+    },
+  ],
 };
 
 export default formData;

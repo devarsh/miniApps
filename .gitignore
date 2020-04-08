@@ -4,3 +4,7 @@ vendor/
 dummy/
 *.mod
 *.sum
+wordTemplate/ux2/package-lock.json
+wordTemplate/ux2/package.json
+wordTemplate/ux2/server.js
+wordTemplate/ux2/node_modules/*

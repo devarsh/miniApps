@@ -8,17 +8,19 @@ import "typeface-roboto";
 //import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Dnd from "./formUpload";
 
-/*const theme = createMuiTheme({
+/*
+const theme = createMuiTheme({
   palette: {
     primary: {
-      main: grey[900]
+      main: grey[900],
     },
     secondary: {
-      main: grey[300]
-    }
-  }
+      main: grey[300],
+    },
+  },
 });
 */
+
 ReactDOM.render(
   /*<ThemeProvider theme={theme}>
     <FormContainer formMetaData={formData} />
