@@ -7,11 +7,12 @@ import React from "react";
 import Card from "@material-ui/core/card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-
 import { makeStyles } from "@material-ui/core/styles";
 import produce from "immer";
+
 import { useDrop } from "react-dnd";
 import { NativeTypes } from "react-dnd-html5-backend";
+
 import DragDropPlaceholder from "./dragDropPlaceholder";
 import { FileList } from "./filesList";
 import {
@@ -20,6 +21,7 @@ import {
   queueFilesForUpload,
   queueUpload,
   monkeyPatchReducer,
+  transformFileObjAndValidate,
 } from "./redux";
 import { FileUploadContext } from "./context";
 
@@ -46,15 +48,28 @@ const useImmerReducer = (reducer, initialState, initialAction) => {
   return React.useReducer(cachedReducer, initialState, initialAction);
 };
 
-const FileUploadController = () => {
+const FileUploadController = ({
+  tusEndpoint,
+  whiteListExtension = "all",
+  maxAllowedSizeInBytes = -1,
+  maxAllowedConcurrentUploads = 2,
+}) => {
   const classes = useStyles();
   const fileDialogRef = React.useRef();
   const [state, dispatch] = useImmerReducer(immutableReducer, initialState);
-  const dispatchActionsToQueueFiles = (files) => {
-    monkeyPatchReducer(queueFilesForUpload(files), queueUpload)(
-      dispatch,
-      state
+  const dispatchActionsToQueueFiles = async (files) => {
+    const fileObjArray = await transformFileObjAndValidate(
+      files,
+      whiteListExtension,
+      maxAllowedSizeInBytes
     );
+    if (fileObjArray !== null) {
+      monkeyPatchReducer(
+        queueFilesForUpload(fileObjArray),
+        queueUpload(maxAllowedConcurrentUploads)
+      )(dispatch, state);
+    }
+    return null;
   };
   const [{ canDrop, isOver }, drop] = useDrop({
     accept: NativeTypes.FILE,
@@ -67,18 +82,18 @@ const FileUploadController = () => {
       isOver: monitor.isOver(),
     }),
   });
-  const selectedFilesCapture = (e) => {
+  const fileChangeHandler = (e) => {
     const files = e.target.files;
     const filesArray = Array.from(files);
     dispatchActionsToQueueFiles(filesArray);
   };
   const uploadFileHandler = () => fileDialogRef.current.click();
-  return (
+  return !!tusEndpoint ? (
     <FileUploadContext.Provider
       value={{
         dispatch: dispatch,
         state: state,
-        endpoint: "http://localhost:8080/files/",
+        endpoint: tusEndpoint,
       }}
     >
       <input
@@ -86,7 +101,7 @@ const FileUploadController = () => {
         multiple
         style={{ display: "none" }}
         ref={fileDialogRef}
-        onChange={selectedFilesCapture}
+        onChange={fileChangeHandler}
       />
       <Card classes={{ root: classes.card }}>
         <CardHeader
@@ -96,16 +111,23 @@ const FileUploadController = () => {
         <CardContent className={classes.cardContent} ref={drop}>
           <DragDropPlaceholder
             uploadHandler={uploadFileHandler}
-            height={"100px"}
+            height={"130px"}
             canDrop={canDrop}
             isOver={isOver}
+            whiteListExtension={whiteListExtension}
+            maxAllowedSizeInBytes={maxAllowedSizeInBytes}
           />
           <div className={classes.listContainer}>
-            <FileList files={state.files} />
+            <FileList
+              files={state.files}
+              maxAllowedConcurrentUploads={maxAllowedConcurrentUploads}
+            />
           </div>
         </CardContent>
       </Card>
     </FileUploadContext.Provider>
+  ) : (
+    <div>File Destionation Endpoint not set</div>
   );
 };
 

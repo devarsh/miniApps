@@ -33,15 +33,54 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const FileList = ({ files }) => {
-  const filesArray = files.map((file) => (
-    <FileListItem {...file} key={file.id} />
-  ));
+export const FileList = ({ files, maxAllowedConcurrentUploads }) => {
+  const filesArray = files.map((file) => {
+    return file.rejected ? (
+      <FileListItemRejected {...file} key={file.id} />
+    ) : (
+      <FileListItem
+        {...file}
+        key={file.id}
+        maxAllowedConcurrentUploads={maxAllowedConcurrentUploads}
+      />
+    );
+  });
   return <List dense={true}>{filesArray}</List>;
 };
 
-const FileListItem = ({ id, fd, uploading, uploaded, error }) => {
-  console.log(`uploaded: ${uploaded} uploading: ${uploading} error:${error}`);
+const FileListItemRejected = ({ id, fd, error }) => {
+  const fileUploadCtx = React.useContext(FileUploadContext);
+  const classes = useStyles();
+  const handleDelete = () => {
+    deleteUpload(id)(fileUploadCtx.dispatch);
+  };
+  return (
+    <ListItem key={id} className={classes.listItem}>
+      <ListItemAvatar>
+        <Avatar>
+          <ImageIcon />
+        </Avatar>
+      </ListItemAvatar>
+      <ListItemText primary={fd.name} secondary={error} />
+      <ListItemSecondaryAction>
+        <IconButton onClick={handleDelete}>
+          <Tooltip title="delete upload">
+            <ClearIcon />
+          </Tooltip>
+        </IconButton>
+      </ListItemSecondaryAction>
+    </ListItem>
+  );
+};
+
+const FileListItem = ({
+  id,
+  fd,
+  uploading,
+  uploaded,
+  error,
+  maxAllowedConcurrentUploads,
+}) => {
   const classes = useStyles();
   const fileUploadCtx = React.useContext(FileUploadContext);
   const [progress, setProgress] = React.useState({
@@ -58,28 +97,30 @@ const FileListItem = ({ id, fd, uploading, uploaded, error }) => {
   //closure, and hence stale context value was used to update redux store and created pleny of
   //trouble, so fixed the issue by triggering the callbacks in hooks and always getting
   //updated context value. LOL closures can bite your ass hard if you dont pay attention.
+  /*eslint-disable react-hooks/exhaustive-deps*/
   React.useEffect(() => {
     if (triggerError === true) {
       if (uploading === true) {
         monkeyPatchReducer(
-          pauseUpload(id, false),
-          setUploadError(id, sendErrorMessageRef.current)
+          pauseUpload(id, true),
+          setUploadError(id, sendErrorMessageRef.current),
+          queueUpload(maxAllowedConcurrentUploads)
         )(fileUploadCtx.dispatch, fileUploadCtx.state);
       } else {
-        setUploadError(id, sendErrorMessageRef.current)(
-          fileUploadCtx.dispatch,
-          fileUploadCtx.state
-        );
+        monkeyPatchReducer(
+          setUploadError(id, sendErrorMessageRef.current),
+          queueUpload(maxAllowedConcurrentUploads)
+        )(fileUploadCtx.dispatch, fileUploadCtx.state);
       }
       setTriggerError(false);
     }
   }, [triggerError]);
   React.useEffect(() => {
     if (triggerCompleted === true) {
-      monkeyPatchReducer(completeUpload(id), queueUpload)(
-        fileUploadCtx.dispatch,
-        fileUploadCtx.state
-      );
+      monkeyPatchReducer(
+        completeUpload(id),
+        queueUpload(maxAllowedConcurrentUploads)
+      )(fileUploadCtx.dispatch, fileUploadCtx.state);
       setTriggerCompleted(false);
     }
   }, [triggerCompleted]);
@@ -192,6 +233,7 @@ const FileListItem = ({ id, fd, uploading, uploaded, error }) => {
             {uploaded ? (
               <a
                 href={uploadInstanceRef.current.url}
+                rel="noopener noreferrer"
                 type={fd.type}
                 target="_blank"
               >

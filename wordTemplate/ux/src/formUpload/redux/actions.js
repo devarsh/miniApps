@@ -1,3 +1,6 @@
+import produce from "immer";
+import { getMimeType, isMimeTypeValid, isFileSizeAllowed } from "../utils";
+import shortId from "shortid";
 import {
   QUEUE_FILES,
   START_UPLOAD,
@@ -7,17 +10,14 @@ import {
   REPLACE_STATE,
   SET_ERROR,
 } from "./consts";
-import shortId from "shortid";
-import produce from "immer";
 import { immutableReducer } from "./state";
-
-//utils
 
 export const monkeyPatchReducer = (...fns) => (dispatchx, initialState) => {
   let payload = [];
   const patchDispatch = (value) => {
     payload.push(value);
   };
+  /*eslint-disable no-loop-func*/
   let parentState = initialState;
   for (let i = 0; i < fns.length; i++) {
     if (typeof fns[i] === "function") {
@@ -33,18 +33,36 @@ export const monkeyPatchReducer = (...fns) => (dispatchx, initialState) => {
   replaceState(dispatchx, parentState);
 };
 
-const createFilesObject = (files = []) => {
-  const newFilesObject = files.map((file) => ({
-    id: shortId.generate(),
-    fd: file,
-    uploaded: false,
-    uploading: false,
-    uploadInterrupted: false,
-    error: "",
-    rejected: false,
-  }));
-  return newFilesObject;
+export const transformFileObjAndValidate = async (
+  files,
+  whiteListExtensions,
+  maxAllowedSizeInBytes
+) => {
+  if (Array.isArray(files)) {
+    const filesObjArray = [];
+    for (let i = 0; i < files.length; i++) {
+      let file = files[i];
+      let mime = await getMimeType(file);
+      let result = isMimeTypeValid(mime, whiteListExtensions);
+      if (result.isRejected === false) {
+        result = isFileSizeAllowed(maxAllowedSizeInBytes, file.size);
+      }
+      filesObjArray.push(constructNewFileObject(file, result));
+    }
+    return filesObjArray;
+  }
+  return null;
 };
+
+const constructNewFileObject = (file, result) => ({
+  id: shortId.generate(),
+  fd: file,
+  uploaded: false,
+  uploading: false,
+  uploadInterrupted: false,
+  error: result?.isRejected ? result?.rejectReason : "",
+  rejected: result?.isRejected,
+});
 
 const getPendingFiles = (files) => {
   let currentUploadingFilesCount = 0;
@@ -67,16 +85,11 @@ const getPendingFiles = (files) => {
 
 //actions
 
-let maxUploadCount = 5;
-
 export const queueFilesForUpload = (files) => (dispatch) => {
-  if (Array.isArray(files)) {
-    const filesObj = createFilesObject(files);
-    dispatch({ type: QUEUE_FILES, payload: { files: filesObj } });
-  }
+  dispatch({ type: QUEUE_FILES, payload: { files: files } });
 };
 
-export const queueUpload = (dispatch, state) => {
+export const queueUpload = (maxUploadCount) => (dispatch, state) => {
   const { files } = state;
   let [currentUploadingFilesCount, pendingFiles] = getPendingFiles(files);
   if (currentUploadingFilesCount < maxUploadCount) {
@@ -86,7 +99,7 @@ export const queueUpload = (dispatch, state) => {
   }
 };
 
-export const startUpload = (fileID) => (dispatch, state) => {
+export const startUpload = (fileID, maxUploadCount) => (dispatch, state) => {
   const { files } = state;
   let currentUploadingFileCount = 0;
   let fileToPauseID;
@@ -130,6 +143,5 @@ export const setUploadError = (fileID, error) => (dispatch) => {
 };
 
 const replaceState = (dispatch, newState) => {
-  console.log(REPLACE_STATE);
   dispatch({ type: REPLACE_STATE, payload: { newState: newState } });
 };

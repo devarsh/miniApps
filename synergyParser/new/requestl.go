@@ -7,13 +7,16 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/devarsh/miniApps/synergyParser/utils"
 	"github.com/fatih/color"
 	"github.com/tidwall/gjson"
 )
 
-func fetchInvoiceList(client *http.Client, cookies, wlInst string) ([]gjson.Result, error) {
+func fetchInvoiceList(client *http.Client, cookies, wlInst string, retryCountLimit int) ([]gjson.Result, error) {
+	retryCount := 0
+RETRY:
 	newReqFormData := formData()
 	newReqFormData.Set("parameters", getInvoicesListPurpose())
 	req, err := http.NewRequest("POST", apiUrl, strings.NewReader(newReqFormData.Encode()))
@@ -22,8 +25,16 @@ func fetchInvoiceList(client *http.Client, cookies, wlInst string) ([]gjson.Resu
 	}
 	req.Header = getHeaders(false, cookies, wlInst)
 	responseStr, timeTaken, err := utils.RequestMaker(client, req)
-
 	color.Yellow("Get Invoices Request For %s-%s\nPOST %s\nTime Taken:%s\n", month, year, apiUrl, timeTaken)
+	apiResponse := gjson.Get(*responseStr, "message")
+	if strings.Contains(apiResponse.String(), "failure") {
+		fmt.Println("retrying......in 3 to fetch invoice numbers :")
+		time.Sleep(3 * time.Second)
+		retryCount = retryCount + 1
+		if retryCount <= retryCountLimit {
+			goto RETRY
+		}
+	}
 	jsonExtract := gjson.Get(*responseStr, "result.#.str_invoice_number")
 	if jsonExtract.IsArray() {
 		return jsonExtract.Array(), nil
@@ -31,8 +42,8 @@ func fetchInvoiceList(client *http.Client, cookies, wlInst string) ([]gjson.Resu
 	return nil, fmt.Errorf("could'nt convert json response into Array of Invoice List")
 }
 
-func invoicesChan(ctx context.Context, client *http.Client, cookie, logintoken string) (<-chan string, error) {
-	invoiceList, err := fetchInvoiceList(client, cookie, logintoken)
+func invoicesChan(ctx context.Context, client *http.Client, cookie, logintoken string, retryCountLimit int) (<-chan string, error) {
+	invoiceList, err := fetchInvoiceList(client, cookie, logintoken, retryCountLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -50,12 +61,12 @@ func invoicesChan(ctx context.Context, client *http.Client, cookie, logintoken s
 	return invChan, nil
 }
 
-func makeRequestChan(ctx context.Context, client *http.Client, cookies, loginToken string, invoiceChan <-chan string) <-chan *Result {
+func makeRequestChan(ctx context.Context, client *http.Client, cookies, loginToken string, invoiceChan <-chan string, retryCountLimit int) <-chan *Result {
 	resChan := make(chan *Result)
 	go func() {
 		defer close(resChan)
 		for oneInv := range invoiceChan {
-			invDtl, err := fetchOneInvoice(client, cookies, loginToken, oneInv)
+			invDtl, err := fetchOneInvoice(client, cookies, loginToken, oneInv, retryCountLimit)
 			select {
 			case resChan <- &Result{Err: err, Invoice: invDtl}:
 			case <-ctx.Done():
@@ -66,7 +77,9 @@ func makeRequestChan(ctx context.Context, client *http.Client, cookies, loginTok
 	return resChan
 }
 
-func fetchOneInvoice(client *http.Client, cookie, wlInst, invoiceNo string) (*FinalInvoices, error) {
+func fetchOneInvoice(client *http.Client, cookie, wlInst, invoiceNo string, retryCountLimit int) (*FinalInvoices, error) {
+	retryCount := 0
+RETRY:
 	if invoiceNo == "" {
 		return nil, fmt.Errorf("Error Fetching Employee for empty Invoice")
 	}
@@ -82,6 +95,16 @@ func fetchOneInvoice(client *http.Client, cookie, wlInst, invoiceNo string) (*Fi
 		return nil, fmt.Errorf("Error Fetching PEMP Invoice No:%s", invoiceNo)
 	}
 	color.Green("Get Single Invoice PEMP Detail Request For Invoice No:%s\nPOST %s\nTime Taken:%s\n", invoiceNo, apiUrl, timeTaken)
+	apiResponse := gjson.Get(*responseStr, "message")
+	if strings.Contains(apiResponse.String(), "failure") {
+		fmt.Println("retrying......in 3 seconds PEMP request for invoice no:", invoiceNo)
+		time.Sleep(3 * time.Second)
+		retryCount = retryCount + 1
+		if retryCount <= retryCountLimit {
+			goto RETRY
+		}
+	}
+	retryCount = 0
 	jsonExtract := gjson.Get(*responseStr, "result")
 	finalJSON := fmt.Sprint(`{"result" : ` + jsonExtract.String() + `}`)
 	allEmpInvoices := AllEmpInvoice{}
@@ -89,6 +112,8 @@ func fetchOneInvoice(client *http.Client, cookie, wlInst, invoiceNo string) (*Fi
 	if err != nil {
 		return nil, fmt.Errorf("Error wrapping  InvoiceEmpList response into JSON %v", err)
 	}
+
+RETRY2:
 	newReqFormData.Set("parameters", getInvoicePurposePid(invoiceNo))
 	req, err = http.NewRequest("POST", apiUrl, strings.NewReader(newReqFormData.Encode()))
 	if err != nil {
@@ -99,6 +124,16 @@ func fetchOneInvoice(client *http.Client, cookie, wlInst, invoiceNo string) (*Fi
 	if err != nil {
 		return nil, fmt.Errorf("Error Fetching PID Invoice No:%s", invoiceNo)
 	}
+	apiResponse = gjson.Get(*responseStr, "message")
+	if strings.Contains(apiResponse.String(), "failure") {
+		fmt.Println("retrying......in 3 seconds PID request for invoice no:", invoiceNo)
+		time.Sleep(3 * time.Second)
+		retryCount = retryCount + 1
+		if retryCount <= retryCountLimit {
+			goto RETRY2
+		}
+	}
+	retryCount = 0
 	color.Red("Get Single Invoice PID Detail Request For Invoice No:%s\nPOST %s\nTime Taken:%s\n", invoiceNo, apiUrl, timeTaken)
 	jsonExtract = gjson.Get(*responseStr, "result.0")
 	finalJSON = jsonExtract.String()
@@ -153,6 +188,9 @@ a:
 func writeInvoiceToCsvChan(ctx context.Context, wg *sync.WaitGroup, res <-chan *Result) {
 	defer wg.Done()
 	for oneRes := range res {
+		if oneRes.Err != nil {
+			fmt.Printf("\n\n\nthe following error occured while generating invoice:\n%s\n\n\n", oneRes.Err)
+		}
 		writeInvoiceToCsv(oneRes.Invoice)
 		select {
 		case <-ctx.Done():

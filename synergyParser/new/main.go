@@ -156,14 +156,14 @@ func main() {
 			ctx1 := context.Background()
 			ctx, cancel := context.WithCancel(ctx1)
 			defer cancel()
-			invoicesNoChan, err := invoicesChanR(ctx, client, cookie, logintoken)
+			invoicesNoChan, err := invoicesChanR(ctx, client, cookie, logintoken, retryCountLimit)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
-			ch1 := makeRequestChanR(ctx, client, cookie, logintoken, invoicesNoChan)
-			ch2 := makeRequestChanR(ctx, client, cookie, logintoken, invoicesNoChan)
-			ch3 := makeRequestChanR(ctx, client, cookie, logintoken, invoicesNoChan)
+			ch1 := makeRequestChanR(ctx, client, cookie, logintoken, invoicesNoChan, retryCountLimit)
+			ch2 := makeRequestChanR(ctx, client, cookie, logintoken, invoicesNoChan, retryCountLimit)
+			ch3 := makeRequestChanR(ctx, client, cookie, logintoken, invoicesNoChan, retryCountLimit)
 			chAll := mergeRequestChanR(ctx, ch1, ch2, ch3)
 			split1 := make(chan *RResult)
 			split2 := make(chan *RResult)
@@ -201,14 +201,14 @@ func main() {
 			ctx1 := context.Background()
 			ctx, cancel := context.WithCancel(ctx1)
 			defer cancel()
-			invoicesNoChan, err := invoicesChan(ctx, client, cookie, logintoken)
+			invoicesNoChan, err := invoicesChan(ctx, client, cookie, logintoken, retryCountLimit)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
-			ch1 := makeRequestChan(ctx, client, cookie, logintoken, invoicesNoChan)
-			ch2 := makeRequestChan(ctx, client, cookie, logintoken, invoicesNoChan)
-			ch3 := makeRequestChan(ctx, client, cookie, logintoken, invoicesNoChan)
+			ch1 := makeRequestChan(ctx, client, cookie, logintoken, invoicesNoChan, retryCountLimit)
+			ch2 := makeRequestChan(ctx, client, cookie, logintoken, invoicesNoChan, retryCountLimit)
+			ch3 := makeRequestChan(ctx, client, cookie, logintoken, invoicesNoChan, retryCountLimit)
 			chAll := mergeRequestChan(ctx, ch1, ch2, ch3)
 			split1 := make(chan *Result)
 			split2 := make(chan *Result)
