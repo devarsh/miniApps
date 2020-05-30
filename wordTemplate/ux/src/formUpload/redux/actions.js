@@ -9,6 +9,9 @@ import {
   DELETE_FILE,
   REPLACE_STATE,
   SET_ERROR,
+  SET_FILE_TAGS,
+  SET_FILE_TAGS_ERROR,
+  SET_FILE_TAGS_TOUCHED,
 } from "./consts";
 import { immutableReducer } from "./state";
 
@@ -23,9 +26,14 @@ export const monkeyPatchReducer = (...fns) => (dispatchx, initialState) => {
     if (typeof fns[i] === "function") {
       fns[i](patchDispatch, parentState);
       for (let j = 0; j < payload.length; j++) {
+        console.group(payload[j].type);
+        console.log(payload[j]);
+        console.log(parentState);
         parentState = produce(parentState, (draft) => {
           immutableReducer(draft, payload[j]);
         });
+        console.log(parentState);
+        console.groupEnd();
       }
     }
     payload = [];
@@ -54,16 +62,6 @@ export const transformFileObjAndValidate = async (
   return null;
 };
 
-const constructNewFileObject = (file, result) => ({
-  id: shortId.generate(),
-  fd: file,
-  uploaded: false,
-  uploading: false,
-  uploadInterrupted: false,
-  error: result?.isRejected ? result?.rejectReason : "",
-  rejected: result?.isRejected,
-});
-
 const getPendingFiles = (files) => {
   let currentUploadingFilesCount = 0;
   let pendingFiles = [];
@@ -83,7 +81,23 @@ const getPendingFiles = (files) => {
   return [currentUploadingFilesCount, pendingFiles];
 };
 
+const constructNewFileObject = (file, result) => ({
+  id: shortId.generate(),
+  fd: file,
+  uploadedInititated: false,
+  uploaded: false,
+  uploading: false,
+  uploadInterrupted: false,
+  rejected: result?.isRejected,
+  error: result?.isRejected ? result?.rejectReason : "",
+  tags: [],
+  tagsTouched: false,
+  tagsError: "",
+});
+
 //actions
+
+export const isCompleted = () => {};
 
 export const queueFilesForUpload = (files) => (dispatch) => {
   dispatch({ type: QUEUE_FILES, payload: { files: files } });
@@ -120,7 +134,7 @@ export const startUpload = (fileID, maxUploadCount) => (dispatch, state) => {
   }
   if (!isFileIDRunning) {
     if (currentUploadingFileCount >= maxUploadCount) {
-      pauseUpload(fileToPauseID, false)(dispatch);
+      pauseUpload(fileToPauseID)(dispatch);
     }
     dispatch({ type: START_UPLOAD, payload: { fileIDs: [fileID] } });
   }
@@ -130,8 +144,8 @@ export const completeUpload = (fileID) => (dispatch) => {
   dispatch({ type: COMPLETE_UPLOAD, payload: { fileID: fileID } });
 };
 
-export const pauseUpload = (fileID, byUser = false) => (dispatch) => {
-  dispatch({ type: PAUSE_UPLOAD, payload: { fileID: fileID, byUser: byUser } });
+export const pauseUpload = (fileID) => (dispatch) => {
+  dispatch({ type: PAUSE_UPLOAD, payload: { fileID: fileID } });
 };
 
 export const deleteUpload = (fileID) => (dispatch) => {
@@ -140,6 +154,24 @@ export const deleteUpload = (fileID) => (dispatch) => {
 
 export const setUploadError = (fileID, error) => (dispatch) => {
   dispatch({ type: SET_ERROR, payload: { fileID: fileID, error: error } });
+};
+
+export const setTags = (fileID) => (tags) => (dispatch) => {
+  dispatch({ type: SET_FILE_TAGS, payload: { fileID: fileID, tags: tags } });
+};
+
+export const setTagsTouched = (fileID) => (touched) => (dispatch) => {
+  dispatch({
+    type: SET_FILE_TAGS_TOUCHED,
+    payload: { fileID: fileID, touched: touched },
+  });
+};
+
+export const setTagsError = (fileID) => (error) => (dispatch) => {
+  dispatch({
+    type: SET_FILE_TAGS_ERROR,
+    payload: { fileID: fileID, error: error },
+  });
 };
 
 const replaceState = (dispatch, newState) => {

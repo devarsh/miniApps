@@ -12,7 +12,9 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import ClearIcon from "@material-ui/icons/Clear";
 import Tooltip from "@material-ui/core/Tooltip";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { computeSize } from "./utils";
+import TagsAutoComplete from "./tagsAutoComplete";
 import {
   completeUpload,
   pauseUpload,
@@ -21,6 +23,9 @@ import {
   queueUpload,
   monkeyPatchReducer,
   setUploadError,
+  setTags,
+  setTagsTouched,
+  setTagsError,
 } from "./redux";
 import { FileUploadContext } from "./context";
 import tus from "tus-js-client";
@@ -76,10 +81,14 @@ const FileListItemRejected = ({ id, fd, error }) => {
 const FileListItem = ({
   id,
   fd,
+  uploadedInititated,
   uploading,
   uploaded,
   error,
   maxAllowedConcurrentUploads,
+  tags,
+  tagsTouched,
+  tagsError,
 }) => {
   const classes = useStyles();
   const fileUploadCtx = React.useContext(FileUploadContext);
@@ -102,7 +111,7 @@ const FileListItem = ({
     if (triggerError === true) {
       if (uploading === true) {
         monkeyPatchReducer(
-          pauseUpload(id, true),
+          pauseUpload(id),
           setUploadError(id, sendErrorMessageRef.current),
           queueUpload(maxAllowedConcurrentUploads)
         )(fileUploadCtx.dispatch, fileUploadCtx.state);
@@ -162,7 +171,7 @@ const FileListItem = ({
   };
   const handleResume = () => {
     if (uploaded === false && uploading === false) {
-      monkeyPatchReducer(startUpload(id))(
+      monkeyPatchReducer(startUpload(id, maxAllowedConcurrentUploads))(
         fileUploadCtx.dispatch,
         fileUploadCtx.state
       );
@@ -171,7 +180,7 @@ const FileListItem = ({
   const handleStop = () => {
     if (uploaded === false && uploading === true) {
       monkeyPatchReducer(
-        pauseUpload(id, true),
+        pauseUpload(id),
         setUploadError(id, "upload cancelled")
       )(fileUploadCtx.dispatch, fileUploadCtx.state);
     }
@@ -211,7 +220,6 @@ const FileListItem = ({
           sendErrorMessageRef.current = "could not connect to server";
         } else {
           sendErrorMessageRef.current = "unknown error occured";
-          console.log(error.message);
         }
         setTriggerError(true);
       },
@@ -219,6 +227,9 @@ const FileListItem = ({
     return uploadInstanceRef.current;
   };
   const uploadInstance = initiateUpload();
+  const setValue = React.useCallback(setTags(id), [id]);
+  const setTouched = React.useCallback(setTagsTouched(id), [id]);
+  const setError = React.useCallback(setTagsError(id), [id]);
   return (
     <ListItem key={id} className={classes.listItem}>
       <ListItemAvatar>
@@ -246,10 +257,25 @@ const FileListItem = ({
         }
         secondary={
           uploaded ? (
-            <Typography variant="body2">
-              uploaded successfully completed
-            </Typography>
-          ) : (
+            <>
+              <Typography variant="body2">
+                uploaded successfully completed
+              </Typography>
+              <TagsAutoComplete
+                label={"tags"}
+                setValue={setValue}
+                setTouched={setTouched}
+                setError={setError}
+                value={tags}
+                touched={tagsTouched}
+                error={tagsError} 
+                getOptionLabel
+                callback
+                dispatch={fileUploadCtx.dispatch}
+                state={fileUploadCtx.state}
+              />
+            </>
+          ) : uploadedInititated ? (
             <>
               <LinearProgress
                 variant="determinate"
@@ -262,10 +288,11 @@ const FileListItem = ({
                   : error}
               </Typography>
             </>
+          ) : (
+            <Typography variant="body2">Waiting for upload to start</Typography>
           )
         }
       />
-
       <ListItemSecondaryAction>
         {uploaded === false ? (
           uploading === true ? (
@@ -275,9 +302,11 @@ const FileListItem = ({
               </IconButton>
             </Tooltip>
           ) : (
-            <Tooltip title="retry upload">
+            <Tooltip
+              title={uploadedInititated ? "retry upload" : "start upload"}
+            >
               <IconButton onClick={handleResume}>
-                <RefreshIcon />
+                {uploadedInititated ? <RefreshIcon /> : <PlayArrowIcon />}
               </IconButton>
             </Tooltip>
           )

@@ -6,12 +6,13 @@ import FileUploadController from "./fileUploadControl";
 
 const FormUploadContainer = () => (
   <DndProvider backend={html5Backend}>
-    <FileUploadController
-      tusEndpoint="http://localhost:8080/files/"
-      maxAllowedSizeInBytes={10240000}
-      whiteListExtension={["pdf", "png", "jpg", "jpeg"]}
-    />
+    <FileUploadController tusEndpoint="http://localhost:8080/files/" />
   </DndProvider>
 );
 
 export default FormUploadContainer;
+
+/*
+maxAllowedSizeInBytes={10240000}
+whiteListExtension={["pdf", "png", "jpg", "jpeg"]}
+*/

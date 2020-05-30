@@ -1,0 +1,14 @@
+FileName,FilePath,DestPath,FileSize,ModifiedDate,isDir
+,../sbiContacts,wow2,0,2019-05-19 03:18:52 +0530 IST,true
+Bills.csv,../sbiContacts/Bills.csv,wow2/Bills.csv,22493,2019-05-19 03:18:52 +0530 IST,false
+Makefile,../sbiContacts/Makefile,wow2/Makefile,199,2019-05-19 03:18:52 +0530 IST,false
+OutstandingBranchJoin.go,../sbiContacts/OutstandingBranchJoin.go,wow2/OutstandingBranchJoin.go,2718,2019-05-19 03:18:52 +0530 IST,false
+,../sbiContacts/_assets,wow2/_assets,0,2019-05-19 03:18:52 +0530 IST,true
+sbiAllBranchDtl.csv,../sbiContacts/_assets/sbiAllBranchDtl.csv,wow2/_assets/sbiAllBranchDtl.csv,230250,2019-05-19 03:18:52 +0530 IST,false
+,../sbiContacts/assets,wow2/assets,0,2019-05-19 03:18:52 +0530 IST,true
+Makefile,../sbiContacts/assets/Makefile,wow2/assets/Makefile,69,2019-05-19 03:18:52 +0530 IST,false
+main.go,../sbiContacts/assets/main.go,wow2/assets/main.go,297693,2019-05-19 03:18:52 +0530 IST,false
+,../sbiContacts/extra,wow2/extra,0,2019-05-19 03:18:52 +0530 IST,true
+EnvelopePdfGen.go,../sbiContacts/extra/EnvelopePdfGen.go,wow2/extra/EnvelopePdfGen.go,2273,2019-05-19 03:18:52 +0530 IST,false
+FetchContacts.go,../sbiContacts/extra/FetchContacts.go,wow2/extra/FetchContacts.go,5538,2019-05-19 03:18:52 +0530 IST,false
+data.txt,../sbiContacts/extra/data.txt,wow2/extra/data.txt,8238,2019-05-19 03:18:52 +0530 IST,false

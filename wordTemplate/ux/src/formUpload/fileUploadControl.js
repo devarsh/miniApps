@@ -53,6 +53,8 @@ const FileUploadController = ({
   whiteListExtension = "all",
   maxAllowedSizeInBytes = -1,
   maxAllowedConcurrentUploads = 2,
+  tagsApiCallback,
+  getOptionLabel,
 }) => {
   const classes = useStyles();
   const fileDialogRef = React.useRef();
@@ -121,6 +123,8 @@ const FileUploadController = ({
             <FileList
               files={state.files}
               maxAllowedConcurrentUploads={maxAllowedConcurrentUploads}
+              tagsApiCallback={tagsApiCallback}
+              getOptionLabel={getOptionLabel}
             />
           </div>
         </CardContent>

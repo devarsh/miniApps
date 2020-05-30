@@ -6,6 +6,9 @@ import {
   DELETE_FILE,
   REPLACE_STATE,
   SET_ERROR,
+  SET_FILE_TAGS,
+  SET_FILE_TAGS_TOUCHED,
+  SET_FILE_TAGS_ERROR,
 } from "./consts";
 
 export const initialState = {
@@ -25,6 +28,7 @@ export const immutableReducer = (draft, { type, payload }) => {
       const { fileIDs } = payload;
       for (let file of draft.files) {
         if (fileIDs.indexOf(file.id) >= 0) {
+          file.uploadedInititated = true;
           file.uploading = true;
           file.uploadInterrupted = false;
           file.error = "";
@@ -35,7 +39,7 @@ export const immutableReducer = (draft, { type, payload }) => {
     case COMPLETE_UPLOAD: {
       const { fileID } = payload;
       for (let file of draft.files) {
-        if (file.id === fileID) {
+        if (file.rejected === false && file.id === fileID) {
           file.uploading = false;
           file.uploadInterrupted = false;
           file.uploaded = true;
@@ -46,13 +50,15 @@ export const immutableReducer = (draft, { type, payload }) => {
       return;
     }
     case PAUSE_UPLOAD: {
-      const { fileID, byUser } = payload;
+      const { fileID } = payload;
       for (let file of draft.files) {
-        if (file.id === fileID) {
-          if (file.uploaded === false) {
-            file.uploading = false;
-            file.uploadInterrupted = byUser;
-          }
+        if (
+          file.id === fileID &&
+          file.rejected === false &&
+          file.uploaded === false
+        ) {
+          file.uploading = false;
+          file.uploadInterrupted = true;
           return;
         }
       }
@@ -77,6 +83,36 @@ export const immutableReducer = (draft, { type, payload }) => {
       for (let file of draft.files) {
         if (file.id === fileID) {
           file.error = error;
+          return;
+        }
+      }
+      return;
+    }
+    case SET_FILE_TAGS: {
+      const { fileID, tags } = payload;
+      for (let file of draft.files) {
+        if (file.id === fileID) {
+          file.tags = tags;
+          return;
+        }
+      }
+      return;
+    }
+    case SET_FILE_TAGS_TOUCHED: {
+      const { fileID, touched } = payload;
+      for (let file of draft.files) {
+        if (file.id === fileID) {
+          file.tagsTouched = touched;
+          return;
+        }
+      }
+      return;
+    }
+    case SET_FILE_TAGS_ERROR: {
+      const { fileID, error } = payload;
+      for (let file of draft.files) {
+        if (file.id === fileID) {
+          file.tagsError = error;
           return;
         }
       }

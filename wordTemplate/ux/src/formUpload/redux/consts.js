@@ -5,3 +5,6 @@ export const PAUSE_UPLOAD = Symbol("PAUSE_UPLOAD");
 export const DELETE_FILE = Symbol("DELETE_FILE");
 export const REPLACE_STATE = Symbol("REPLACE_STATE");
 export const SET_ERROR = Symbol("SET_ERROR");
+export const SET_FILE_TAGS = Symbol("SET_FILE_TAGS");
+export const SET_FILE_TAGS_TOUCHED = Symbol("SET_FILE_TAGS_TOUCHED");
+export const SET_FILE_TAGS_ERROR = Symbol("SET_FILE_TAGS_ERROR");
